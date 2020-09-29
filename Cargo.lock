@@ -816,7 +816,7 @@ dependencies = [
 [[package]]
 name = "librad"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link.git?rev=d301aa639c0275b64001fffed7a3f88233d552b3#d301aa639c0275b64001fffed7a3f88233d552b3"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=ff0fb474ef359ca13a8f226c180792a43754c1ae#ff0fb474ef359ca13a8f226c180792a43754c1ae"
 dependencies = [
  "async-trait",
  "bit-vec",
@@ -1348,28 +1348,11 @@ dependencies = [
 [[package]]
 name = "radicle-seed"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link.git?rev=d301aa639c0275b64001fffed7a3f88233d552b3#d301aa639c0275b64001fffed7a3f88233d552b3"
-dependencies = [
- "argh",
- "async-trait",
- "chrono",
- "futures",
- "librad",
- "radicle-keystore",
- "thiserror",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "radicle-seed"
-version = "0.1.0"
 dependencies = [
  "argh",
  "chrono",
  "librad",
- "radicle-seed 0.1.0 (git+https://github.com/radicle-dev/radicle-link.git?rev=d301aa639c0275b64001fffed7a3f88233d552b3)",
+ "seed",
  "thiserror",
  "tokio",
  "tracing",
@@ -1593,6 +1576,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fb003d53cef244a97516226b01155057c7fa6eb52914933c32f6c98a84182188"
 dependencies = [
  "libc",
+]
+
+[[package]]
+name = "seed"
+version = "0.1.0"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=ff0fb474ef359ca13a8f226c180792a43754c1ae#ff0fb474ef359ca13a8f226c180792a43754c1ae"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "futures",
+ "librad",
+ "radicle-keystore",
+ "thiserror",
+ "tokio",
+ "tracing",
 ]
 
 [[package]]

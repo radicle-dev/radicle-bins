@@ -22,7 +22,7 @@ use tracing_subscriber::FmtSubscriber;
 
 use librad::{peer::PeerId, uri::RadUrn};
 
-use radicle_seed::{Mode, Node, NodeConfig, Signer};
+use seed::{Mode, Node, NodeConfig, Signer};
 
 #[derive(FromArgs)]
 /// Radicle Seed.
