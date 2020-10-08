@@ -15,8 +15,8 @@ tracing-subscriber = "0.2"
 
 [dependencies.librad]
 git = "https://github.com/radicle-dev/radicle-link.git"
-rev = "dee9a57948ca1a0eadee996108f3c441ce3641bf"
+rev = "f1e84e72e44d93dedf63a3deed6514aa181ecf1c"
 
 [dependencies.seed]
 git = "https://github.com/radicle-dev/radicle-link.git"
-rev = "dee9a57948ca1a0eadee996108f3c441ce3641bf"
+rev = "f1e84e72e44d93dedf63a3deed6514aa181ecf1c"
