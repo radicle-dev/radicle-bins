@@ -1,6 +1,12 @@
 <script>
   import { Header, Project, Peer } from "./Components";
   export let data = null;
+
+  const events = new EventSource("/events");
+
+  events.onmessage = e => {
+    console.log(e);
+  };
 </script>
 
 <style>
