@@ -18,10 +18,10 @@
 use std::{net, path::PathBuf};
 
 use tracing_subscriber::FmtSubscriber;
-use warp::Filter;
 
 use librad::{peer::PeerId, uri::RadUrn};
 use radicle_seed::{Mode, Node, NodeConfig, Signer};
+use radicle_seed_node as seed;
 
 use argh::FromArgs;
 
@@ -82,9 +82,8 @@ async fn main() {
     };
     let node = Node::new(config).unwrap();
     let (tx, rx) = futures::channel::mpsc::channel(1);
-    let app = warp::path("events")
-        .and(warp::get())
-        .and_then(todo!("Magic happens here"));
+
+    tokio::task::spawn(seed::frontend::run(([127, 0, 0, 1], 8888), rx));
 
     node.run(tx).await.unwrap();
 }
