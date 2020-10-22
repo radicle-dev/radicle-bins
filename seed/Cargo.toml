@@ -17,8 +17,8 @@ serde_json = "1"
 
 [dependencies.librad]
 git = "https://github.com/radicle-dev/radicle-link.git"
-rev = "19b65a8d73c2af5052db6709de174eb03dd86369"
+rev = "d434b1bc294a20134eeac438ab634c33f811059e"
 
 [dependencies.radicle-seed]
 git = "https://github.com/radicle-dev/radicle-link.git"
-rev = "19b65a8d73c2af5052db6709de174eb03dd86369"
+rev = "d434b1bc294a20134eeac438ab634c33f811059e"
