@@ -14,11 +14,12 @@ tracing = "0.1"
 tracing-subscriber = "0.2"
 warp = { version = "0.2.5", default-features = false }
 serde_json = "1"
+serde = "1"
 
 [dependencies.librad]
 git = "https://github.com/radicle-dev/radicle-link.git"
-rev = "d434b1bc294a20134eeac438ab634c33f811059e"
+rev = "4a5484a5db944d5aec1716555a85f5e75a674e06"
 
 [dependencies.radicle-seed]
 git = "https://github.com/radicle-dev/radicle-link.git"
-rev = "d434b1bc294a20134eeac438ab634c33f811059e"
+rev = "4a5484a5db944d5aec1716555a85f5e75a674e06"

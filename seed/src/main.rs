@@ -81,9 +81,10 @@ async fn main() {
         signer,
     };
     let node = Node::new(config).unwrap();
+    let handle = node.handle();
     let (tx, rx) = futures::channel::mpsc::channel(1);
 
-    tokio::spawn(seed::frontend::run(([127, 0, 0, 1], 8888), rx));
+    tokio::spawn(seed::frontend::run(([127, 0, 0, 1], 8888), handle, rx));
 
     node.run(tx).await.unwrap();
 }
