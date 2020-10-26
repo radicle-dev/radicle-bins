@@ -21,7 +21,10 @@ pub enum Event {
     PeerConnected(Peer),
     PeerDisconnected(PeerId),
     ProjectTracked(Project),
-    Snapshot { projects: Vec<Project> },
+    #[serde(rename_all = "camelCase")]
+    Snapshot {
+        projects: Vec<Project>,
+    },
 }
 
 impl TryFrom<seed::Event> for Event {
