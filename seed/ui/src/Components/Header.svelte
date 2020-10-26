@@ -39,5 +39,5 @@
 </div>
 <div class="stat">
   <h2>{seed.projects}</h2>
-  <h5>replicated<br />projects</h5>
+  <h5>seeded<br />projects</h5>
 </div>

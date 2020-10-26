@@ -24,6 +24,7 @@ pub enum Event {
     #[serde(rename_all = "camelCase")]
     Snapshot {
         projects: Vec<Project>,
+        peers: Vec<Peer>,
     },
 }
 
@@ -32,9 +33,12 @@ impl TryFrom<seed::Event> for Event {
 
     fn try_from(other: seed::Event) -> Result<Self, ()> {
         match other {
-            seed::Event::PeerConnected { peer_id, urn, name } => {
-                Ok(Event::PeerConnected(Peer { peer_id, urn, name }))
-            }
+            seed::Event::PeerConnected { peer_id, urn, name } => Ok(Event::PeerConnected(Peer {
+                peer_id,
+                urn,
+                name,
+                online: true,
+            })),
             seed::Event::PeerDisconnected(id) => Ok(Event::PeerDisconnected(id)),
             seed::Event::ProjectTracked(proj, _) => Ok(Event::ProjectTracked(Project(proj))),
             seed::Event::Listening(_) => Err(()),
@@ -55,6 +59,7 @@ pub struct Peer {
     pub peer_id: PeerId,
     pub urn: Option<RadUrn>,
     pub name: Option<String>,
+    pub online: bool,
 }
 
 #[derive(Debug, Serialize, Clone)]
@@ -90,10 +95,20 @@ async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event
                 state.projects.insert(proj.urn.clone(), proj.clone());
             }
             seed::Event::PeerConnected { peer_id, urn, name } => {
-                state.peers.insert(peer_id, Peer { peer_id, urn, name });
+                state.peers.insert(
+                    peer_id,
+                    Peer {
+                        peer_id,
+                        urn,
+                        name,
+                        online: true,
+                    },
+                );
             }
             seed::Event::PeerDisconnected(peer_id) => {
-                state.peers.remove(&peer_id);
+                if let Some(peer) = state.peers.get_mut(&peer_id) {
+                    peer.online = false;
+                }
             }
             seed::Event::Listening(_) => {}
         }
@@ -131,9 +146,10 @@ async fn handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, warp::Rej
             .projects
             .values()
             .map(|p| Project(p.clone()))
-            .collect::<Vec<_>>();
+            .collect();
+        let peers = state.peers.values().cloned().collect();
 
-        tx.send(Event::Snapshot { projects }).unwrap();
+        tx.send(Event::Snapshot { projects, peers }).unwrap();
         state.subs.push(tx);
 
         rx

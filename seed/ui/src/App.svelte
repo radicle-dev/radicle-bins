@@ -70,6 +70,7 @@
 
       case "snapshot": {
         seed.projects = data.projects.length;
+        seed.peers = data.peers.length;
 
         projects.set(
           data.projects.map(p => {
@@ -81,6 +82,7 @@
             };
           })
         );
+        peers.set(data.peers);
 
         break;
       }
