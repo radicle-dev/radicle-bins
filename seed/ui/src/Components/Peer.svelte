@@ -32,5 +32,5 @@
       <p class="status-indicator">online</p>
     {/if}
   </div>
-  <p class="typo-text-small-mono urn typo-overflow-ellipsis">{peer.peerID}</p>
+  <p class="typo-text-small-mono urn typo-overflow-ellipsis">{peer.peerId}</p>
 </div>

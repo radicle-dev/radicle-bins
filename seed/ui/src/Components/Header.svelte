@@ -30,7 +30,7 @@
 
 <div class="meta">
   <h2>{seed.name}</h2>
-  <p class="typo-text-small address"><span>{seed.address}</span></p>
+  <p class="address typo-text-small-mono"><span>{seed.address}</span></p>
   <p class="desc">{seed.desc}</p>
 </div>
 <div class="stat">
