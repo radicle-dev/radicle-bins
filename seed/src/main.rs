@@ -38,7 +38,11 @@ pub struct Options {
 
     /// listen on the following address for peer connections
     #[argh(option)]
-    pub listen: Option<net::SocketAddr>,
+    pub peer_listen: Option<net::SocketAddr>,
+
+    /// listen on the following address for HTTP connections (default: 127.0.0.1:8888)
+    #[argh(option, default = "std::net::SocketAddr::from(([127, 0, 0, 1], 8888))")]
+    pub http_listen: net::SocketAddr,
 
     /// log level (default: info)
     #[argh(option, default = "tracing::Level::INFO")]
@@ -69,7 +73,9 @@ async fn main() {
     };
 
     let config = NodeConfig {
-        listen_addr: opts.listen.unwrap_or(NodeConfig::default().listen_addr),
+        listen_addr: opts
+            .peer_listen
+            .unwrap_or(NodeConfig::default().listen_addr),
         root: opts.root,
         mode: if !opts.track_peers.is_empty() {
             Mode::TrackPeers(opts.track_peers.into_iter().collect())
@@ -84,7 +90,7 @@ async fn main() {
     let handle = node.handle();
     let (tx, rx) = futures::channel::mpsc::channel(1);
 
-    tokio::spawn(seed::frontend::run(([127, 0, 0, 1], 8888), handle, rx));
+    tokio::spawn(seed::frontend::run(opts.http_listen, handle, rx));
 
     node.run(tx).await.unwrap();
 }
