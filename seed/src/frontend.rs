@@ -81,7 +81,7 @@ where
 
 async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event>) {
     while let Some(e) = events.next().await {
-        tracing::debug!("{:?}", e);
+        tracing::info!("{:?}", e);
 
         let mut state = state.lock().await;
         if let Ok(event) = Event::try_from(e.clone()) {
