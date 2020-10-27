@@ -145,15 +145,53 @@ pub async fn run<A: Into<net::SocketAddr>>(
 
     tokio::task::spawn(fanout(state.clone(), events));
 
+    let projects = warp::path("projects")
+        .map({
+            let state = state.clone();
+            move || state.clone()
+        })
+        .and_then(projects_handler);
+
+    let peers = warp::path("peers")
+        .map({
+            let state = state.clone();
+            move || state.clone()
+        })
+        .and_then(peers_handler);
+
     let app = warp::path("events")
         .and(warp::get())
         .map(move || state.clone())
-        .and_then(handler);
+        .and_then(events_handler);
 
-    warp::serve(app.or(public)).run(addr).await;
+    warp::serve(app.or(public).or(projects).or(peers))
+        .run(addr)
+        .await;
 }
 
-async fn handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, warp::Rejection> {
+async fn peers_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, warp::Rejection> {
+    let state = state.lock().await;
+    let peers = state.peers.clone();
+
+    Ok(warp::reply::json(
+        &peers.values().cloned().collect::<Vec<_>>(),
+    ))
+}
+
+async fn projects_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, warp::Rejection> {
+    let state = state.lock().await;
+    let projs = state.projects.clone();
+
+    Ok(warp::reply::json(
+        &projs
+            .values()
+            .cloned()
+            .map(|p| Project(p))
+            .collect::<Vec<_>>(),
+    ))
+}
+
+async fn events_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, warp::Rejection> {
     let receiver = {
         let mut state = state.lock().await;
         let (tx, rx) = tokio::sync::mpsc::unbounded_channel();
