@@ -23,17 +23,10 @@ eventSource.onmessage = e => {
 
   switch (data.type) {
     case "peerConnected": {
-      peerStore.update(ps => {
-        ps.push({
-          peerId: data.peerId,
-          urn: data.urn,
-          name: data.name,
-          online: true,
-          emoji: "",
-          color: "#ff00ff",
-        });
-        return ps;
-      });
+      fetch("/peers")
+        .then(resp => resp.json())
+        .then(result => peerStore.set(result));
+
       seedStore.update(s => {
         s.peers += 1;
         return s;
@@ -43,14 +36,10 @@ eventSource.onmessage = e => {
     }
 
     case "peerDisconnected": {
-      peerStore.update(ps => {
-        ps.forEach(p => {
-          if (p.peerId === data.peerId) {
-            p.online = false;
-          }
-        });
-        return ps;
-      });
+      fetch("/peers")
+        .then(resp => resp.json())
+        .then(result => peerStore.set(result));
+
       seedStore.update(s => {
         s.peers -= 1;
         return s;
@@ -60,15 +49,21 @@ eventSource.onmessage = e => {
     }
 
     case "projectTracked": {
-      projectStore.update(ps => {
-        ps.push({
-          urn: data.urn,
-          name: data.name,
-          maintainer: data.maintainers[0],
-          description: data.description,
-        });
-        return ps;
-      });
+      fetch("/projects")
+        .then(resp => resp.json())
+        .then(result =>
+          projectStore.set(
+            result.map(p => {
+              return {
+                urn: p.urn,
+                name: p.name,
+                maintainer: p.maintainers[0],
+                description: p.description,
+              };
+            })
+          )
+        );
+
       seedStore.update(s => {
         seed.projects += 1;
         return s;
