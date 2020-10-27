@@ -8,8 +8,9 @@ use warp::Filter as _;
 
 use radicle_seed as seed;
 
+use std::collections::hash_map::Entry;
 use std::collections::HashMap;
-use std::convert::{Infallible, TryFrom};
+use std::convert::Infallible;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
@@ -28,29 +29,58 @@ pub enum Event {
     },
 }
 
-impl TryFrom<seed::Event> for Event {
-    type Error = ();
-
-    fn try_from(other: seed::Event) -> Result<Self, ()> {
-        match other {
-            seed::Event::PeerConnected { peer_id, urn, name } => Ok(Event::PeerConnected(Peer {
-                peer_id,
-                urn,
-                name,
-                online: true,
-            })),
-            seed::Event::PeerDisconnected(id) => Ok(Event::PeerDisconnected(id)),
-            seed::Event::ProjectTracked(proj, _) => Ok(Event::ProjectTracked(Project(proj))),
-            seed::Event::Listening(_) => Err(()),
-        }
-    }
-}
-
 #[derive(Debug)]
 struct State {
     projects: HashMap<RadUrn, seed::Project>,
     peers: HashMap<PeerId, Peer>,
     subs: Vec<tokio::sync::mpsc::UnboundedSender<Event>>,
+}
+
+impl State {
+    fn broadcast(&mut self, event: Event) {
+        self.subs.retain(|sub| sub.send(event.clone()).is_ok());
+    }
+
+    fn project_tracked(&mut self, proj: seed::Project) {
+        if self
+            .projects
+            .insert(proj.urn.clone(), proj.clone())
+            .is_none()
+        {
+            self.broadcast(Event::ProjectTracked(Project(proj.clone())));
+        }
+    }
+
+    fn peer_connected(&mut self, peer_id: PeerId, urn: Option<RadUrn>, name: Option<String>) {
+        match self.peers.entry(peer_id) {
+            Entry::Vacant(entry) => {
+                let peer = Peer {
+                    peer_id,
+                    urn,
+                    name,
+                    connections: 1,
+                };
+                entry.insert(peer.clone());
+
+                self.broadcast(Event::PeerConnected(peer.clone()));
+            }
+            Entry::Occupied(mut entry) => {
+                entry.get_mut().connections += 1;
+            }
+        }
+    }
+
+    fn peer_disconnected(&mut self, peer_id: PeerId) {
+        if let Entry::Occupied(mut entry) = self.peers.entry(peer_id) {
+            let peer = entry.get_mut();
+            peer.connections -= 1;
+
+            if peer.connections == 0 {
+                entry.remove_entry();
+                self.broadcast(Event::PeerDisconnected(peer_id));
+            }
+        }
+    }
 }
 
 #[derive(Debug, Serialize, Clone)]
@@ -59,7 +89,7 @@ pub struct Peer {
     pub peer_id: PeerId,
     pub urn: Option<RadUrn>,
     pub name: Option<String>,
-    pub online: bool,
+    pub connections: usize,
 }
 
 #[derive(Debug, Serialize, Clone)]
@@ -84,34 +114,19 @@ async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event
         tracing::info!("{:?}", e);
 
         let mut state = state.lock().await;
-        if let Ok(event) = Event::try_from(e.clone()) {
-            state
-                .subs
-                .retain(move |sub| sub.send(event.clone()).is_ok());
-        }
 
         match e {
             seed::Event::ProjectTracked(proj, _) => {
-                state.projects.insert(proj.urn.clone(), proj.clone());
+                state.project_tracked(proj);
             }
             seed::Event::PeerConnected { peer_id, urn, name } => {
-                state.peers.insert(
-                    peer_id,
-                    Peer {
-                        peer_id,
-                        urn,
-                        name,
-                        online: true,
-                    },
-                );
+                state.peer_connected(peer_id, urn, name);
             }
             seed::Event::PeerDisconnected(peer_id) => {
-                if let Some(peer) = state.peers.get_mut(&peer_id) {
-                    peer.online = false;
-                }
+                state.peer_disconnected(peer_id);
             }
             seed::Event::Listening(_) => {}
-        }
+        };
     }
 }
 
