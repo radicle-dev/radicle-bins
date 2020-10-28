@@ -17,6 +17,9 @@ use tokio::sync::Mutex;
 
 use futures::channel::mpsc as chan;
 
+/// Maximum number of disconnected peers to keep around in the state.
+const MAX_DISCONNECTED_PEERS: usize = 32;
+
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase", tag = "type")]
 pub enum Event {
@@ -96,6 +99,30 @@ impl State {
                     }
                 }
                 PeerState::Disconnected { .. } => {}
+            }
+        }
+
+        // Remove oldest disconnected peer if necessary.
+        if self
+            .peers
+            .values()
+            .filter(|p| matches!(p.state, PeerState::Disconnected {..}))
+            .count()
+            > MAX_DISCONNECTED_PEERS
+        {
+            if let Some((oldest, _)) = self
+                .peers
+                .iter()
+                .flat_map(|(id, p)| {
+                    if let PeerState::Disconnected { since } = p.state {
+                        Some((*id, since))
+                    } else {
+                        None
+                    }
+                })
+                .min_by(|(_, a), (_, b)| a.cmp(b))
+            {
+                self.peers.remove(&oldest);
             }
         }
     }
