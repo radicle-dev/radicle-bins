@@ -988,7 +988,7 @@ dependencies = [
 [[package]]
 name = "librad"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link.git?rev=25a9bf41d1770bb05888422e1640d4c6b6020059#25a9bf41d1770bb05888422e1640d4c6b6020059"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=42eef31c27d9556c690bc93bd6504b9ee10cdc68#42eef31c27d9556c690bc93bd6504b9ee10cdc68"
 dependencies = [
  "async-trait",
  "bit-vec",
@@ -1524,7 +1524,7 @@ dependencies = [
 [[package]]
 name = "radicle-git-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link.git?rev=25a9bf41d1770bb05888422e1640d4c6b6020059#25a9bf41d1770bb05888422e1640d4c6b6020059"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=42eef31c27d9556c690bc93bd6504b9ee10cdc68#42eef31c27d9556c690bc93bd6504b9ee10cdc68"
 dependencies = [
  "git2",
  "multibase",
@@ -1559,7 +1559,7 @@ dependencies = [
 [[package]]
 name = "radicle-macros"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link.git?rev=25a9bf41d1770bb05888422e1640d4c6b6020059#25a9bf41d1770bb05888422e1640d4c6b6020059"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=42eef31c27d9556c690bc93bd6504b9ee10cdc68#42eef31c27d9556c690bc93bd6504b9ee10cdc68"
 dependencies = [
  "quote",
  "radicle-git-ext",
@@ -1569,7 +1569,7 @@ dependencies = [
 [[package]]
 name = "radicle-seed"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link.git?rev=25a9bf41d1770bb05888422e1640d4c6b6020059#25a9bf41d1770bb05888422e1640d4c6b6020059"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=42eef31c27d9556c690bc93bd6504b9ee10cdc68#42eef31c27d9556c690bc93bd6504b9ee10cdc68"
 dependencies = [
  "async-trait",
  "futures",
@@ -1600,7 +1600,7 @@ dependencies = [
 [[package]]
 name = "radicle-std-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link.git?rev=25a9bf41d1770bb05888422e1640d4c6b6020059#25a9bf41d1770bb05888422e1640d4c6b6020059"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=42eef31c27d9556c690bc93bd6504b9ee10cdc68#42eef31c27d9556c690bc93bd6504b9ee10cdc68"
 
 [[package]]
 name = "rand"
