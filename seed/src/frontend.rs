@@ -1,4 +1,5 @@
 use std::net;
+use std::time;
 
 use futures::StreamExt as _;
 use librad::{peer::PeerId, uri::RadUrn};
@@ -58,14 +59,23 @@ impl State {
                     peer_id,
                     urn,
                     name,
-                    connections: 1,
+                    state: PeerState::new(),
                 };
                 entry.insert(peer.clone());
 
                 self.broadcast(Event::PeerConnected(peer.clone()));
             }
             Entry::Occupied(mut entry) => {
-                entry.get_mut().connections += 1;
+                let peer = entry.get_mut();
+
+                match &mut peer.state {
+                    PeerState::Connected { connections } => {
+                        *connections += 1;
+                    }
+                    PeerState::Disconnected { .. } => {
+                        peer.state = PeerState::new();
+                    }
+                }
             }
         }
     }
@@ -73,11 +83,19 @@ impl State {
     fn peer_disconnected(&mut self, peer_id: PeerId) {
         if let Entry::Occupied(mut entry) = self.peers.entry(peer_id) {
             let peer = entry.get_mut();
-            peer.connections -= 1;
 
-            if peer.connections == 0 {
-                entry.remove_entry();
-                self.broadcast(Event::PeerDisconnected(peer_id));
+            match &mut peer.state {
+                PeerState::Connected { connections } => {
+                    if *connections > 1 {
+                        *connections -= 1;
+                    } else {
+                        peer.state = PeerState::Disconnected {
+                            since: time::SystemTime::now(),
+                        };
+                        self.broadcast(Event::PeerDisconnected(peer_id));
+                    }
+                }
+                PeerState::Disconnected { .. } => {}
             }
         }
     }
@@ -89,7 +107,22 @@ pub struct Peer {
     pub peer_id: PeerId,
     pub urn: Option<RadUrn>,
     pub name: Option<String>,
-    pub connections: usize,
+    pub state: PeerState,
+}
+
+#[derive(Debug, Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub enum PeerState {
+    #[serde(rename_all = "camelCase")]
+    Connected { connections: usize },
+    #[serde(rename_all = "camelCase")]
+    Disconnected { since: time::SystemTime },
+}
+
+impl PeerState {
+    fn new() -> Self {
+        Self::Connected { connections: 1 }
+    }
 }
 
 #[derive(Debug, Serialize, Clone)]
