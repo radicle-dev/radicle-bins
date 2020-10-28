@@ -1,12 +1,6 @@
 <script>
   import { Header, Project, Peer } from "./Components";
-  export let data = null;
-
-  const events = new EventSource("/events");
-
-  events.onmessage = e => {
-    console.log(e);
-  };
+  import { seed, projects, peers } from "./events.js";
 </script>
 
 <style>
@@ -38,17 +32,17 @@
 </style>
 
 <div class="container">
-  <Header seed={data.seed} />
+  <Header seed={$seed} />
   <main>
-    <h3>Replicated projects</h3>
-    {#each data.projects as project}
+    <h3>Projects</h3>
+    {#each $projects as project}
       <Project {project} />
     {/each}
   </main>
   <aside>
-    <h3>Connected peers</h3>
-    {#each data.peers as peer}
+    <h3>Peers</h3>
+    {#each $peers as peer}
       <Peer {peer} />
-    {/each}
+    {:else}None.{/each}
   </aside>
 </div>
