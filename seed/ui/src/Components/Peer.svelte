@@ -38,7 +38,7 @@
 
 <div class="container">
   <div class="status">
-    <User user={peer} />
+    <User user={peer.user} />
     {#if peer.state.connected}
       <p class="status-indicator">online</p>
     {:else}

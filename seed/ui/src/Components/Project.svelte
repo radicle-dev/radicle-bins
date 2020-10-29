@@ -1,5 +1,7 @@
 <script>
   import Icon from "./Icon";
+  import Avatar from "./Avatar.svelte";
+
   export let project = null;
 </script>
 
@@ -14,6 +16,10 @@
   .name {
     display: flex;
     margin-bottom: 0.5rem;
+  }
+
+  .avatar {
+    margin-left: 0.5rem;
   }
 
   .urn {
@@ -35,11 +41,12 @@
 
 <div class="container">
   <p class="name typo-text-bold">
-    <!-- TODO
-    <User user={project.maintainer} />
-    <span>&nbsp;/&nbsp;</span>
-    -->
     {project.name}
+    {#each project.maintainers as maintainer}
+      <div class="avatar">
+        <Avatar avatar={maintainer.avatar} />
+      </div>
+    {/each}
   </p>
   <p class="typo-text-small-mono urn">{project.urn}</p>
   <p class="typo-text desc">{project.description}</p>
