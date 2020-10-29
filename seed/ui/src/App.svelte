@@ -4,6 +4,8 @@
   import Header from "./Components/Header.svelte";
   import PeerList from "./Components/PeerList.svelte";
   import Project from "./Components/Project.svelte";
+
+  console.log($seen);
 </script>
 
 <style>

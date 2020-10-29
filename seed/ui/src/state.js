@@ -150,11 +150,6 @@ const data = {
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas deleniti repudiandae sint adipisci eveniet, inventore ad atque cum. Incidunt, excepturi! Doloribus vitae laboriosam enim, ipsa ullam est vel voluptatibus quidem.",
       urn:
         "rad:git:hwd1yre8ugp55p37domyqoi9m44ptwqrixioxgdic9kaduo8es5xhzhbaty",
-      stats: {
-        commits: 123312,
-        branches: 31232,
-        contributors: 1111,
-      },
     },
   ],
   peers: [
@@ -220,23 +215,17 @@ const data = {
         urn: "rad:git:hyb8kud543qkfdxkge6ecj6zziudsfsdsam6zziudsfsdsam4",
       },
       peerId: "hyb8kud543qkfdxkge6ecj6zziudsfsdsam6zziudsfsdsam4",
-      state: { type: "disconnected", since: new Date().getTime() * 1000 },
+      state: {
+        type: "disconnected",
+        since: { secs_since_epoch: Date.now() / 1000 },
+      },
     },
     {
-      user: {
-        avatar: {
-          background: {
-            r: 255,
-            g: 251,
-            b: 214,
-          },
-          emoji: "👁",
-        },
-        name: "zehlen",
-        urn: "rad:git:hyb8kud543qkfdxkge6ecj6zziudsfsdsam6zziudsfsdsam5",
-      },
       peerId: "hyb8kud543qkfdxkge6ecj6zziudsfsdsam6zziudsfsdsam5",
-      state: { type: "disconnected", since: new Date().getTime() * 1000 },
+      state: {
+        type: "disconnected",
+        since: { secs_since_epoch: Date.now() / 1000 },
+      },
     },
     {
       user: {
@@ -252,7 +241,10 @@ const data = {
         name: "lima",
       },
       peerId: "hyb8kud543qkfdxkge6ecj6zziudsfsdsam6zziudsfsdsam6",
-      state: { type: "disconnected", since: new Date().getTime() * 1000 },
+      state: {
+        type: "disconnected",
+        since: { secs_since_epoch: Date.now() / 1000 },
+      },
     },
   ],
 };

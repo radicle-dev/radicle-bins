@@ -26,24 +26,12 @@
   });
 </script>
 
-<style>
-  .list {
-    padding-top: 1.5rem;
-  }
-
-  .online {
-    border-bottom: 1px solid var(--color-foreground-level-3);
-  }
-</style>
-
-<div class="list online">
+<div>
   {#each online as peer (peer.peerId)}
     <div in:receive={{ key: peer.peerId }} out:send={{ key: peer.peerId }}>
       <Peer {peer} />
     </div>
   {/each}
-</div>
-<div class="list seen">
   {#each seen as peer (peer.peerId)}
     <div in:receive={{ key: peer.peerId }} out:send={{ key: peer.peerId }}>
       <Peer {peer} />

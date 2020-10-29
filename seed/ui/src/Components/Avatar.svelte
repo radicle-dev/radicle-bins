@@ -2,6 +2,7 @@
   import Emoji from "./Emoji.svelte";
 
   export let avatar = null;
+  export let title = null;
 
   const fmt = bg => `rgb(${bg.r}, ${bg.g}, ${bg.b})`;
 </script>
@@ -20,6 +21,9 @@
   }
 </style>
 
-<div class="avatar" style={`background-color: ${fmt(avatar.background)};`}>
+<div
+  class="avatar"
+  style={`background-color: ${fmt(avatar.background)};`}
+  {title}>
   <Emoji size="small" emoji={avatar.emoji} />
 </div>

@@ -16,10 +16,7 @@
   .name {
     display: flex;
     margin-bottom: 0.5rem;
-  }
-
-  .avatar {
-    margin-left: 0.5rem;
+    justify-content: space-between;
   }
 
   .urn {
@@ -30,37 +27,41 @@
     margin: 1rem 0 0rem;
   }
 
+  .bottom {
+    display: flex;
+    margin-top: 1.5rem;
+    justify-content: space-between;
+  }
+
   .stats,
   .stat {
     display: flex;
     align-items: center;
     margin-right: 2rem;
-    margin-top: 1.5rem;
   }
 </style>
 
 <div class="container">
-  <p class="name typo-text-bold">
-    {project.name}
-    {#each project.maintainers as maintainer}
-      <div class="avatar">
-        <Avatar avatar={maintainer.avatar} />
-      </div>
-    {/each}
-  </p>
+  <p class="name typo-text-bold">{project.name}</p>
   <p class="typo-text-small-mono urn">{project.urn}</p>
   <p class="typo-text desc">{project.description}</p>
-  {#if project.stats}
+  <div class="bottom">
     <div class="stats">
-      <p class="typo-text typo-mono-bold stat">
-        <Icon.Commit style="margin-right: 0.8rem;" />{project.stats.commits}
-      </p>
-      <p class="typo-text typo-mono-bold stat">
-        <Icon.Branch style="margin-right: 0.8rem;" />{project.stats.branches}
-      </p>
-      <p class="typo-text typo-mono-bold stat">
-        <Icon.User style="margin-right: 0.8rem;" />{project.stats.contributors}
-      </p>
+      {#if project.stats}
+        <p class="typo-text typo-mono-bold stat">
+          <Icon.Commit style="margin-right: 0.8rem;" />{project.stats.commits}
+        </p>
+        <p class="typo-text typo-mono-bold stat">
+          <Icon.Branch style="margin-right: 0.8rem;" />{project.stats.branches}
+        </p>
+        <p class="typo-text typo-mono-bold stat">
+          <Icon.User
+            style="margin-right: 0.8rem;" />{project.stats.contributors}
+        </p>
+      {/if}
     </div>
-  {/if}
+    {#each project.maintainers as maintainer}
+      <Avatar avatar={maintainer.avatar} title={maintainer.name} />
+    {/each}
+  </div>
 </div>
