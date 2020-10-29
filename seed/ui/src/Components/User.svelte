@@ -1,5 +1,9 @@
 <script>
+  import Emoji from "./Emoji.svelte";
+
   export let user = null;
+
+  const fmt = bg => `rgb(${bg.r}, ${bg.g}, ${bg.b})`;
 </script>
 
 <style>
@@ -20,10 +24,10 @@
 </style>
 
 <div class="user">
-  <!-- TODO
-  <div class="avatar" style={`background-color: ${user.color};`}>
-    <Emoji size="small" emoji={user.emoji} />
+  <div
+    class="avatar"
+    style={`background-color: ${fmt(user.avatar.background)};`}>
+    <Emoji size="small" emoji={user.avatar.emoji} />
   </div>
-  -->
   <p class="typo-text-bold">{user.name}</p>
 </div>

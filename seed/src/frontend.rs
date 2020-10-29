@@ -7,7 +7,10 @@ use serde::ser::SerializeStruct;
 use serde::Serialize;
 use warp::Filter as _;
 
+use radicle_avatar as avatar;
 use radicle_seed as seed;
+
+use avatar::Avatar;
 
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
@@ -58,10 +61,14 @@ impl State {
     fn peer_connected(&mut self, peer_id: PeerId, urn: Option<RadUrn>, name: Option<String>) {
         match self.peers.entry(peer_id) {
             Entry::Vacant(entry) => {
+                let avatar = urn
+                    .as_ref()
+                    .map(|u| Avatar::from(&u.to_string(), avatar::Usage::Identity));
                 let peer = Peer {
                     peer_id,
                     urn,
                     name,
+                    avatar,
                     state: PeerState::new(),
                 };
                 entry.insert(peer.clone());
@@ -134,6 +141,7 @@ pub struct Peer {
     pub peer_id: PeerId,
     pub urn: Option<RadUrn>,
     pub name: Option<String>,
+    pub avatar: Option<Avatar>,
     pub state: PeerState,
 }
 
