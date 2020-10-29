@@ -1,10 +1,7 @@
 <script>
   import User from "./User.svelte";
-  export let peer = null;
 
-  const formatTime = t => {
-    return new Date(t.secs_since_epoch * 1000).toLocaleString();
-  };
+  export let peer = null;
 </script>
 
 <style>
@@ -39,12 +36,10 @@
 <div class="container">
   <div class="status">
     <User user={peer.user} />
-    {#if peer.state.connected}
+    {#if peer.state.type === 'connected'}
       <p class="status-indicator">online</p>
     {:else}
-      <p class="time typo-text-small">
-        {formatTime(peer.state.disconnected.since)}
-      </p>
+      <p class="time typo-text-small">{peer.state.since.toLocaleString()}</p>
     {/if}
   </div>
   <p class="typo-text-small-mono peer-id typo-overflow-ellipsis">
