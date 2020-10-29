@@ -1,12 +1,15 @@
 use std::net;
+use std::time;
 
 use futures::StreamExt as _;
 use librad::{peer::PeerId, uri::RadUrn};
-use serde::ser::SerializeStruct;
 use serde::Serialize;
 use warp::Filter as _;
 
+use radicle_avatar as avatar;
 use radicle_seed as seed;
+
+use avatar::Avatar;
 
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
@@ -15,6 +18,9 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 
 use futures::channel::mpsc as chan;
+
+/// Maximum number of disconnected peers to keep around in the state.
+const MAX_DISCONNECTED_PEERS: usize = 32;
 
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase", tag = "type")]
@@ -47,25 +53,34 @@ impl State {
             .insert(proj.urn.clone(), proj.clone())
             .is_none()
         {
-            self.broadcast(Event::ProjectTracked(Project(proj.clone())));
+            self.broadcast(Event::ProjectTracked(Project::from(proj.clone())));
         }
     }
 
     fn peer_connected(&mut self, peer_id: PeerId, urn: Option<RadUrn>, name: Option<String>) {
         match self.peers.entry(peer_id) {
             Entry::Vacant(entry) => {
+                let user = urn.map(|u| User::from(u.clone()).with_name(name));
                 let peer = Peer {
                     peer_id,
-                    urn,
-                    name,
-                    connections: 1,
+                    user,
+                    state: PeerState::new(),
                 };
                 entry.insert(peer.clone());
 
                 self.broadcast(Event::PeerConnected(peer.clone()));
             }
             Entry::Occupied(mut entry) => {
-                entry.get_mut().connections += 1;
+                let peer = entry.get_mut();
+
+                match &mut peer.state {
+                    PeerState::Connected { connections } => {
+                        *connections += 1;
+                    }
+                    PeerState::Disconnected { .. } => {
+                        peer.state = PeerState::new();
+                    }
+                }
             }
         }
     }
@@ -73,11 +88,43 @@ impl State {
     fn peer_disconnected(&mut self, peer_id: PeerId) {
         if let Entry::Occupied(mut entry) = self.peers.entry(peer_id) {
             let peer = entry.get_mut();
-            peer.connections -= 1;
 
-            if peer.connections == 0 {
-                entry.remove_entry();
-                self.broadcast(Event::PeerDisconnected(peer_id));
+            match &mut peer.state {
+                PeerState::Connected { connections } => {
+                    if *connections > 1 {
+                        *connections -= 1;
+                    } else {
+                        peer.state = PeerState::Disconnected {
+                            since: time::SystemTime::now(),
+                        };
+                        self.broadcast(Event::PeerDisconnected(peer_id));
+                    }
+                }
+                PeerState::Disconnected { .. } => {}
+            }
+        }
+
+        // Remove oldest disconnected peer if necessary.
+        if self
+            .peers
+            .values()
+            .filter(|p| matches!(p.state, PeerState::Disconnected {..}))
+            .count()
+            > MAX_DISCONNECTED_PEERS
+        {
+            if let Some((oldest, _)) = self
+                .peers
+                .iter()
+                .flat_map(|(id, p)| {
+                    if let PeerState::Disconnected { since } = p.state {
+                        Some((*id, since))
+                    } else {
+                        None
+                    }
+                })
+                .min_by(|(_, a), (_, b)| a.cmp(b))
+            {
+                self.peers.remove(&oldest);
             }
         }
     }
@@ -87,26 +134,70 @@ impl State {
 #[serde(rename_all = "camelCase")]
 pub struct Peer {
     pub peer_id: PeerId,
-    pub urn: Option<RadUrn>,
-    pub name: Option<String>,
-    pub connections: usize,
+    pub user: Option<User>,
+    pub state: PeerState,
 }
 
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
-pub struct Project(#[serde(serialize_with = "serialize_project")] pub seed::Project);
+pub enum PeerState {
+    #[serde(rename_all = "camelCase")]
+    Connected { connections: usize },
+    #[serde(rename_all = "camelCase")]
+    Disconnected { since: time::SystemTime },
+}
 
-fn serialize_project<S>(proj: &seed::Project, s: S) -> Result<S::Ok, S::Error>
-where
-    S: serde::Serializer,
-{
-    let mut state = s.serialize_struct("Project", 4)?;
+impl PeerState {
+    fn new() -> Self {
+        Self::Connected { connections: 1 }
+    }
+}
 
-    state.serialize_field("urn", &proj.urn.to_string())?;
-    state.serialize_field("name", &proj.name)?;
-    state.serialize_field("description", &proj.description)?;
-    state.serialize_field("maintainers", &proj.maintainers)?;
-    state.end()
+#[derive(Debug, Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct User {
+    urn: RadUrn,
+    avatar: Avatar,
+    name: Option<String>,
+}
+
+impl From<RadUrn> for User {
+    fn from(urn: RadUrn) -> Self {
+        let avatar = Avatar::from(&urn.to_string(), avatar::Usage::Identity);
+
+        Self {
+            avatar,
+            urn,
+            name: None,
+        }
+    }
+}
+
+impl User {
+    fn with_name(mut self, name: Option<String>) -> Self {
+        self.name = name;
+        self
+    }
+}
+
+#[derive(Debug, Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct Project {
+    pub urn: RadUrn,
+    pub name: String,
+    pub description: Option<String>,
+    pub maintainers: Vec<User>,
+}
+
+impl From<seed::Project> for Project {
+    fn from(other: seed::Project) -> Self {
+        Self {
+            urn: other.urn,
+            name: other.name,
+            description: other.description,
+            maintainers: other.maintainers.into_iter().map(User::from).collect(),
+        }
+    }
 }
 
 async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event>) {
@@ -186,7 +277,7 @@ async fn projects_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, 
         &projs
             .values()
             .cloned()
-            .map(|p| Project(p))
+            .map(|p| Project::from(p))
             .collect::<Vec<_>>(),
     ))
 }
@@ -198,7 +289,7 @@ async fn events_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, wa
         let projects = state
             .projects
             .values()
-            .map(|p| Project(p.clone()))
+            .map(|p| Project::from(p.clone()))
             .collect();
         let peers = state.peers.values().cloned().collect();
 

@@ -1,6 +1,10 @@
 <script>
   import User from "./User.svelte";
   export let peer = null;
+
+  const formatTime = t => {
+    return new Date(t.secs_since_epoch * 1000).toLocaleString();
+  };
 </script>
 
 <style>
@@ -10,6 +14,7 @@
   .status {
     display: flex;
     margin-bottom: 0.5rem;
+    align-items: center;
   }
 
   .status-indicator {
@@ -20,17 +25,29 @@
     margin-left: 0.5rem;
   }
 
-  .urn {
+  .time {
+    margin-left: 1rem;
+    color: var(--color-foreground-level-3);
+    flex: 1;
+  }
+
+  .peer-id {
     color: var(--color-foreground-level-5);
   }
 </style>
 
 <div class="container">
   <div class="status">
-    <User user={peer} />
-    {#if peer.online}
+    <User user={peer.user} />
+    {#if peer.state.connected}
       <p class="status-indicator">online</p>
+    {:else}
+      <p class="time typo-text-small">
+        {formatTime(peer.state.disconnected.since)}
+      </p>
     {/if}
   </div>
-  <p class="typo-text-small-mono urn typo-overflow-ellipsis">{peer.peerId}</p>
+  <p class="typo-text-small-mono peer-id typo-overflow-ellipsis">
+    {peer.peerId}
+  </p>
 </div>

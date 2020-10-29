@@ -988,7 +988,7 @@ dependencies = [
 [[package]]
 name = "librad"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link.git?rev=42eef31c27d9556c690bc93bd6504b9ee10cdc68#42eef31c27d9556c690bc93bd6504b9ee10cdc68"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=51ac76dbde7318f871e8c0cc91ba4b3a48bfc7fd#51ac76dbde7318f871e8c0cc91ba4b3a48bfc7fd"
 dependencies = [
  "async-trait",
  "bit-vec",
@@ -1522,9 +1522,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "radicle-avatar"
+version = "0.1.0"
+source = "git+https://github.com/radicle-dev/radicle-avatar.git?rev=4e34e6b992fd9f465b0547a5693b47b0d41dea01#4e34e6b992fd9f465b0547a5693b47b0d41dea01"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "radicle-git-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link.git?rev=42eef31c27d9556c690bc93bd6504b9ee10cdc68#42eef31c27d9556c690bc93bd6504b9ee10cdc68"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=51ac76dbde7318f871e8c0cc91ba4b3a48bfc7fd#51ac76dbde7318f871e8c0cc91ba4b3a48bfc7fd"
 dependencies = [
  "git2",
  "multibase",
@@ -1559,7 +1567,7 @@ dependencies = [
 [[package]]
 name = "radicle-macros"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link.git?rev=42eef31c27d9556c690bc93bd6504b9ee10cdc68#42eef31c27d9556c690bc93bd6504b9ee10cdc68"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=51ac76dbde7318f871e8c0cc91ba4b3a48bfc7fd#51ac76dbde7318f871e8c0cc91ba4b3a48bfc7fd"
 dependencies = [
  "quote",
  "radicle-git-ext",
@@ -1569,7 +1577,7 @@ dependencies = [
 [[package]]
 name = "radicle-seed"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link.git?rev=42eef31c27d9556c690bc93bd6504b9ee10cdc68#42eef31c27d9556c690bc93bd6504b9ee10cdc68"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=51ac76dbde7318f871e8c0cc91ba4b3a48bfc7fd#51ac76dbde7318f871e8c0cc91ba4b3a48bfc7fd"
 dependencies = [
  "async-trait",
  "futures",
@@ -1588,6 +1596,7 @@ dependencies = [
  "chrono",
  "futures",
  "librad",
+ "radicle-avatar",
  "radicle-seed",
  "serde",
  "serde_json",
@@ -1600,7 +1609,7 @@ dependencies = [
 [[package]]
 name = "radicle-std-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link.git?rev=42eef31c27d9556c690bc93bd6504b9ee10cdc68#42eef31c27d9556c690bc93bd6504b9ee10cdc68"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=51ac76dbde7318f871e8c0cc91ba4b3a48bfc7fd#51ac76dbde7318f871e8c0cc91ba4b3a48bfc7fd"
 
 [[package]]
 name = "rand"
