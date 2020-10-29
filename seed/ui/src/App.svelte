@@ -1,6 +1,9 @@
 <script>
-  import { Header, Project, Peer } from "./Components";
-  import { seed, projects, peers } from "./events.js";
+  import { seed, projects } from "./state.js";
+
+  import Header from "./Components/Header.svelte";
+  import PeerList from "./Components/PeerList.svelte";
+  import Project from "./Components/Project.svelte";
 </script>
 
 <style>
@@ -40,9 +43,6 @@
     {/each}
   </main>
   <aside>
-    <h3>Peers</h3>
-    {#each $peers as peer}
-      <Peer {peer} />
-    {:else}None.{/each}
+    <PeerList />
   </aside>
 </div>

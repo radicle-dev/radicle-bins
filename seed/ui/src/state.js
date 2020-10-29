@@ -1,18 +1,41 @@
 import { derived, writable } from "svelte/store";
 
-const projectStore = writable([]);
 const peerStore = writable([]);
-const seedStore = writable({
-  name: "seedling.radicle.xyz",
-  address: "hybh5c...7ye83k@seedling.radicle.xyz:12345",
-  desc: "Seedling",
-  peers: 0,
-  projects: 0,
-});
+const projectStore = writable([]);
 
 export const projects = derived(projectStore, a => a);
-export const peers = derived(peerStore, a => a);
-export const seed = derived(seedStore, a => a);
+export const seed = derived([peerStore, projectStore], ([peers, projects]) => {
+  return {
+    name: "seedling.radicle.xyz",
+    address: "hybh5c...7ye83k@seedling.radicle.xyz:12345",
+    desc: "Seedling",
+    peers: peers.length,
+    projects: projects.length,
+  };
+});
+
+export const online = derived(peerStore, peers => {
+  return peers
+    .filter(peer => peer.state.type === "connected")
+    .sort((a, b) => {
+      if (a.name < b.name) {
+        return -1;
+      }
+      if (a.name > b.name) {
+        return 1;
+      }
+      return 0;
+    });
+});
+export const seen = derived(peerStore, peers => {
+  return peers
+    .filter(peer => peer.state.type === "disconnected")
+    .map(peer => {
+      peer.state.since = new Date(peer.state.since.secs_since_epoch * 1000);
+      return peer;
+    })
+    .sort((a, b) => b.state.since - a.state.since);
+});
 
 const eventSource = new EventSource("/events");
 
@@ -23,12 +46,7 @@ eventSource.onmessage = e => {
     case "peerConnected": {
       fetch("/peers")
         .then(resp => resp.json())
-        .then(result => peerStore.set(result));
-
-      seedStore.update(s => {
-        s.peers += 1;
-        return s;
-      });
+        .then(peerStore.set);
 
       break;
     }
@@ -36,12 +54,7 @@ eventSource.onmessage = e => {
     case "peerDisconnected": {
       fetch("/peers")
         .then(resp => resp.json())
-        .then(result => peerStore.set(result));
-
-      seedStore.update(s => {
-        s.peers -= 1;
-        return s;
-      });
+        .then(peerStore.set);
 
       break;
     }
@@ -61,22 +74,11 @@ eventSource.onmessage = e => {
             })
           )
         );
-
-      seedStore.update(s => {
-        seed.projects += 1;
-        return s;
-      });
-
       break;
     }
 
     case "snapshot": {
-      seedStore.update(s => {
-        s.projects = data.projects.length;
-        s.peers = data.peers.length;
-        return s;
-      });
-
+      peerStore.set(data.peers);
       projectStore.set(
         data.projects.map(p => {
           return {
@@ -87,7 +89,6 @@ eventSource.onmessage = e => {
           };
         })
       );
-      peerStore.set(data.peers);
 
       break;
     }

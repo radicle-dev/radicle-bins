@@ -24,7 +24,10 @@ const MAX_DISCONNECTED_PEERS: usize = 32;
 #[serde(rename_all = "camelCase", tag = "type")]
 pub enum Event {
     PeerConnected(Peer),
-    PeerDisconnected(PeerId),
+    #[serde(rename_all = "camelCase")]
+    PeerDisconnected {
+        peer_id: PeerId,
+    },
     ProjectTracked(Project),
     #[serde(rename_all = "camelCase")]
     Snapshot {
@@ -95,7 +98,7 @@ impl State {
                         peer.state = PeerState::Disconnected {
                             since: time::SystemTime::now(),
                         };
-                        self.broadcast(Event::PeerDisconnected(peer_id));
+                        self.broadcast(Event::PeerDisconnected { peer_id });
                     }
                 }
                 PeerState::Disconnected { .. } => {}
@@ -138,7 +141,7 @@ pub struct Peer {
 }
 
 #[derive(Debug, Serialize, Clone)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", tag = "type")]
 pub enum PeerState {
     #[serde(rename_all = "camelCase")]
     Connected { connections: usize },
