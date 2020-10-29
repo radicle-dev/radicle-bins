@@ -10,6 +10,10 @@
 </style>
 
 <div class="user">
-  <Avatar avatar={user.avatar} />
-  <p class="typo-text-bold">{user.name}</p>
+  {#if user}
+    <Avatar avatar={user.avatar} />
+    <p class="typo-text-bold">{user.name}</p>
+  {:else}
+    <p>🖥</p>
+  {/if}
 </div>
