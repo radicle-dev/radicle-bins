@@ -1,5 +1,6 @@
 <script>
-  import User from "./User.svelte";
+  import Avatar from "./Avatar.svelte";
+  import Emoji from "./Emoji.svelte";
 
   export let peer = null;
 </script>
@@ -31,18 +32,34 @@
   .peer-id {
     color: var(--color-foreground-level-5);
   }
+
+  .user {
+    display: flex;
+  }
 </style>
 
 <div class="container">
-  <div class="status">
-    <User user={peer.user} />
-    {#if peer.state.type === 'connected'}
-      <p class="status-indicator">online</p>
-    {:else}
-      <p class="time typo-text-small">{peer.state.since.toLocaleString()}</p>
+  <div>
+    <div class="status">
+      <div class="user">
+        {#if peer.user}
+          <Avatar avatar={peer.user.avatar} />
+          <p class="typo-text-bold">{peer.user.name}</p>
+        {:else}
+          <Emoji emoji="🖥" />
+          <p class="typo-text-bold typo-overflow-ellipsis">{peer.peerId}</p>
+        {/if}
+      </div>
+      {#if peer.state.type === 'connected'}
+        <p class="status-indicator">online</p>
+      {:else}
+        <p class="time typo-text-small">{peer.state.since.toLocaleString()}</p>
+      {/if}
+    </div>
+    {#if peer.user}
+      <p class="typo-text-small-mono peer-id typo-overflow-ellipsis">
+        {peer.peerId}
+      </p>
     {/if}
   </div>
-  <p class="typo-text-small-mono peer-id typo-overflow-ellipsis">
-    {peer.peerId}
-  </p>
 </div>

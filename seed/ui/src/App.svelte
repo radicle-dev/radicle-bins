@@ -1,5 +1,5 @@
 <script>
-  import { seed, projects } from "./state.js";
+  import { seed, projects, online, seen } from "./state.js";
 
   import Header from "./Components/Header.svelte";
   import PeerList from "./Components/PeerList.svelte";
@@ -40,9 +40,18 @@
     <h3>Projects</h3>
     {#each $projects as project}
       <Project {project} />
+    {:else}
+      <p style="color: var(--color-foreground-level-5);">
+        No replicated projects
+      </p>
     {/each}
   </main>
   <aside>
-    <PeerList />
+    <h3>Peers</h3>
+    {#if $online.length > 0 || $seen.length > 0}
+      <PeerList online={$online} seen={$seen} />
+    {:else}
+      <p style="color: var(--color-foreground-level-5);">No peers</p>
+    {/if}
   </aside>
 </div>

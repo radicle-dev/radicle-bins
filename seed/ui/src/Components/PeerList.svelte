@@ -2,9 +2,10 @@
   import { quintOut } from "svelte/easing";
   import { crossfade } from "svelte/transition";
 
-  import { online, seen } from "../state.js";
-
   import Peer from "./Peer.svelte";
+
+  export let online = [];
+  export let seen = [];
 
   const [send, receive] = crossfade({
     duration: d => Math.sqrt(d * 360),
@@ -35,18 +36,17 @@
   }
 </style>
 
-<h3>Peers</h3>
 <div class="list online">
-  {#each $online as peer (peer.peerId)}
+  {#each online as peer (peer.peerId)}
     <div in:receive={{ key: peer.peerId }} out:send={{ key: peer.peerId }}>
       <Peer {peer} />
     </div>
-  {:else}No connected peers{/each}
+  {/each}
 </div>
 <div class="list seen">
-  {#each $seen as peer (peer.peerId)}
+  {#each seen as peer (peer.peerId)}
     <div in:receive={{ key: peer.peerId }} out:send={{ key: peer.peerId }}>
       <Peer {peer} />
     </div>
-  {:else}No recently seen peers{/each}
+  {/each}
 </div>
