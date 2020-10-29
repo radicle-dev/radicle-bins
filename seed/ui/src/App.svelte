@@ -29,6 +29,10 @@
     max-width: 62rem;
     padding: 4rem 1rem;
   }
+
+  .empty-state {
+    color: var(--color-foreground-level-5);
+  }
 </style>
 
 <div class="container">
@@ -37,12 +41,16 @@
     <h3>Projects</h3>
     {#each $projects as project}
       <Project {project} />
+    {:else}
+      <p class="empty-state">No replicated projects</p>
     {/each}
   </main>
   <aside>
     <h3>Peers</h3>
     {#each $peers as peer}
       <Peer {peer} />
-    {:else}None.{/each}
+    {:else}
+      <p class="empty-state">No connected peers</p>
+    {/each}
   </aside>
 </div>
