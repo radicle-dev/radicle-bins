@@ -3,11 +3,13 @@ use std::time;
 
 use futures::StreamExt as _;
 use librad::{peer::PeerId, uri::RadUrn};
-use serde::ser::SerializeStruct;
 use serde::Serialize;
 use warp::Filter as _;
 
+use radicle_avatar as avatar;
 use radicle_seed as seed;
+
+use avatar::Avatar;
 
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
@@ -54,17 +56,17 @@ impl State {
             .insert(proj.urn.clone(), proj.clone())
             .is_none()
         {
-            self.broadcast(Event::ProjectTracked(Project(proj.clone())));
+            self.broadcast(Event::ProjectTracked(Project::from(proj.clone())));
         }
     }
 
     fn peer_connected(&mut self, peer_id: PeerId, urn: Option<RadUrn>, name: Option<String>) {
         match self.peers.entry(peer_id) {
             Entry::Vacant(entry) => {
+                let user = urn.map(|u| User::from(u.clone()).with_name(name));
                 let peer = Peer {
                     peer_id,
-                    urn,
-                    name,
+                    user,
                     state: PeerState::new(),
                 };
                 entry.insert(peer.clone());
@@ -135,8 +137,7 @@ impl State {
 #[serde(rename_all = "camelCase")]
 pub struct Peer {
     pub peer_id: PeerId,
-    pub urn: Option<RadUrn>,
-    pub name: Option<String>,
+    pub user: Option<User>,
     pub state: PeerState,
 }
 
@@ -157,19 +158,49 @@ impl PeerState {
 
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
-pub struct Project(#[serde(serialize_with = "serialize_project")] pub seed::Project);
+pub struct User {
+    urn: RadUrn,
+    avatar: Avatar,
+    name: Option<String>,
+}
 
-fn serialize_project<S>(proj: &seed::Project, s: S) -> Result<S::Ok, S::Error>
-where
-    S: serde::Serializer,
-{
-    let mut state = s.serialize_struct("Project", 4)?;
+impl From<RadUrn> for User {
+    fn from(urn: RadUrn) -> Self {
+        let avatar = Avatar::from(&urn.to_string(), avatar::Usage::Identity);
 
-    state.serialize_field("urn", &proj.urn.to_string())?;
-    state.serialize_field("name", &proj.name)?;
-    state.serialize_field("description", &proj.description)?;
-    state.serialize_field("maintainers", &proj.maintainers)?;
-    state.end()
+        Self {
+            avatar,
+            urn,
+            name: None,
+        }
+    }
+}
+
+impl User {
+    fn with_name(mut self, name: Option<String>) -> Self {
+        self.name = name;
+        self
+    }
+}
+
+#[derive(Debug, Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct Project {
+    pub urn: RadUrn,
+    pub name: String,
+    pub description: Option<String>,
+    pub maintainers: Vec<User>,
+}
+
+impl From<seed::Project> for Project {
+    fn from(other: seed::Project) -> Self {
+        Self {
+            urn: other.urn,
+            name: other.name,
+            description: other.description,
+            maintainers: other.maintainers.into_iter().map(User::from).collect(),
+        }
+    }
 }
 
 async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event>) {
@@ -249,7 +280,7 @@ async fn projects_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, 
         &projs
             .values()
             .cloned()
-            .map(|p| Project(p))
+            .map(|p| Project::from(p))
             .collect::<Vec<_>>(),
     ))
 }
@@ -261,7 +292,7 @@ async fn events_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, wa
         let projects = state
             .projects
             .values()
-            .map(|p| Project(p.clone()))
+            .map(|p| Project::from(p.clone()))
             .collect();
         let peers = state.peers.values().cloned().collect();
 

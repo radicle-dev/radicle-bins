@@ -68,7 +68,7 @@ eventSource.onmessage = e => {
               return {
                 urn: p.urn,
                 name: p.name,
-                maintainer: p.maintainers[0],
+                maintainers: p.maintainers,
                 description: p.description,
               };
             })
@@ -84,7 +84,7 @@ eventSource.onmessage = e => {
           return {
             urn: p.urn,
             name: p.name,
-            maintainer: p.maintainers[0],
+            maintainers: p.maintainers,
             description: p.description,
           };
         })
