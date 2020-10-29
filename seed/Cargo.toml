@@ -23,3 +23,7 @@ rev = "51ac76dbde7318f871e8c0cc91ba4b3a48bfc7fd"
 [dependencies.radicle-seed]
 git = "https://github.com/radicle-dev/radicle-link.git"
 rev = "51ac76dbde7318f871e8c0cc91ba4b3a48bfc7fd"
+
+[dependencies.radicle-avatar]
+git = "https://github.com/radicle-dev/radicle-avatar.git"
+rev = "4e34e6b992fd9f465b0547a5693b47b0d41dea01"
