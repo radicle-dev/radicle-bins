@@ -7,8 +7,9 @@ export const projects = derived(projectStore, a => a);
 export const seed = derived([peerStore, projectStore], ([peers, projects]) => {
   return {
     name: "seedling.radicle.xyz",
-    address: "hybh5c...7ye83k@seedling.radicle.xyz:12345",
-    desc: "Seedling",
+    address:
+      "hybh5cb7spafgs7skjg6qkssts3uxht31zskpgs4ypdzrnaq7ye83kk@seedling.radicle.xyz:12345",
+    desc: `This is a public seed node, copy the seed address above and add it to your upstream to have access to what is stored here and have your local content replicated by this node. Read more about it at https://docs.radicle.xyz/seed-nodes`,
     peers: peers.filter(filterOnline).length,
     projects: projects.length,
   };
@@ -101,7 +102,8 @@ const filterOnline = peer => {
 const data = {
   seed: {
     name: "seedling.radicle.xyz",
-    address: "hybh5c...7ye83k@seedling.radicle.xyz:12345",
+    address:
+      "hybh5cb7spafgs7skjg6qkssts3uxht31zskpgs4ypdzrnaq7ye83k@seedling.radicle.xyz:12345",
     desc:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora quod inventore cumque doloribus sapiente maiores! Sed cumque iste, nisi amet, officiis illo eum veniam ducimus rem minus voluptates, quaerat vero.",
     peers: 12,

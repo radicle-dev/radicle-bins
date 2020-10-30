@@ -1,4 +1,5 @@
 <script>
+  import Copyable from "./Copyable.svelte";
   export let seed = null;
 </script>
 
@@ -18,6 +19,10 @@
     margin-top: 1.5rem;
   }
 
+  .address {
+    width: 100%;
+  }
+
   .stat h2 {
     padding-bottom: 0.5rem;
   }
@@ -30,7 +35,11 @@
 
 <div class="meta">
   <h2>{seed.name}</h2>
-  <p class="address typo-text-small-mono"><span>{seed.address}</span></p>
+  <Copyable showIcon={true} styleContent={false} copyContent={seed.address}>
+    <p class="address typo-text-small-mono typo-overflow-ellipsis">
+      <span>{seed.address}</span>
+    </p>
+  </Copyable>
   <p class="desc">{seed.desc}</p>
 </div>
 <div class="stat">
