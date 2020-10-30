@@ -9,23 +9,21 @@ export const seed = derived([peerStore, projectStore], ([peers, projects]) => {
     name: "seedling.radicle.xyz",
     address: "hybh5c...7ye83k@seedling.radicle.xyz:12345",
     desc: "Seedling",
-    peers: peers.length,
+    peers: peers.filter(filterOnline).length,
     projects: projects.length,
   };
 });
 
 export const online = derived(peerStore, peers => {
-  return peers
-    .filter(peer => peer.state.type === "connected")
-    .sort((a, b) => {
-      if (a.name < b.name) {
-        return -1;
-      }
-      if (a.name > b.name) {
-        return 1;
-      }
-      return 0;
-    });
+  return peers.filter(filterOnline).sort((a, b) => {
+    if (a.name < b.name) {
+      return -1;
+    }
+    if (a.name > b.name) {
+      return 1;
+    }
+    return 0;
+  });
 });
 export const seen = derived(peerStore, peers => {
   return peers
@@ -95,6 +93,11 @@ eventSource.onmessage = e => {
   }
 };
 
+const filterOnline = peer => {
+  return peer.state.type === "connected";
+};
+
+// FIXTURES
 const data = {
   seed: {
     name: "seedling.radicle.xyz",
