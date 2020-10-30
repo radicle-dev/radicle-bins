@@ -23,6 +23,16 @@ use futures::channel::mpsc as chan;
 const MAX_DISCONNECTED_PEERS: usize = 32;
 
 #[derive(Debug, Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct Info {
+    name: Option<String>,
+    peer_id: PeerId,
+    description: Option<String>,
+    peers: usize,
+    projects: usize,
+}
+
+#[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase", tag = "type")]
 pub enum Event {
     PeerConnected(Peer),
@@ -35,18 +45,30 @@ pub enum Event {
     Snapshot {
         projects: Vec<Project>,
         peers: Vec<Peer>,
+        info: Info,
     },
 }
 
 #[derive(Debug)]
 struct State {
     name: Option<String>,
+    peer_id: PeerId,
     projects: HashMap<RadUrn, seed::Project>,
     peers: HashMap<PeerId, Peer>,
     subs: Vec<tokio::sync::mpsc::UnboundedSender<Event>>,
 }
 
 impl State {
+    fn info(&self) -> Info {
+        Info {
+            name: self.name.clone(),
+            peer_id: self.peer_id.clone(),
+            description: None,
+            projects: self.projects.len(),
+            peers: self.peers.values().filter(|p| p.is_connected()).count(),
+        }
+    }
+
     fn broadcast(&mut self, event: Event) {
         self.subs.retain(|sub| sub.send(event.clone()).is_ok());
     }
@@ -145,6 +167,12 @@ pub struct Peer {
     pub state: PeerState,
 }
 
+impl Peer {
+    fn is_connected(&self) -> bool {
+        matches!(self.state, PeerState::Connected {..})
+    }
+}
+
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase", tag = "type")]
 pub enum PeerState {
@@ -231,6 +259,7 @@ async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event
 pub async fn run<A: Into<net::SocketAddr>>(
     name: Option<String>,
     addr: A,
+    peer_id: PeerId,
     mut handle: seed::NodeHandle,
     events: chan::Receiver<seed::Event>,
 ) {
@@ -238,6 +267,7 @@ pub async fn run<A: Into<net::SocketAddr>>(
     let projects = handle.get_projects().await.unwrap();
     let state = Arc::new(Mutex::new(State {
         name,
+        peer_id,
         projects: projects.into_iter().map(|p| (p.urn.clone(), p)).collect(),
         peers: HashMap::new(),
         subs: Vec::new(),
@@ -301,8 +331,14 @@ async fn events_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, wa
             .map(|p| Project::from(p.clone()))
             .collect();
         let peers = state.peers.values().cloned().collect();
+        let info = state.info();
 
-        tx.send(Event::Snapshot { projects, peers }).unwrap();
+        tx.send(Event::Snapshot {
+            projects,
+            peers,
+            info,
+        })
+        .unwrap();
         state.subs.push(tx);
 
         rx

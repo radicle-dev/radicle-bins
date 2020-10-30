@@ -2,17 +2,10 @@ import { derived, writable } from "svelte/store";
 
 const peerStore = writable([]);
 const projectStore = writable([]);
+const infoStore = writable([]);
 
 export const projects = derived(projectStore, a => a);
-export const seed = derived([peerStore, projectStore], ([peers, projects]) => {
-  return {
-    name: "seedling.radicle.xyz",
-    address: "hybh5c...7ye83k@seedling.radicle.xyz:12345",
-    desc: "Seedling",
-    peers: peers.filter(filterOnline).length,
-    projects: projects.length,
-  };
-});
+export const seed = derived(infoStore, a => a);
 
 export const online = derived(peerStore, peers => {
   return peers.filter(filterOnline).sort((a, b) => {
@@ -76,6 +69,7 @@ eventSource.onmessage = e => {
     }
 
     case "snapshot": {
+      infoStore.set(data.info);
       peerStore.set(data.peers);
       projectStore.set(
         data.projects.map(p => {

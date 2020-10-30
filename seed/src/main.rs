@@ -88,13 +88,19 @@ async fn main() {
         } else {
             Mode::TrackEverything
         },
-        signer,
     };
-    let node = Node::new(config).unwrap();
+    let node = Node::new(config, signer).unwrap();
     let handle = node.handle();
+    let peer_id = node.peer_id();
     let (tx, rx) = futures::channel::mpsc::channel(1);
 
-    tokio::spawn(seed::frontend::run(opts.name, opts.http_listen, handle, rx));
+    tokio::spawn(seed::frontend::run(
+        opts.name,
+        opts.http_listen,
+        peer_id,
+        handle,
+        rx,
+    ));
 
     node.run(tx).await.unwrap();
 }
