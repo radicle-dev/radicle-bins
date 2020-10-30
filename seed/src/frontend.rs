@@ -40,6 +40,7 @@ pub enum Event {
 
 #[derive(Debug)]
 struct State {
+    name: Option<String>,
     projects: HashMap<RadUrn, seed::Project>,
     peers: HashMap<PeerId, Peer>,
     subs: Vec<tokio::sync::mpsc::UnboundedSender<Event>>,
@@ -228,6 +229,7 @@ async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event
 }
 
 pub async fn run<A: Into<net::SocketAddr>>(
+    name: Option<String>,
     addr: A,
     mut handle: seed::NodeHandle,
     events: chan::Receiver<seed::Event>,
@@ -235,6 +237,7 @@ pub async fn run<A: Into<net::SocketAddr>>(
     let public = warp::fs::dir("ui/public");
     let projects = handle.get_projects().await.unwrap();
     let state = Arc::new(Mutex::new(State {
+        name,
         projects: projects.into_iter().map(|p| (p.urn.clone(), p)).collect(),
         peers: HashMap::new(),
         subs: Vec::new(),

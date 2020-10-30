@@ -51,6 +51,10 @@ pub struct Options {
     /// radicle root path, for key and git storage
     #[argh(option)]
     pub root: Option<PathBuf>,
+
+    /// name of this seed, displayed to users
+    #[argh(option)]
+    pub name: Option<String>,
 }
 
 impl Options {
@@ -90,7 +94,7 @@ async fn main() {
     let handle = node.handle();
     let (tx, rx) = futures::channel::mpsc::channel(1);
 
-    tokio::spawn(seed::frontend::run(opts.http_listen, handle, rx));
+    tokio::spawn(seed::frontend::run(opts.name, opts.http_listen, handle, rx));
 
     node.run(tx).await.unwrap();
 }
