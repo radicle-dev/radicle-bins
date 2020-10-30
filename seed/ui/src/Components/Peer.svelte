@@ -1,5 +1,6 @@
 <script>
   import Avatar from "./Avatar.svelte";
+  import Copyable from "./Copyable.svelte";
   import Emoji from "./Emoji.svelte";
 
   export let peer = null;
@@ -62,8 +63,10 @@
         {/if}
       </div>
     </div>
-    <p class="typo-text-small-mono peer-id typo-overflow-ellipsis">
-      {peer.peerId}
-    </p>
+    <Copyable showIcon={true} styleContent={false} copyContent={peer.peerId}>
+      <p class="typo-text-small-mono peer-id typo-overflow-ellipsis">
+        {peer.peerId}
+      </p>
+    </Copyable>
   </div>
 </div>
