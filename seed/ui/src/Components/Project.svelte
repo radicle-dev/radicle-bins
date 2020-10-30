@@ -1,6 +1,7 @@
 <script>
   import Icon from "./Icon";
   import Avatar from "./Avatar.svelte";
+  import Copyable from "./Copyable.svelte";
 
   export let project = null;
 </script>
@@ -43,7 +44,9 @@
 
 <div class="container">
   <p class="name typo-text-bold">{project.name}</p>
-  <p class="typo-text-small-mono urn">{project.urn}</p>
+  <Copyable showIcon={true} styleContent={false} copyContent={project.urn}>
+    <p class="typo-text-small-mono urn">{project.urn}</p>
+  </Copyable>
   <p class="typo-text desc">{project.description}</p>
   <div class="bottom">
     <div class="stats">
