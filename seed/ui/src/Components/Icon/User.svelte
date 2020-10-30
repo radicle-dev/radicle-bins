@@ -1,11 +1,10 @@
 <script lang="ts">
   import IconWrapper from "./IconWrapper.svelte";
 
-  export let dataCy = "";
   export let style = "";
 </script>
 
-<IconWrapper on:click {dataCy} {style}>
+<IconWrapper on:click {style}>
   <path
     fill-rule="evenodd"
     clip-rule="evenodd"
