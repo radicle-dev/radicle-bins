@@ -2,7 +2,7 @@ use std::net;
 use std::time;
 
 use futures::StreamExt as _;
-use librad::{peer::PeerId, uri::RadUrn};
+use librad::{peer::PeerId, uri, uri::RadUrn};
 use serde::Serialize;
 use warp::Filter as _;
 
@@ -50,7 +50,10 @@ impl State {
         self.subs.retain(|sub| sub.send(event.clone()).is_ok());
     }
 
-    fn project_tracked(&mut self, proj: seed::Project) {
+    fn project_tracked(&mut self, mut proj: seed::Project) {
+        // We don't want any path in this URN, just the project id.
+        proj.urn = RadUrn::new(proj.urn.id, proj.urn.proto, uri::Path::default());
+
         if self
             .projects
             .insert(proj.urn.clone(), proj.clone())
