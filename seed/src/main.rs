@@ -55,6 +55,10 @@ pub struct Options {
     /// name of this seed, displayed to users
     #[argh(option)]
     pub name: Option<String>,
+
+    /// description of this seed, displayed to users as HTML
+    #[argh(option)]
+    pub description: Option<String>,
 }
 
 impl Options {
@@ -96,6 +100,7 @@ async fn main() {
 
     tokio::spawn(seed::frontend::run(
         opts.name,
+        opts.description,
         opts.http_listen,
         peer_id,
         handle,

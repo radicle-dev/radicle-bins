@@ -32,7 +32,9 @@
   <h2>{seed.name}</h2>
   <p class="address typo-text-small-mono"><span>{seed.peerId}</span></p>
   {#if seed.description}
-    <p class="desc">{seed.description}</p>
+    <p class="desc">
+      {@html seed.description}
+    </p>
   {/if}
 </div>
 <div class="stat">
