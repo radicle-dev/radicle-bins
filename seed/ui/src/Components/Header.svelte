@@ -3,7 +3,7 @@
   export let seed = null;
 
   $: seedId = seed.publicAddr
-    ? `${seed.peerId  }@${  seed.publicAddr}`
+    ? `${seed.peerId}@${seed.publicAddr}`
     : seed.peerId;
 </script>
 
