@@ -98,7 +98,7 @@ const data = {
     address:
       "hybh5cb7spafgs7skjg6qkssts3uxht31zskpgs4ypdzrnaq7ye83k@seedling.radicle.xyz:12345",
     desc:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora quod inventore cumque doloribus sapiente maiores! Sed cumque iste, nisi amet, officiis illo eum veniam ducimus rem minus voluptates, quaerat vero.",
+      "The dashboard for Radicle's first public seed node. This page is a real-time view into activity on the Radicle network. Seed nodes support the availability of the network by replicating peer data. To add this seed node to your Upstream app, copy the seed address above and add it to your settings. For more information on seed nodes, head to our Docs (https://docs.radicle.xyz/seed-nodes)",
     peers: 12,
     projects: 1000,
   },
