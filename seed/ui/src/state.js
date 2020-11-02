@@ -2,18 +2,10 @@ import { derived, writable } from "svelte/store";
 
 const peerStore = writable([]);
 const projectStore = writable([]);
+const infoStore = writable([]);
 
 export const projects = derived(projectStore, a => a);
-export const seed = derived([peerStore, projectStore], ([peers, projects]) => {
-  return {
-    name: "seedling.radicle.xyz",
-    address:
-      "hybh5cb7spafgs7skjg6qkssts3uxht31zskpgs4ypdzrnaq7ye83kk@seedling.radicle.xyz:12345",
-    desc: `This is a public seed node, copy the seed address above and add it to your upstream to have access to what is stored here and have your local content replicated by this node. Read more about it at https://docs.radicle.xyz/seed-nodes`,
-    peers: peers.filter(filterOnline).length,
-    projects: projects.length,
-  };
-});
+export const seed = derived(infoStore, a => a);
 
 export const online = derived(peerStore, peers => {
   return peers.filter(filterOnline).sort((a, b) => {
@@ -77,6 +69,7 @@ eventSource.onmessage = e => {
     }
 
     case "snapshot": {
+      infoStore.set(data.info);
       peerStore.set(data.peers);
       projectStore.set(
         data.projects.map(p => {

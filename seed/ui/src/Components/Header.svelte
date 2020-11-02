@@ -1,6 +1,10 @@
 <script>
   import Copyable from "./Copyable.svelte";
   export let seed = null;
+
+  $: seedId = seed.publicAddr
+    ? `${seed.peerId}@${seed.publicAddr}`
+    : seed.peerId;
 </script>
 
 <style>
@@ -31,16 +35,26 @@
     color: var(--color-foreground-level-6);
     line-height: 120%;
   }
+
+  .seed-id {
+    font-size: 70%;
+  }
 </style>
 
 <div class="meta">
   <h2>{seed.name}</h2>
-  <Copyable showIcon={true} styleContent={false} copyContent={seed.address}>
-    <p class="address typo-text-small-mono typo-overflow-ellipsis">
-      <span>{seed.address}</span>
+  <p class="address">
+    <Copyable showIcon styleContent={false} copyContent={seedId}>
+      <p class="address typo-text-small-mono typo-overflow-ellipsis">
+        <span>{seedId}</span>
+      </p>
+    </Copyable>
+  </p>
+  {#if seed.description}
+    <p class="desc">
+      {@html seed.description}
     </p>
-  </Copyable>
-  <p class="desc">{seed.desc}</p>
+  {/if}
 </div>
 <div class="stat">
   <h2>{seed.peers}</h2>
