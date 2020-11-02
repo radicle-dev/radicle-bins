@@ -27,6 +27,7 @@ const MAX_DISCONNECTED_PEERS: usize = 32;
 pub struct Info {
     name: Option<String>,
     peer_id: PeerId,
+    public_addr: Option<String>,
     description: Option<String>,
     peers: usize,
     projects: usize,
@@ -53,6 +54,7 @@ pub enum Event {
 struct State {
     name: Option<String>,
     description: Option<String>,
+    public_addr: Option<String>,
     peer_id: PeerId,
     projects: HashMap<RadUrn, seed::Project>,
     peers: HashMap<PeerId, Peer>,
@@ -63,6 +65,7 @@ impl State {
     fn info(&self) -> Info {
         Info {
             name: self.name.clone(),
+            public_addr: self.public_addr.clone(),
             peer_id: self.peer_id.clone(),
             description: self.description.clone(),
             projects: self.projects.len(),
@@ -261,6 +264,7 @@ pub async fn run<A: Into<net::SocketAddr>>(
     name: Option<String>,
     description: Option<String>,
     addr: A,
+    public_addr: Option<String>,
     peer_id: PeerId,
     mut handle: seed::NodeHandle,
     events: chan::Receiver<seed::Event>,
@@ -271,6 +275,7 @@ pub async fn run<A: Into<net::SocketAddr>>(
         name,
         description,
         peer_id,
+        public_addr,
         projects: projects.into_iter().map(|p| (p.urn.clone(), p)).collect(),
         peers: HashMap::new(),
         subs: Vec::new(),

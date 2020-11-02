@@ -59,6 +59,10 @@ pub struct Options {
     /// description of this seed, displayed to users as HTML
     #[argh(option)]
     pub description: Option<String>,
+
+    /// public address of this seed node, eg. 'seedling.radicle.xyz:12345'
+    #[argh(option)]
+    pub public_addr: Option<String>,
 }
 
 impl Options {
@@ -102,6 +106,7 @@ async fn main() {
         opts.name,
         opts.description,
         opts.http_listen,
+        opts.public_addr,
         peer_id,
         handle,
         rx,
