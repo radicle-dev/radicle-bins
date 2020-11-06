@@ -1565,6 +1565,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "radicle-keyutil"
+version = "0.1.0"
+dependencies = [
+ "argh",
+ "librad",
+]
+
+[[package]]
 name = "radicle-macros"
 version = "0.1.0"
 source = "git+https://github.com/radicle-dev/radicle-link.git?rev=b0905abe1f6f840d4884515200720f8a33af5272#b0905abe1f6f840d4884515200720f8a33af5272"
