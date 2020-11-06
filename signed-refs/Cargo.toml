@@ -1,0 +1,17 @@
+[package]
+name = "signed-refs"
+description = "Sign reference tool"
+version = "0.1.0"
+authors = ["The Radicle Team <dev@radicle.xyz>"]
+edition = "2018"
+license = "GPL-3.0-or-later"
+
+[dependencies]
+anyhow = "1"
+argh = "0.1"
+radicle-keystore = "0"
+serde_json = "1.0"
+
+[dependencies.librad]
+git = "https://github.com/radicle-dev/radicle-link.git"
+rev = "f695f4ab8ff69469c0dbded499d2ff535ead43a9"

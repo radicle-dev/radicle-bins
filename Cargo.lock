@@ -37,6 +37,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.34"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bf8dcb5b4bbaa28653b647d8c77bd4ed40183b48882e130c1f1ffb73de069fd7"
+
+[[package]]
 name = "arc-swap"
 version = "0.4.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -188,6 +194,15 @@ name = "bs58"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "476e9cd489f9e121e02ffa6014a8ef220ecb15c05ed23fc34cca13925dc283fb"
+
+[[package]]
+name = "bstr"
+version = "0.2.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "473fc6b38233f9af7baa94fb5852dca389e3d95b8e21c8e3719301462c5d9faf"
+dependencies = [
+ "memchr",
+]
 
 [[package]]
 name = "bumpalo"
@@ -686,6 +701,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "globset"
+version = "0.4.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c152169ef1e421390738366d2f796655fec62621dabbd0fd476f905934061e4a"
+dependencies = [
+ "aho-corasick",
+ "bstr",
+ "fnv",
+ "log",
+ "regex",
+]
+
+[[package]]
 name = "governor"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1009,17 +1037,17 @@ dependencies = [
  "libgit2-sys",
  "log",
  "minicbor",
- "multibase",
+ "multibase 0.8.0",
  "multihash",
  "nom",
  "nonempty",
  "num_cpus",
  "percent-encoding 2.1.0",
  "quinn",
- "radicle-git-ext",
+ "radicle-git-ext 0.1.0 (git+https://github.com/radicle-dev/radicle-link.git?rev=b0905abe1f6f840d4884515200720f8a33af5272)",
  "radicle-keystore",
- "radicle-macros",
- "radicle-std-ext",
+ "radicle-macros 0.1.0 (git+https://github.com/radicle-dev/radicle-link.git?rev=b0905abe1f6f840d4884515200720f8a33af5272)",
+ "radicle-std-ext 0.1.0 (git+https://github.com/radicle-dev/radicle-link.git?rev=b0905abe1f6f840d4884515200720f8a33af5272)",
  "rand",
  "rand_pcg",
  "rcgen",
@@ -1037,6 +1065,60 @@ dependencies = [
  "unicode-normalization",
  "url 2.1.1",
  "urltemplate",
+ "webpki",
+ "yasna",
+]
+
+[[package]]
+name = "librad"
+version = "0.1.0"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=f695f4ab8ff69469c0dbded499d2ff535ead43a9#f695f4ab8ff69469c0dbded499d2ff535ead43a9"
+dependencies = [
+ "async-trait",
+ "bit-vec",
+ "bs58",
+ "bytes",
+ "deadpool",
+ "directories",
+ "dyn-clone",
+ "ed25519-zebra",
+ "either",
+ "futures",
+ "futures-timer",
+ "futures_codec",
+ "git2",
+ "globset",
+ "governor",
+ "lazy_static",
+ "libc",
+ "libgit2-sys",
+ "minicbor",
+ "multibase 0.9.0",
+ "multihash",
+ "nom",
+ "num_cpus",
+ "percent-encoding 2.1.0",
+ "quinn",
+ "radicle-git-ext 0.1.0 (git+https://github.com/radicle-dev/radicle-link.git?rev=f695f4ab8ff69469c0dbded499d2ff535ead43a9)",
+ "radicle-keystore",
+ "radicle-macros 0.1.0 (git+https://github.com/radicle-dev/radicle-link.git?rev=f695f4ab8ff69469c0dbded499d2ff535ead43a9)",
+ "radicle-std-ext 0.1.0 (git+https://github.com/radicle-dev/radicle-link.git?rev=f695f4ab8ff69469c0dbded499d2ff535ead43a9)",
+ "rand",
+ "rand_pcg",
+ "rcgen",
+ "regex",
+ "rustls",
+ "serde",
+ "serde_bytes",
+ "serde_json",
+ "tempfile",
+ "thiserror",
+ "tokio",
+ "tokio-util",
+ "tracing",
+ "tracing-futures",
+ "unicode-normalization",
+ "url 2.1.1",
  "webpki",
  "yasna",
 ]
@@ -1203,6 +1285,17 @@ name = "multibase"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b78c60039650ff12e140ae867ef5299a58e19dded4d334c849dc7177083667e2"
+dependencies = [
+ "base-x",
+ "data-encoding",
+ "data-encoding-macro",
+]
+
+[[package]]
+name = "multibase"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2cdffa0234be468d0598066308d42867e6b846103964f214aab88e8531546f46"
 dependencies = [
  "base-x",
  "data-encoding",
@@ -1535,10 +1628,24 @@ version = "0.1.0"
 source = "git+https://github.com/radicle-dev/radicle-link.git?rev=b0905abe1f6f840d4884515200720f8a33af5272#b0905abe1f6f840d4884515200720f8a33af5272"
 dependencies = [
  "git2",
- "multibase",
+ "multibase 0.8.0",
  "multihash",
  "percent-encoding 2.1.0",
- "radicle-std-ext",
+ "radicle-std-ext 0.1.0 (git+https://github.com/radicle-dev/radicle-link.git?rev=b0905abe1f6f840d4884515200720f8a33af5272)",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "radicle-git-ext"
+version = "0.1.0"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=f695f4ab8ff69469c0dbded499d2ff535ead43a9#f695f4ab8ff69469c0dbded499d2ff535ead43a9"
+dependencies = [
+ "git2",
+ "multibase 0.9.0",
+ "multihash",
+ "percent-encoding 2.1.0",
+ "radicle-std-ext 0.1.0 (git+https://github.com/radicle-dev/radicle-link.git?rev=f695f4ab8ff69469c0dbded499d2ff535ead43a9)",
  "serde",
  "thiserror",
 ]
@@ -1570,7 +1677,17 @@ version = "0.1.0"
 source = "git+https://github.com/radicle-dev/radicle-link.git?rev=b0905abe1f6f840d4884515200720f8a33af5272#b0905abe1f6f840d4884515200720f8a33af5272"
 dependencies = [
  "quote",
- "radicle-git-ext",
+ "radicle-git-ext 0.1.0 (git+https://github.com/radicle-dev/radicle-link.git?rev=b0905abe1f6f840d4884515200720f8a33af5272)",
+ "syn",
+]
+
+[[package]]
+name = "radicle-macros"
+version = "0.1.0"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=f695f4ab8ff69469c0dbded499d2ff535ead43a9#f695f4ab8ff69469c0dbded499d2ff535ead43a9"
+dependencies = [
+ "quote",
+ "radicle-git-ext 0.1.0 (git+https://github.com/radicle-dev/radicle-link.git?rev=f695f4ab8ff69469c0dbded499d2ff535ead43a9)",
  "syn",
 ]
 
@@ -1581,7 +1698,7 @@ source = "git+https://github.com/radicle-dev/radicle-link.git?rev=b0905abe1f6f84
 dependencies = [
  "async-trait",
  "futures",
- "librad",
+ "librad 0.1.0 (git+https://github.com/radicle-dev/radicle-link.git?rev=b0905abe1f6f840d4884515200720f8a33af5272)",
  "radicle-keystore",
  "thiserror",
  "tokio",
@@ -1595,7 +1712,7 @@ dependencies = [
  "argh",
  "chrono",
  "futures",
- "librad",
+ "librad 0.1.0 (git+https://github.com/radicle-dev/radicle-link.git?rev=b0905abe1f6f840d4884515200720f8a33af5272)",
  "radicle-avatar",
  "radicle-seed",
  "serde",
@@ -1610,6 +1727,11 @@ dependencies = [
 name = "radicle-std-ext"
 version = "0.1.0"
 source = "git+https://github.com/radicle-dev/radicle-link.git?rev=b0905abe1f6f840d4884515200720f8a33af5272#b0905abe1f6f840d4884515200720f8a33af5272"
+
+[[package]]
+name = "radicle-std-ext"
+version = "0.1.0"
+source = "git+https://github.com/radicle-dev/radicle-link.git?rev=f695f4ab8ff69469c0dbded499d2ff535ead43a9#f695f4ab8ff69469c0dbded499d2ff535ead43a9"
 
 [[package]]
 name = "rand"
@@ -1966,6 +2088,17 @@ checksum = "a3e12110bc539e657a646068aaf5eb5b63af9d0c1f7b29c97113fad80e15f035"
 dependencies = [
  "arc-swap",
  "libc",
+]
+
+[[package]]
+name = "signed-refs"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "argh",
+ "librad 0.1.0 (git+https://github.com/radicle-dev/radicle-link.git?rev=f695f4ab8ff69469c0dbded499d2ff535ead43a9)",
+ "radicle-keystore",
+ "serde_json",
 ]
 
 [[package]]
