@@ -1,2 +1,2 @@
 [workspace]
-members = ["seed"]
+members = ["keyutil", "seed"]
