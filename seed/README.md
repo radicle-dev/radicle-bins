@@ -6,13 +6,17 @@
 
 Build the UI:
 
-    cd ui
-    yarn
-    yarn build
+    (cd ui && yarn && yarn build)
+
+Generate a secret key:
+
+    cargo run --bin generate-secret-key -- --filename seed-secret.key
 
 Start the node:
 
-    cargo run < secret-key
+    cargo run --bin radicle-seed-node -- \
+      --root ~/.radicle-seed \
+      --name "seedling" \
+      < seed-secret.key
 
-You'll need a valid Ed25519 private key to start the node. The key is provided
-to the node via standard input.
+To see the seed dashboard, point your browser to http://127.0.0.1:8888.
