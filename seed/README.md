@@ -24,9 +24,10 @@ To see the seed dashboard, point your browser to http://127.0.0.1:8888.
 
 ## Usage
 
-    radicle-seed-node [--track-peers <track-peers>] [--track-urns <track-urns>] [--peer-listen <peer-listen>] [--http-listen <http-listen>] [--log <log>] [--root <root>] [--name <name>] [--description <description>] [--public-addr <public-addr>]
+    radicle-seed-node [options]
 
-    Radicle Seed.
+    Radicle Seed. To run the node a PKCS8 encoded secret key must be provided
+    as STDIN.
 
     Options:
       --track-peers     track the specified peers only
