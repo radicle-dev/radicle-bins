@@ -10,15 +10,15 @@ Build the UI:
 
 Generate a secret key:
 
-    mkdir -p ~/.radicle-seed/keys
-    cargo run -p radicle-keyutil -- --filename ~/.radicle-seed/keys/seed-secret.key
+    mkdir -p ~/.radicle-seed
+    cargo run -p radicle-keyutil -- --filename ~/.radicle-seed/secret.key
 
 Start the node:
 
     cargo run --bin radicle-seed-node -- \
       --root ~/.radicle-seed \
       --name "seedling" \
-      < ~/.radicle-seed/keys/seed-secret.key
+      < ~/.radicle-seed/secret.key
 
 To see the seed dashboard, point your browser to http://127.0.0.1:8888.
 
