@@ -19,7 +19,7 @@ use std::{net, path::PathBuf};
 
 use tracing_subscriber::FmtSubscriber;
 
-use librad::{peer::PeerId, uri::RadUrn};
+use librad::{git::Urn, peer::PeerId};
 use radicle_seed::{Mode, Node, NodeConfig, Signer};
 use radicle_seed_node as seed;
 
@@ -40,7 +40,7 @@ pub struct Peers {
 pub struct Urns {
     /// track the specified URN only
     #[argh(option, long = "urn")]
-    urns: Vec<RadUrn>,
+    urns: Vec<Urn>,
 }
 
 #[derive(FromArgs)]

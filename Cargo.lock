@@ -184,6 +184,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "476e9cd489f9e121e02ffa6014a8ef220ecb15c05ed23fc34cca13925dc283fb"
 
 [[package]]
+name = "bstr"
+version = "0.2.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "473fc6b38233f9af7baa94fb5852dca389e3d95b8e21c8e3719301462c5d9faf"
+dependencies = [
+ "memchr",
+]
+
+[[package]]
 name = "bumpalo"
 version = "3.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -505,7 +514,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ece68d15c92e84fa4f19d3780f1294e5ca82a78a6d515f1efaabcc144688be00"
 dependencies = [
  "matches",
- "percent-encoding 2.1.0",
+ "percent-encoding",
 ]
 
 [[package]]
@@ -703,7 +712,20 @@ dependencies = [
  "libc",
  "libgit2-sys",
  "log",
- "url 2.2.0",
+ "url",
+]
+
+[[package]]
+name = "globset"
+version = "0.4.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c152169ef1e421390738366d2f796655fec62621dabbd0fd476f905934061e4a"
+dependencies = [
+ "aho-corasick",
+ "bstr",
+ "fnv",
+ "log",
+ "regex",
 ]
 
 [[package]]
@@ -882,17 +904,6 @@ dependencies = [
 
 [[package]]
 name = "idna"
-version = "0.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38f09e0f0b1fb55fdee1f17470ad800da77af5186a1a76c026b679358b7e844e"
-dependencies = [
- "matches",
- "unicode-bidi",
- "unicode-normalization",
-]
-
-[[package]]
-name = "idna"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "02e2673c30ee86b5b96a9cb52ad15718aa1f966f5ab9ad54a8b95d5ca33120a9"
@@ -1010,7 +1021,7 @@ dependencies = [
 [[package]]
 name = "librad"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=maint#e105b71b65fb3ce99c0ab63375a018e191701d7f"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=next#5f2a0b3a985f5cea62b6ad0b74c2c961e33526ad"
 dependencies = [
  "async-trait",
  "bit-vec",
@@ -1025,18 +1036,17 @@ dependencies = [
  "futures-timer",
  "futures_codec",
  "git2",
+ "globset",
  "governor",
  "lazy_static",
  "libc",
  "libgit2-sys",
- "log",
  "minicbor",
  "multibase",
  "multihash",
  "nom",
- "nonempty",
  "num_cpus",
- "percent-encoding 2.1.0",
+ "percent-encoding",
  "quinn",
  "radicle-git-ext",
  "radicle-keystore",
@@ -1057,8 +1067,7 @@ dependencies = [
  "tracing",
  "tracing-futures",
  "unicode-normalization",
- "url 2.2.0",
- "urltemplate",
+ "url",
  "webpki",
  "yasna",
 ]
@@ -1291,12 +1300,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "nonempty"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9ff7ac1e5ea23db6d61ad103e91864675049644bf47c35912336352fa4e9c109"
-
-[[package]]
 name = "nonzero_ext"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1333,9 +1336,9 @@ dependencies = [
 
 [[package]]
 name = "once_cell"
-version = "1.5.0"
+version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95c43eba5c640051fbde86a3377842386a94281df3ff0a5f0365c2075ed5c66f"
+checksum = "f53cef67919d7d247eb9a2f128ca9e522789967ef1eb4ccd8c71a95a8aedf596"
 
 [[package]]
 name = "opaque-debug"
@@ -1394,12 +1397,6 @@ dependencies = [
  "once_cell",
  "regex",
 ]
-
-[[package]]
-name = "percent-encoding"
-version = "1.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "31010dd2e1ac33d5b46a5b413495239882813e0369f8ed8a5e266f173602f831"
 
 [[package]]
 name = "percent-encoding"
@@ -1587,12 +1584,12 @@ dependencies = [
 [[package]]
 name = "radicle-git-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=maint#e105b71b65fb3ce99c0ab63375a018e191701d7f"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=next#5f2a0b3a985f5cea62b6ad0b74c2c961e33526ad"
 dependencies = [
  "git2",
  "multibase",
  "multihash",
- "percent-encoding 2.1.0",
+ "percent-encoding",
  "radicle-std-ext",
  "serde",
  "thiserror",
@@ -1630,7 +1627,7 @@ dependencies = [
 [[package]]
 name = "radicle-macros"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=maint#e105b71b65fb3ce99c0ab63375a018e191701d7f"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=next#5f2a0b3a985f5cea62b6ad0b74c2c961e33526ad"
 dependencies = [
  "quote",
  "radicle-git-ext",
@@ -1640,7 +1637,7 @@ dependencies = [
 [[package]]
 name = "radicle-seed"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=maint#e105b71b65fb3ce99c0ab63375a018e191701d7f"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=next#5f2a0b3a985f5cea62b6ad0b74c2c961e33526ad"
 dependencies = [
  "async-trait",
  "futures",
@@ -1672,7 +1669,7 @@ dependencies = [
 [[package]]
 name = "radicle-std-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=maint#e105b71b65fb3ce99c0ab63375a018e191701d7f"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=next#5f2a0b3a985f5cea62b6ad0b74c2c961e33526ad"
 
 [[package]]
 name = "rand"
@@ -1978,7 +1975,7 @@ dependencies = [
  "dtoa",
  "itoa",
  "serde",
- "url 2.2.0",
+ "url",
 ]
 
 [[package]]
@@ -2401,25 +2398,14 @@ checksum = "a156c684c91ea7d62626509bce3cb4e1d9ed5c4d978f7b4352658f96a4c26b4a"
 
 [[package]]
 name = "url"
-version = "1.7.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd4e7c0d531266369519a4aa4f399d748bd37043b00bde1e4ff1f60a120b355a"
-dependencies = [
- "idna 0.1.5",
- "matches",
- "percent-encoding 1.0.1",
-]
-
-[[package]]
-name = "url"
 version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5909f2b0817350449ed73e8bcd81c8c3c8d9a7a5d8acba4b27db277f1868976e"
 dependencies = [
  "form_urlencoded",
- "idna 0.2.0",
+ "idna",
  "matches",
- "percent-encoding 2.1.0",
+ "percent-encoding",
  "serde",
 ]
 
@@ -2428,15 +2414,6 @@ name = "urlencoding"
 version = "1.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c9232eb53352b4442e40d7900465dfc534e8cb2dc8f18656fcb2ac16112b5593"
-
-[[package]]
-name = "urltemplate"
-version = "0.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6c61050c4dbd3f0b1191a9d4865860387a12441bce79ddb03fc42d690acf5ba9"
-dependencies = [
- "url 1.7.2",
-]
 
 [[package]]
 name = "vcpkg"
