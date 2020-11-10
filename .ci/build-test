@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -eou pipefail
+
+source "$(dirname ${BASH_SOURCE[0]})/.env"
+
+echo '--- Build'
+cargo build --tests --verbose --workspace
+
+echo '--- Test'
+cargo test --workspace
