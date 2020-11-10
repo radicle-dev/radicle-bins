@@ -1,0 +1,12 @@
+[package]
+name = "radicle-keyutil"
+version = "0.1.0"
+authors = ["The Radicle Team <dev@radicle.xyz>"]
+edition = "2018"
+license = "GPL-3.0-or-later"
+
+[dependencies]
+argh = "0.1.3"
+
+[dependencies.librad]
+git = "https://github.com/radicle-dev/radicle-link"

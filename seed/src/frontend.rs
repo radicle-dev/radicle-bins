@@ -1,23 +1,37 @@
-use std::net;
-use std::time;
+// This file is part of radicle-bins
+// <https://github.com/radicle-dev/radicle-bins>
+//
+// Copyright (C) 2019-2020 The Radicle Team <dev@radicle.xyz>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License version 3 or
+// later as published by the Free Software Foundation.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use futures::StreamExt as _;
-use librad::{peer::PeerId, uri, uri::RadUrn};
+use std::{
+    collections::{hash_map::Entry, HashMap},
+    convert::Infallible,
+    net,
+    sync::Arc,
+    time,
+};
+
+use futures::{channel::mpsc as chan, StreamExt as _};
 use serde::Serialize;
+use tokio::sync::Mutex;
 use warp::Filter as _;
 
+use avatar::Avatar;
+use librad::{peer::PeerId, uri, uri::RadUrn};
 use radicle_avatar as avatar;
 use radicle_seed as seed;
-
-use avatar::Avatar;
-
-use std::collections::hash_map::Entry;
-use std::collections::HashMap;
-use std::convert::Infallible;
-use std::sync::Arc;
-use tokio::sync::Mutex;
-
-use futures::channel::mpsc as chan;
 
 /// Maximum number of disconnected peers to keep around in the state.
 const MAX_DISCONNECTED_PEERS: usize = 32;
@@ -66,7 +80,7 @@ impl State {
         Info {
             name: self.name.clone(),
             public_addr: self.public_addr.clone(),
-            peer_id: self.peer_id.clone(),
+            peer_id: self.peer_id,
             description: self.description.clone(),
             projects: self.projects.len(),
             peers: self.peers.values().filter(|p| p.is_connected()).count(),
@@ -86,14 +100,14 @@ impl State {
             .insert(proj.urn.clone(), proj.clone())
             .is_none()
         {
-            self.broadcast(Event::ProjectTracked(Project::from(proj.clone())));
+            self.broadcast(Event::ProjectTracked(Project::from(proj)));
         }
     }
 
     fn peer_connected(&mut self, peer_id: PeerId, urn: Option<RadUrn>, name: Option<String>) {
         match self.peers.entry(peer_id) {
             Entry::Vacant(entry) => {
-                let user = urn.map(|u| User::from(u.clone()).with_name(name));
+                let user = urn.map(|u| User::from(u).with_name(name));
                 let peer = Peer {
                     peer_id,
                     user,
@@ -101,20 +115,20 @@ impl State {
                 };
                 entry.insert(peer.clone());
 
-                self.broadcast(Event::PeerConnected(peer.clone()));
-            }
+                self.broadcast(Event::PeerConnected(peer));
+            },
             Entry::Occupied(mut entry) => {
                 let peer = entry.get_mut();
 
                 match &mut peer.state {
                     PeerState::Connected { connections } => {
                         *connections += 1;
-                    }
+                    },
                     PeerState::Disconnected { .. } => {
                         peer.state = PeerState::new();
-                    }
+                    },
                 }
-            }
+            },
         }
     }
 
@@ -132,8 +146,8 @@ impl State {
                         };
                         self.broadcast(Event::PeerDisconnected { peer_id });
                     }
-                }
-                PeerState::Disconnected { .. } => {}
+                },
+                PeerState::Disconnected { .. } => {},
             }
         }
 
@@ -248,14 +262,14 @@ async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event
         match e {
             seed::Event::ProjectTracked(proj, _) => {
                 state.project_tracked(proj);
-            }
+            },
             seed::Event::PeerConnected { peer_id, urn, name } => {
                 state.peer_connected(peer_id, urn, name);
-            }
+            },
             seed::Event::PeerDisconnected(peer_id) => {
                 state.peer_disconnected(peer_id);
-            }
-            seed::Event::Listening(_) => {}
+            },
+            seed::Event::Listening(_) => {},
         };
     }
 }
@@ -324,7 +338,7 @@ async fn projects_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, 
         &projs
             .values()
             .cloned()
-            .map(|p| Project::from(p))
+            .map(Project::from)
             .collect::<Vec<_>>(),
     ))
 }

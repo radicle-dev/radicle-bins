@@ -1,5 +1,9 @@
 [workspace]
-members = [
-    "seed",
-    "signed-refs",
-]
+members = ["keyutil", "seed", "signed-refs"]
+
+[patch."https://github.com/radicle-dev/radicle-link"]
+librad = { path = "vendor/radicle-link/librad" }
+radicle-seed = { path = "vendor/radicle-link/seed" }
+
+[patch."https://github.com/radicle-dev/radicle-avatar"]
+radicle-avatar = { path = "vendor/radicle-avatar" }

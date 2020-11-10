@@ -1,5 +1,5 @@
-// This file is part of radicle-link
-// <https://github.com/radicle-dev/radicle-link>
+// This file is part of radicle-bins
+// <https://github.com/radicle-dev/radicle-bins>
 //
 // Copyright (C) 2019-2020 The Radicle Team <dev@radicle.xyz>
 //
@@ -40,7 +40,8 @@ pub struct Options {
     #[argh(option)]
     pub peer_listen: Option<net::SocketAddr>,
 
-    /// listen on the following address for HTTP connections (default: 127.0.0.1:8888)
+    /// listen on the following address for HTTP connections (default:
+    /// 127.0.0.1:8888)
     #[argh(option, default = "std::net::SocketAddr::from(([127, 0, 0, 1], 8888))")]
     pub http_listen: net::SocketAddr,
 
