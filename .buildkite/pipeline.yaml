@@ -26,3 +26,12 @@ steps:
       - ".ci/docs"
     agents: *build-agent
     env: *build-docker
+
+  - label: "Seed Docker Image"
+    commands:
+      - ".ci/docker-seed"
+    agents: *build-agent
+    env:
+      <<: *build-docker
+      STEP_DOCKER_FILE: .docker/seed/Dockerfile
+      STEP_DOCKER_IMAGE: gcr.io/opensourcecoin/radicle-seed-node

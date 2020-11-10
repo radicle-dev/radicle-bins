@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -eou pipefail
+
+source "$(dirname ${BASH_SOURCE[0]})/.env"
+
+echo "--- Preparing release build"
+cargo build -p radicle-seed-node --release
+
+echo "--- Copying build artifact"
+cp ./target/release/radicle-seed-node .docker/seed/radicle-seed-node
