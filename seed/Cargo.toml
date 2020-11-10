@@ -17,13 +17,12 @@ serde_json = "1"
 serde = "1"
 
 [dependencies.librad]
-git = "https://github.com/radicle-dev/radicle-link.git"
-rev = "b0905abe1f6f840d4884515200720f8a33af5272"
+git = "https://github.com/radicle-dev/radicle-link"
 
 [dependencies.radicle-seed]
-git = "https://github.com/radicle-dev/radicle-link.git"
-rev = "b0905abe1f6f840d4884515200720f8a33af5272"
+git = "https://github.com/radicle-dev/radicle-link"
 
 [dependencies.radicle-avatar]
-git = "https://github.com/radicle-dev/radicle-avatar.git"
-rev = "4e34e6b992fd9f465b0547a5693b47b0d41dea01"
+git = "https://github.com/radicle-dev/radicle-avatar"
+# cargo doesn't know about the new speak
+branch = "main"

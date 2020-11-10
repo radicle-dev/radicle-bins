@@ -9,5 +9,4 @@ license = "GPL-3.0-or-later"
 argh = "0.1.3"
 
 [dependencies.librad]
-git = "https://github.com/radicle-dev/radicle-link.git"
-rev = "b0905abe1f6f840d4884515200720f8a33af5272"
+git = "https://github.com/radicle-dev/radicle-link"
