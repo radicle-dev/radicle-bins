@@ -1,7 +1,7 @@
 use argh::FromArgs;
 
 use librad::{
-    git::refs::{Refs, Signed},
+    git::refs::{Refs, Signed, Unverified},
     peer::PeerId,
 };
 
@@ -9,7 +9,7 @@ fn deserialize_refs(refs: &str) -> Result<Refs, String> {
     serde_json::from_str(refs).map_err(|err| err.to_string())
 }
 
-fn deserialize_signed(signed: &str) -> Result<Signed, String> {
+fn deserialize_signed(signed: &str) -> Result<Signed<Unverified>, String> {
     serde_json::from_str(signed).map_err(|err| err.to_string())
 }
 
@@ -40,7 +40,7 @@ pub struct Verify {
 
     /// the `Signed` refs we are verifying
     #[argh(option, from_str_fn(deserialize_signed))]
-    pub signed: Signed,
+    pub signed: Signed<Unverified>,
 }
 
 /// Which mode we are running in.

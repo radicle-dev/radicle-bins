@@ -17,6 +17,7 @@
 
 use std::io;
 
+use librad::git::refs::Signed;
 use librad::paths::Paths;
 
 use signed_refs::args::{Args, Mode, Sign, Verify};
@@ -51,7 +52,7 @@ fn main() -> anyhow::Result<()> {
             let signed = refs.sign(&signer)?;
             println!("{}", serde_json::to_string(&signed)?);
         }
-        Mode::Verify(Verify { peer_id, signed }) => match signed.verify(&peer_id) {
+        Mode::Verify(Verify { peer_id, signed }) => match Signed::verify(signed, &peer_id) {
             Ok(_) => println!(
                 "The signed refs are verified by the provided PeerId `{}`",
                 peer_id
