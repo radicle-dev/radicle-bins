@@ -10,7 +10,9 @@ members = ["keyutil", "seed"]
 # crate name + a very loose version bound (eg. "0").
 #
 # Since we maintain a version-controlled `Cargo.lock` file, a `cargo update`
-# will pull in the latest versions. This should be done on a regular basis.
+# will pull in the latest versions. This should be done on a regular basis --
+# unless there's a specific reason not to do so for EVERY patch being submitted
+# to this repo.
 #
 # Usually, the `branch` specifiers below do not need to be changed, except when
 # there are major incompatible changes, or you want to work with a development
