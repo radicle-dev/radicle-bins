@@ -29,12 +29,12 @@ use argh::FromArgs;
 /// Radicle Seed.
 pub struct Options {
     /// track the specified peer only
-    #[argh(option)]
-    pub track_peer: Vec<PeerId>,
+    #[argh(option, long = "track-peer")]
+    pub track_peers: Vec<PeerId>,
 
     /// track the specified URN only
-    #[argh(option)]
-    pub track_urn: Vec<RadUrn>,
+    #[argh(option, long = "track-urn")]
+    pub track_urns: Vec<RadUrn>,
 
     /// listen on the following address for peer connections
     #[argh(option)]
@@ -85,7 +85,7 @@ async fn main() {
         Err(err) => panic!("invalid key was supplied to stdin: {}", err),
     };
 
-    if !opts.track_peer.is_empty() && !opts.track_urn.is_empty() {
+    if !opts.track_peers.is_empty() && !opts.track_urns.is_empty() {
         println!("--track-peer and --track-urn are mutually exclusive options!");
         process::exit(1);
     }
@@ -95,10 +95,10 @@ async fn main() {
             .peer_listen
             .unwrap_or(NodeConfig::default().listen_addr),
         root: opts.root,
-        mode: if !opts.track_peer.is_empty() {
-            Mode::TrackPeers(opts.track_peer.into_iter().collect())
-        } else if !opts.track_urn.is_empty() {
-            Mode::TrackUrns(opts.track_urn.into_iter().collect())
+        mode: if !opts.track_peers.is_empty() {
+            Mode::TrackPeers(opts.track_peers.into_iter().collect())
+        } else if !opts.track_urns.is_empty() {
+            Mode::TrackUrns(opts.track_urns.into_iter().collect())
         } else {
             Mode::TrackEverything
         },
