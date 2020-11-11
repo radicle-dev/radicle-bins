@@ -48,8 +48,7 @@ To see the seed dashboard, point your browser to http://127.0.0.1:8888.
       track-urns        A set of URNs to track
       track-peers       A set of peers to track
 
-    EXAMPLES
-
+    Examples:
     Start a seed node that tracks and replicates specific peers
 
         $ radicle-seed-node --root ~/.radicle-seed track-peers \
