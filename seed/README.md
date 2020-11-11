@@ -24,18 +24,15 @@ To see the seed dashboard, point your browser to http://127.0.0.1:8888.
 
 ## Usage
 
-    radicle-seed-node [[--track-peer <track-peer>] | [--track-urn <track-urn>]]
-                      [--peer-listen <peer-listen>] [--http-listen <http-listen>]
+    radicle-seed-node [--peer-listen <peer-listen>] [--http-listen <http-listen>]
                       [--log <log>] [--root <root>] [--name <name>]
                       [--description <description>] [--public-addr <public-addr>]
+                      [<command>] [<args>]
 
     To run the seed node, a PKCS8 encoded secret key **must always** be
     provided in STDIN.
 
-    OPTIONS
-
-      --track-peer      track the specified peer only
-      --track-urn       track the specified URN only
+    Options:
       --peer-listen     listen on the following address for peer connections
       --http-listen     listen on the following address for HTTP connections
                         (default: 127.0.0.1:8888)
@@ -47,24 +44,27 @@ To see the seed dashboard, point your browser to http://127.0.0.1:8888.
                         'seedling.radicle.xyz:12345'
       --help            display usage information
 
+    Commands:
+      track-urns        A set of URNs to track
+      track-peers       A set of peers to track
 
     EXAMPLES
 
     Start a seed node that tracks and replicates specific peers
 
-        $ radicle-seed-node --root ~/.radicle-seed \
-                            --track-peer hyymwdkgymeupidbgwfb16wp5fg1ojz3ias8c8ijtdeecjo6yxtw3g \
-                            --track-peer hydijmyip398ihqejgpouwhfszdmd45dkh7xwd9ewtjmzwp9tb855a \
-                            --track-peer hybra8u45w7ahr195sqcw136twqrjg3nknbzxhyd1pncwsr3pwnkc1 \
+        $ radicle-seed-node --root ~/.radicle-seed track-peers \
+                            --peer hyymwdkgymeupidbgwfb16wp5fg1ojz3ias8c8ijtdeecjo6yxtw3g \
+                            --peer hydijmyip398ihqejgpouwhfszdmd45dkh7xwd9ewtjmzwp9tb855a \
+                            --peer hybra8u45w7ahr195sqcw136twqrjg3nknbzxhyd1pncwsr3pwnkc1 \
                             < ~/.radicle-seed/secret.key
 
         INFO radicle_seed: Initializing tracker with 3 peers..
 
     Start a seed node that tracks and replicates specific URNs
 
-        $ radicle-seed-node --root ~/.radicle-seed \
-                            --track-urn rad:git:hwd1yrebfxd5fu79qh4zejg4kf1xohfg54iqyssf7guds6cp6hkug4iqsmc \
-                            --track-urn rad:git:hwd1yref9i4h9certox1dpb5nfruk9gfyyjnjodg63oqak7d3pa6bpy6bmc \
+        $ radicle-seed-node --root ~/.radicle-seed track-urns \
+                            --urn rad:git:hwd1yrebfxd5fu79qh4zejg4kf1xohfg54iqyssf7guds6cp6hkug4iqsmc \
+                            --urn rad:git:hwd1yref9i4h9certox1dpb5nfruk9gfyyjnjodg63oqak7d3pa6bpy6bmc \
                             < ~/.radicle-seed/secret.key
 
         Nov 11 18:03:25.650  INFO radicle_seed: Initializing tracker with 2 URNs..
