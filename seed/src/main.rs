@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use std::{net, path::PathBuf};
+use std::{net, path::PathBuf, process};
 
 use tracing_subscriber::FmtSubscriber;
 
@@ -84,6 +84,11 @@ async fn main() {
         Ok(signer) => signer,
         Err(err) => panic!("invalid key was supplied to stdin: {}", err),
     };
+
+    if !opts.track_peer.is_empty() && !opts.track_urn.is_empty() {
+        println!("--track-peer and --track-urn are mutually exclusive options!");
+        process::exit(1);
+    }
 
     let config = NodeConfig {
         listen_addr: opts
