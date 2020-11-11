@@ -28,13 +28,13 @@ use argh::FromArgs;
 #[derive(FromArgs)]
 /// Radicle Seed.
 pub struct Options {
-    /// track the specified peers only
+    /// track the specified peer only
     #[argh(option)]
-    pub track_peers: Vec<PeerId>,
+    pub track_peer: Vec<PeerId>,
 
-    /// track the specified URNs only
+    /// track the specified URN only
     #[argh(option)]
-    pub track_urns: Vec<RadUrn>,
+    pub track_urn: Vec<RadUrn>,
 
     /// listen on the following address for peer connections
     #[argh(option)]
@@ -90,10 +90,10 @@ async fn main() {
             .peer_listen
             .unwrap_or(NodeConfig::default().listen_addr),
         root: opts.root,
-        mode: if !opts.track_peers.is_empty() {
-            Mode::TrackPeers(opts.track_peers.into_iter().collect())
-        } else if !opts.track_urns.is_empty() {
-            Mode::TrackUrns(opts.track_urns.into_iter().collect())
+        mode: if !opts.track_peer.is_empty() {
+            Mode::TrackPeers(opts.track_peer.into_iter().collect())
+        } else if !opts.track_urn.is_empty() {
+            Mode::TrackUrns(opts.track_urn.into_iter().collect())
         } else {
             Mode::TrackEverything
         },
