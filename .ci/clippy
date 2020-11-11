@@ -7,8 +7,4 @@ echo '--- Formatting'
 cargo fmt -- --check
 
 echo '--- Clippy'
-cargo clippy --all-targets --all-features
-# Disabled until either https://github.com/rust-lang/rust-clippy/pull/6188
-# lands, or we don't get lint warnings on link (upgrade clippy?)
-# -- -D warnings
-
+cargo clippy --all-targets --all-features -- -D warnings

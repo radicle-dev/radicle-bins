@@ -5,7 +5,7 @@
 # The path where the advisory database is cloned/fetched into
 db-path = "~/cargo/advisory-db"
 # The url of the advisory database to use
-db-url = "https://github.com/rustsec/advisory-db"
+db-urls = [ "https://github.com/rustsec/advisory-db" ]
 # The lint level for security vulnerabilities
 vulnerability = "deny"
 # The lint level for unmaintained crates
@@ -204,6 +204,6 @@ allow-registry = ["https://github.com/rust-lang/crates.io-index"]
 # List of URLs for allowed Git repositories
 allow-git = [
     "https://github.com/djc/quinn",
-    "https://github.com/radicle-dev/radicle-keystore",
-    "https://github.com/radicle-dev/ed25519-zebra",
+    "https://github.com/radicle-dev/radicle-link",
+    "https://github.com/radicle-dev/radicle-avatar",
 ]
