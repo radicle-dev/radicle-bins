@@ -1,9 +1,33 @@
 [workspace]
 members = ["keyutil", "seed"]
 
-[patch."https://github.com/radicle-dev/radicle-link"]
-librad = { path = "vendor/radicle-link/librad" }
-radicle-seed = { path = "vendor/radicle-link/seed" }
+#
+# "Internal" source dependencies
+#
+# In order to ensure all radicle source dependencies are consistent across the
+# workspace, we exploit cargo's `patch` mechanism. Crates within the workspace
+# should specify those dependencies as if they came from crates.io, ie. just the
+# crate name + a very loose version bound (eg. "0").
+#
+# Since we maintain a version-controlled `Cargo.lock` file, a `cargo update`
+# will pull in the latest versions. This should be done on a regular basis.
+#
+# Usually, the `branch` specifiers below do not need to be changed, except when
+# there are major incompatible changes, or you want to work with a development
+# branch locally. You should, however, **not** submit your patch until the
+# development branch has landed onto the mainline of the dependency -- this will
+# save you the burden of making sure everything is consistent.
+#
+# When in doubt, chant the following aloud one hundred times: "trunk based
+# development".
+[patch.crates-io.librad]
+git = "https://github.com/radicle-dev/radicle-link"
+branch = "maint"
 
-[patch."https://github.com/radicle-dev/radicle-avatar"]
-radicle-avatar = { path = "vendor/radicle-avatar" }
+[patch.crates-io.radicle-seed]
+git = "https://github.com/radicle-dev/radicle-link"
+branch = "maint"
+
+[patch.crates-io.radicle-avatar]
+git = "https://github.com/radicle-dev/radicle-avatar"
+branch = "main"

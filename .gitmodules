@@ -1,6 +1,0 @@
-[submodule "vendor/radicle-avatar"]
-	path = vendor/radicle-avatar
-	url = https://github.com/radicle-dev/radicle-avatar
-[submodule "vendor/radicle-link"]
-	path = vendor/radicle-link
-	url = https://github.com/radicle-dev/radicle-link
