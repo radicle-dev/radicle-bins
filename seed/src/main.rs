@@ -47,7 +47,7 @@ pub struct Urns {
 #[argh(subcommand)]
 pub enum Track {
     Urns(Urns),
-    Peers(Peers)
+    Peers(Peers),
 }
 
 #[derive(FromArgs)]
@@ -115,7 +115,7 @@ async fn main() {
             Some(Track::Peers(Peers { peers })) => Mode::TrackPeers(peers.into_iter().collect()),
             Some(Track::Urns(Urns { urns })) => Mode::TrackUrns(urns.into_iter().collect()),
             None => Mode::TrackEverything,
-        }
+        },
     };
     let node = Node::new(config, signer).unwrap();
     let handle = node.handle();
