@@ -19,6 +19,7 @@ use std::{
     collections::{hash_map::Entry, HashMap},
     convert::Infallible,
     net,
+    path::PathBuf,
     sync::Arc,
     time,
 };
@@ -279,11 +280,12 @@ pub async fn run<A: Into<net::SocketAddr>>(
     description: Option<String>,
     addr: A,
     public_addr: Option<String>,
+    assets_path: PathBuf,
     peer_id: PeerId,
     mut handle: seed::NodeHandle,
     events: chan::Receiver<seed::Event>,
 ) {
-    let public = warp::fs::dir("ui/public");
+    let public = warp::fs::dir(assets_path);
     let projects = handle.get_projects().await.unwrap();
     let state = Arc::new(Mutex::new(State {
         name,
