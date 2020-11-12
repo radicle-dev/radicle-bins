@@ -25,16 +25,37 @@ use radicle_seed_node as seed;
 
 use argh::FromArgs;
 
+/// A set of peers to track
+#[derive(FromArgs)]
+#[argh(subcommand, name = "track-peers")]
+pub struct Peers {
+    /// track the specified peer only
+    #[argh(option, long = "peer")]
+    peers: Vec<PeerId>,
+}
+
+/// A set of URNs to track
+#[derive(FromArgs)]
+#[argh(subcommand, name = "track-urns")]
+pub struct Urns {
+    /// track the specified URN only
+    #[argh(option, long = "urn")]
+    urns: Vec<RadUrn>,
+}
+
+#[derive(FromArgs)]
+#[argh(subcommand)]
+pub enum Track {
+    Urns(Urns),
+    Peers(Peers),
+}
+
 #[derive(FromArgs)]
 /// Radicle Seed.
 pub struct Options {
-    /// track the specified peers only
-    #[argh(option)]
-    pub track_peers: Vec<PeerId>,
-
-    /// track the specified URNs only
-    #[argh(option)]
-    pub track_urns: Vec<RadUrn>,
+    /// track the specified peer only
+    #[argh(subcommand)]
+    pub track: Option<Track>,
 
     /// listen on the following address for peer connections
     #[argh(option)]
@@ -90,12 +111,10 @@ async fn main() {
             .peer_listen
             .unwrap_or(NodeConfig::default().listen_addr),
         root: opts.root,
-        mode: if !opts.track_peers.is_empty() {
-            Mode::TrackPeers(opts.track_peers.into_iter().collect())
-        } else if !opts.track_urns.is_empty() {
-            Mode::TrackUrns(opts.track_urns.into_iter().collect())
-        } else {
-            Mode::TrackEverything
+        mode: match opts.track {
+            Some(Track::Peers(Peers { peers })) => Mode::TrackPeers(peers.into_iter().collect()),
+            Some(Track::Urns(Urns { urns })) => Mode::TrackUrns(urns.into_iter().collect()),
+            None => Mode::TrackEverything,
         },
     };
     let node = Node::new(config, signer).unwrap();
