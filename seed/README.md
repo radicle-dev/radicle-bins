@@ -29,8 +29,8 @@ To see the seed dashboard, point your browser to http://127.0.0.1:8888.
                       [--description <description>] [--public-addr <public-addr>]
                       [<command>] [<args>]
 
-    To run the seed node, a PKCS8 encoded secret key **must always** be
-    provided in STDIN.
+    To run the seed node, a secret key in the format produced by
+    `radicle-keyutil` **must always** be provided in STDIN.
 
     Options:
       --peer-listen     listen on the following address for peer connections
