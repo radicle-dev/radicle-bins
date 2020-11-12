@@ -275,6 +275,7 @@ async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 pub async fn run<A: Into<net::SocketAddr>>(
     name: Option<String>,
     description: Option<String>,
