@@ -38,6 +38,7 @@ To see the seed dashboard, point your browser to http://127.0.0.1:8888.
                         (default: 127.0.0.1:8888)
       --log             log level (default: info)
       --root            radicle root path, for key and git storage
+      --assets-path     path to UI assets directory
       --name            name of this seed, displayed to users
       --description     description of this seed, displayed to users as HTML
       --public-addr     public address of this seed node, eg.

@@ -74,6 +74,10 @@ pub struct Options {
     #[argh(option)]
     pub root: Option<PathBuf>,
 
+    /// path to UI assets directory
+    #[argh(option, default = "PathBuf::from(\"ui/public\")")]
+    pub assets_path: PathBuf,
+
     /// name of this seed, displayed to users
     #[argh(option)]
     pub name: Option<String>,
@@ -127,6 +131,7 @@ async fn main() {
         opts.description,
         opts.http_listen,
         opts.public_addr,
+        opts.assets_path,
         peer_id,
         handle,
         rx,
