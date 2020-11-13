@@ -21,7 +21,7 @@ use std::{
     net,
     path::PathBuf,
     sync::Arc,
-    time,
+    time::{self, SystemTime},
 };
 
 use futures::{channel::mpsc as chan, StreamExt as _};
@@ -71,7 +71,7 @@ struct State {
     description: Option<String>,
     public_addr: Option<String>,
     peer_id: PeerId,
-    projects: HashMap<RadUrn, seed::Project>,
+    projects: HashMap<RadUrn, Project>,
     peers: HashMap<PeerId, Peer>,
     subs: Vec<tokio::sync::mpsc::UnboundedSender<Event>>,
 }
@@ -96,12 +96,15 @@ impl State {
         // We don't want any path in this URN, just the project id.
         proj.urn = RadUrn::new(proj.urn.id, proj.urn.proto, uri::Path::default());
 
-        if self
-            .projects
-            .insert(proj.urn.clone(), proj.clone())
-            .is_none()
-        {
-            self.broadcast(Event::ProjectTracked(Project::from(proj)));
+        let tracked = time::SystemTime::now();
+
+        match self.projects.entry(proj.urn.clone()) {
+            Entry::Vacant(v) => {
+                let proj = Project::from((proj, Some(tracked)));
+                v.insert(proj.clone());
+                self.broadcast(Event::ProjectTracked(proj));
+            },
+            Entry::Occupied(_) => {},
         }
     }
 
@@ -241,15 +244,17 @@ pub struct Project {
     pub name: String,
     pub description: Option<String>,
     pub maintainers: Vec<User>,
+    pub tracked: Option<SystemTime>,
 }
 
-impl From<seed::Project> for Project {
-    fn from(other: seed::Project) -> Self {
+impl From<(seed::Project, Option<SystemTime>)> for Project {
+    fn from((other, tracked): (seed::Project, Option<SystemTime>)) -> Self {
         Self {
             urn: other.urn,
             name: other.name,
             description: other.description,
             maintainers: other.maintainers.into_iter().map(User::from).collect(),
+            tracked,
         }
     }
 }
@@ -293,7 +298,10 @@ pub async fn run<A: Into<net::SocketAddr>>(
         description,
         peer_id,
         public_addr,
-        projects: projects.into_iter().map(|p| (p.urn.clone(), p)).collect(),
+        projects: projects
+            .into_iter()
+            .map(|p| (p.urn.clone(), Project::from((p, None))))
+            .collect(),
         peers: HashMap::new(),
         subs: Vec::new(),
     }));
@@ -350,11 +358,7 @@ async fn events_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, wa
     let receiver = {
         let mut state = state.lock().await;
         let (tx, rx) = tokio::sync::mpsc::unbounded_channel();
-        let projects = state
-            .projects
-            .values()
-            .map(|p| Project::from(p.clone()))
-            .collect();
+        let projects = state.projects.values().cloned().collect();
         let peers = state.peers.values().cloned().collect();
         let info = state.info();
 

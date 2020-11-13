@@ -4,7 +4,16 @@ const peerStore = writable([]);
 const projectStore = writable([]);
 const infoStore = writable([]);
 
-export const projects = derived(projectStore, a => a);
+export const projects = derived(projectStore, projs => {
+  return projs
+    .map(proj => {
+      proj.tracked = proj.tracked
+        ? new Date(proj.tracked.secs_since_epoch * 1000)
+        : new Date(0);
+      return proj;
+    })
+    .sort((a, b) => b.tracked - a.tracked);
+});
 export const seed = derived(infoStore, a => a);
 
 export const online = derived(peerStore, peers => {
@@ -61,6 +70,7 @@ eventSource.onmessage = e => {
                 name: p.name,
                 maintainers: p.maintainers,
                 description: p.description,
+                tracked: p.tracked,
               };
             })
           )
@@ -78,6 +88,7 @@ eventSource.onmessage = e => {
             name: p.name,
             maintainers: p.maintainers,
             description: p.description,
+            tracked: p.tracked,
           };
         })
       );
