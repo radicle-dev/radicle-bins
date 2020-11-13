@@ -102,8 +102,8 @@ impl State {
                 let proj = Project::from((proj, Some(tracked)));
                 v.insert(proj.clone());
                 self.broadcast(Event::ProjectTracked(proj));
-            }
-            Entry::Occupied(_) => {}
+            },
+            Entry::Occupied(_) => {},
         }
     }
 
@@ -295,7 +295,10 @@ pub async fn run<A: Into<net::SocketAddr>>(
         description,
         peer_id,
         public_addr,
-        projects: projects.into_iter().map(|p| (p.urn.clone(), Project::from((p, None)))).collect(),
+        projects: projects
+            .into_iter()
+            .map(|p| (p.urn.clone(), Project::from((p, None))))
+            .collect(),
         peers: HashMap::new(),
         subs: Vec::new(),
     }));
@@ -352,11 +355,7 @@ async fn events_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, wa
     let receiver = {
         let mut state = state.lock().await;
         let (tx, rx) = tokio::sync::mpsc::unbounded_channel();
-        let projects = state
-            .projects
-            .values()
-            .cloned()
-            .collect();
+        let projects = state.projects.values().cloned().collect();
         let peers = state.peers.values().cloned().collect();
         let info = state.info();
 
