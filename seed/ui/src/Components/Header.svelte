@@ -1,6 +1,8 @@
 <script>
   import Copyable from "./Copyable.svelte";
   export let seed = null;
+  export let projects = null;
+  export let online = null;
 
   $: seedId = seed.publicAddr
     ? `${seed.peerId}@${seed.publicAddr}`
@@ -51,10 +53,10 @@
   {/if}
 </div>
 <div class="stat">
-  <h2>{seed.peers}</h2>
+  <h2>{online ? online.length : 0}</h2>
   <h5>connected<br />peers</h5>
 </div>
 <div class="stat">
-  <h2>{seed.projects}</h2>
+  <h2>{projects ? projects.length : 0}</h2>
   <h5>seeded<br />projects</h5>
 </div>
