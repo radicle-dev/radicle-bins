@@ -35,7 +35,9 @@
 </style>
 
 <div class="container">
-  <Header seed={$seed} projects={$projects} online={$online} />
+  {#if $seed}
+    <Header seed={$seed} projects={$projects} online={$online} />
+  {/if}
   <main>
     <h3>Projects</h3>
     {#each $projects as project}

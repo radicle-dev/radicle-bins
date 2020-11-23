@@ -1,8 +1,8 @@
 import { derived, writable } from "svelte/store";
 
 const peerStore = writable([]);
-const projectStore = writable([]);
-const infoStore = writable([]);
+const projectStore = writable(null);
+const infoStore = writable(null);
 
 export const projects = derived(projectStore, projs => {
   return projs
@@ -105,9 +105,10 @@ const filterOnline = peer => {
 // FIXTURES
 const data = {
   seed: {
-    name: "seedling.radicle.xyz",
-    address: "hybh5c...7ye83k@seedling.radicle.xyz:12345",
-    desc:
+    name: "seedling",
+    publicAddr: "seedling.radicle.xyz:12345",
+    peerId: "hynewpywqj6x4mxgj7sojhue3erucyexiyhobxx4du9w66hxhbfqbw",
+    description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora quod inventore cumque doloribus sapiente maiores! Sed cumque iste, nisi amet, officiis illo eum veniam ducimus rem minus voluptates, quaerat vero.",
     peers: 12,
     projects: 1000,
@@ -258,6 +259,7 @@ const data = {
 };
 
 if (process.env === "dev") {
+  infoStore.set(data.seed);
   peerStore.set(data.peers);
   projectStore.set(data.projects);
 }
