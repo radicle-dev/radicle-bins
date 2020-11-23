@@ -1010,7 +1010,7 @@ dependencies = [
 [[package]]
 name = "librad"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=maint#e105b71b65fb3ce99c0ab63375a018e191701d7f"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/seed-guess-project-user#9ebf8491371f4b4965be9a63e44e397710334d99"
 dependencies = [
  "async-trait",
  "bit-vec",
@@ -1587,7 +1587,7 @@ dependencies = [
 [[package]]
 name = "radicle-git-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=maint#e105b71b65fb3ce99c0ab63375a018e191701d7f"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/seed-guess-project-user#9ebf8491371f4b4965be9a63e44e397710334d99"
 dependencies = [
  "git2",
  "multibase",
@@ -1630,7 +1630,7 @@ dependencies = [
 [[package]]
 name = "radicle-macros"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=maint#e105b71b65fb3ce99c0ab63375a018e191701d7f"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/seed-guess-project-user#9ebf8491371f4b4965be9a63e44e397710334d99"
 dependencies = [
  "quote",
  "radicle-git-ext",
@@ -1640,7 +1640,7 @@ dependencies = [
 [[package]]
 name = "radicle-seed"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=maint#e105b71b65fb3ce99c0ab63375a018e191701d7f"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/seed-guess-project-user#9ebf8491371f4b4965be9a63e44e397710334d99"
 dependencies = [
  "async-trait",
  "futures",
@@ -1672,7 +1672,7 @@ dependencies = [
 [[package]]
 name = "radicle-std-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=maint#e105b71b65fb3ce99c0ab63375a018e191701d7f"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/seed-guess-project-user#9ebf8491371f4b4965be9a63e44e397710334d99"
 
 [[package]]
 name = "rand"

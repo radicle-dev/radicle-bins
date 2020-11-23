@@ -92,20 +92,31 @@ impl State {
         self.subs.retain(|sub| sub.send(event.clone()).is_ok());
     }
 
-    fn project_tracked(&mut self, mut proj: seed::Project) {
+    fn project_tracked(
+        &mut self,
+        mut project: seed::Project,
+        seed::event::User { name, urn, peer_id }: seed::event::User,
+    ) {
         // We don't want any path in this URN, just the project id.
-        proj.urn = RadUrn::new(proj.urn.id, proj.urn.proto, uri::Path::default());
+        project.urn = RadUrn::new(project.urn.id, project.urn.proto, uri::Path::default());
 
         let tracked = time::SystemTime::now();
+        let entry = Project::from((project, Some(tracked)));
 
-        match self.projects.entry(proj.urn.clone()) {
+        match self.projects.entry(entry.urn.clone()) {
             Entry::Vacant(v) => {
-                let proj = Project::from((proj, Some(tracked)));
-                v.insert(proj.clone());
-                self.broadcast(Event::ProjectTracked(proj));
+                v.insert(entry.clone());
             },
             Entry::Occupied(_) => {},
         }
+
+        // Update the user if the peer is connected.
+        if let Entry::Occupied(mut entry) = self.peers.entry(peer_id) {
+            let mut peer = entry.get_mut();
+            peer.user = urn.map(|u| User::from(u).with_name(name));
+        }
+
+        self.broadcast(Event::ProjectTracked(entry));
     }
 
     fn peer_connected(&mut self, peer_id: PeerId, urn: Option<RadUrn>, name: Option<String>) {
@@ -266,10 +277,10 @@ async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event
         let mut state = state.lock().await;
 
         match e {
-            seed::Event::ProjectTracked(proj, _) => {
-                state.project_tracked(proj);
+            seed::Event::ProjectTracked(proj, user) => {
+                state.project_tracked(proj, user);
             },
-            seed::Event::PeerConnected { peer_id, urn, name } => {
+            seed::Event::PeerConnected(seed::event::User { peer_id, urn, name }) => {
                 state.peer_connected(peer_id, urn, name);
             },
             seed::Event::PeerDisconnected(peer_id) => {

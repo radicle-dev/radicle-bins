@@ -37,6 +37,12 @@ export const seen = derived(peerStore, peers => {
     .sort((a, b) => b.state.since - a.state.since);
 });
 
+const fetchPeers = () => {
+  fetch("/peers")
+    .then(resp => resp.json())
+    .then(peerStore.set);
+};
+
 const eventSource = new EventSource("/events");
 
 eventSource.onmessage = e => {
@@ -52,14 +58,13 @@ eventSource.onmessage = e => {
     }
 
     case "peerDisconnected": {
-      fetch("/peers")
-        .then(resp => resp.json())
-        .then(peerStore.set);
+      fetchPeers();
 
       break;
     }
 
     case "projectTracked": {
+      fetchPeers();
       fetch("/projects")
         .then(resp => resp.json())
         .then(result =>
@@ -75,6 +80,7 @@ eventSource.onmessage = e => {
             })
           )
         );
+
       break;
     }
 
