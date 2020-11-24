@@ -261,21 +261,24 @@ impl From<(seed::Project, Option<SystemTime>)> for Project {
 
 async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event>) {
     while let Some(e) = events.next().await {
-        tracing::info!("{:?}", e);
-
         let mut state = state.lock().await;
 
         match e {
-            seed::Event::ProjectTracked(proj, _) => {
+            seed::Event::ProjectTracked(proj, peer_id) => {
+                tracing::info!(event = "ProjectTracked", peer_id = %peer_id, name = %proj.name, urn = %proj.urn);
                 state.project_tracked(proj);
             },
             seed::Event::PeerConnected { peer_id, urn, name } => {
+                tracing::info!(event = "PeerConnected", peer_id = %peer_id, name = ?name, urn = ?urn);
                 state.peer_connected(peer_id, urn, name);
             },
             seed::Event::PeerDisconnected(peer_id) => {
+                tracing::info!(event = "PeerDisconnected", peer_id = %peer_id);
                 state.peer_disconnected(peer_id);
             },
-            seed::Event::Listening(_) => {},
+            seed::Event::Listening(addr) => {
+                tracing::info!(event = "Listening", addr = %addr);
+            },
         };
     }
 }
