@@ -164,3 +164,16 @@ p,
   text-transform: uppercase;
   letter-spacing: 0.05rem;
 }
+
+/* Workaround for Firefox bug:
+ * https://bugzilla.mozilla.org/show_bug.cgi?id=1520157 */
+@supports (-moz-appearance: none) {
+  .typo-text-mono,
+  .typo-text-mono-bold,
+  .typo-text-small-mono,
+  .typo-mono,
+  .typo-mono-semi-bold,
+  .typo-mono-bold {
+    font-family: var(--typeface-mono-regular);
+  }
+}
