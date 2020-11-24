@@ -269,7 +269,12 @@ async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event
                 state.project_tracked(proj);
             },
             seed::Event::PeerConnected { peer_id, urn, name } => {
-                tracing::info!(event = "PeerConnected", peer_id = %peer_id, name = ?name, urn = ?urn);
+                tracing::info!(
+                    event = "PeerConnected",
+                    peer_id = %peer_id,
+                    name = %name.clone().unwrap_or("".to_string()),
+                    urn = %urn.clone().map(|urn| urn.to_string()).unwrap_or("".to_string()),
+                );
                 state.peer_connected(peer_id, urn, name);
             },
             seed::Event::PeerDisconnected(peer_id) => {
