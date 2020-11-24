@@ -1,9 +1,35 @@
 <script>
+  import Fuse from "fuse.js";
   import { seed, projects, online, seen } from "./state.js";
 
   import Header from "./Components/Header.svelte";
+  import Input from "./Components/Input.svelte";
   import PeerList from "./Components/PeerList.svelte";
   import Project from "./Components/Project.svelte";
+
+  const options = {
+    includeScore: true,
+    keys: ["name", "description", "urn"],
+    threshold: 0.2,
+    ignoreLocation: true,
+  };
+
+  let projectFilter = "";
+  let allProjects = [];
+  let filteredProjects = allProjects;
+
+  $: {
+    allProjects = $projects.map(project => {
+      return { item: project };
+    });
+
+    if (projectFilter.length > 0) {
+      const fuse = new Fuse($projects, options);
+      filteredProjects = fuse.search(projectFilter);
+    } else {
+      filteredProjects = allProjects;
+    }
+  }
 </script>
 
 <style>
@@ -13,10 +39,6 @@
 
   aside {
     grid-area: sidebar;
-  }
-
-  h3 {
-    margin-bottom: 1.5rem;
   }
 
   .container {
@@ -32,6 +54,16 @@
     max-width: 62rem;
     padding: 4rem 1rem;
   }
+
+  .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .header h3 {
+    margin-right: 1rem;
+  }
 </style>
 
 <div class="container">
@@ -39,9 +71,15 @@
     <Header seed={$seed} projects={$projects} online={$online} />
   {/if}
   <main>
-    <h3>Projects</h3>
-    {#each $projects as project}
-      <Project {project} />
+    <div class="header">
+      <h3>Projects</h3>
+      <Input
+        style="width: 100%;"
+        bind:value={projectFilter}
+        placeholder="Type to filter…" />
+    </div>
+    {#each filteredProjects as project}
+      <Project project={project.item} />
     {:else}
       <p style="color: var(--color-foreground-level-5);">
         No replicated projects
