@@ -75,6 +75,7 @@
       <h3>Projects</h3>
       <Input
         style="width: 100%;"
+        disabled={$projects.length === 0}
         bind:value={projectFilter}
         placeholder="Type to filter…" />
     </div>
