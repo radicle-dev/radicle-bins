@@ -1,7 +1,7 @@
 import { derived, writable } from "svelte/store";
 
 const peerStore = writable([]);
-const projectStore = writable(null);
+const projectStore = writable([]);
 const infoStore = writable(null);
 
 export const projects = derived(projectStore, projs => {
