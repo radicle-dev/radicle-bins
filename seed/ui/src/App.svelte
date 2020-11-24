@@ -79,13 +79,19 @@
         bind:value={projectFilter}
         placeholder="Type to filter…" />
     </div>
-    {#each filteredProjects as project}
-      <Project project={project.item} />
+    {#if $projects.length > 0}
+      {#each filteredProjects as project}
+        <Project project={project.item} />
+      {:else}
+        <p style="color: var(--color-foreground-level-5);">
+          None of the replicated projects match this query
+        </p>
+      {/each}
     {:else}
       <p style="color: var(--color-foreground-level-5);">
         No replicated projects
       </p>
-    {/each}
+    {/if}
   </main>
   <aside>
     <h3>Peers</h3>
