@@ -59,6 +59,7 @@
     display: flex;
     align-items: center;
     margin-bottom: 1.5rem;
+    height: 2.5rem;
   }
 
   .header h3 {
@@ -94,7 +95,9 @@
     {/if}
   </main>
   <aside>
-    <h3>Peers</h3>
+    <div class="header">
+      <h3>Peers</h3>
+    </div>
     {#if $online.length > 0 || $seen.length > 0}
       <PeerList online={$online} seen={$seen} />
     {:else}
