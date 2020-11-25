@@ -55,13 +55,14 @@
     padding: 4rem 1rem;
   }
 
-  .header {
+  header {
     display: flex;
     align-items: center;
     margin-bottom: 1.5rem;
+    height: 2.5rem;
   }
 
-  .header h3 {
+  header h3 {
     margin-right: 1rem;
   }
 </style>
@@ -71,14 +72,14 @@
     <Header seed={$seed} projects={$projects} online={$online} />
   {/if}
   <main>
-    <div class="header">
+    <header>
       <h3>Projects</h3>
       <Input
         style="width: 100%;"
         disabled={$projects.length === 0}
         bind:value={projectFilter}
         placeholder="Type to filter…" />
-    </div>
+    </header>
     {#if $projects.length > 0}
       {#each filteredProjects as project}
         <Project project={project.item} />
@@ -94,7 +95,9 @@
     {/if}
   </main>
   <aside>
-    <h3>Peers</h3>
+    <header>
+      <h3>Peers</h3>
+    </header>
     {#if $online.length > 0 || $seen.length > 0}
       <PeerList online={$online} seen={$seen} />
     {:else}
