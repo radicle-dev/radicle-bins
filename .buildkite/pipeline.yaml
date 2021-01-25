@@ -41,6 +41,6 @@ steps:
       - ".ci/bins"
     agents: *build-agent
     env: *build-docker
-    artifact-paths:
+    artifact_paths:
       - "target/release/radicle-keyutil"
       - "target/release/radicle-seed-node"
