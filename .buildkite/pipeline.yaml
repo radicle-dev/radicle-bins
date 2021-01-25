@@ -35,3 +35,12 @@ steps:
       <<: *build-docker
       STEP_DOCKER_FILE: .docker/seed/Dockerfile
       STEP_DOCKER_IMAGE: gcr.io/opensourcecoin/radicle-seed-node
+
+  - label: "Bins"
+    commands:
+      - ".ci/bins"
+    agents: *build-agent
+    env: *build-docker
+    artifact-paths:
+      - "target/release/radicle-keyutil"
+      - "target/release/radicle-seed-node"
