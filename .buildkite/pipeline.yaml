@@ -39,10 +39,8 @@ steps:
   - label: "Bins"
     commands:
       - ".ci/bins"
-      - "infra/scripts/assets.sh"
+      - "infra/scripts/dist.sh"
     agents: *build-agent
     env: *build-docker
     artifact_paths:
-      - "target/release/radicle-keyutil"
-      - "target/release/radicle-seed-node"
-      - "dist/assets.tar.gz"
+      - "dist/*"

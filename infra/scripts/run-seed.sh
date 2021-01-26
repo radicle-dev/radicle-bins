@@ -3,6 +3,10 @@ set -eou pipefail
 
 export RUST_BACKTRACE=full
 
+ROOT=/state
+KEY_FILE=$ROOT/seed.key
+ASSETS=$ROOT/assets
+
 if [ ! -d $ROOT ]; then
     echo "The root directory `${ROOT}` does not exist"
     exit 1
