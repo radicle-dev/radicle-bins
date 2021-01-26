@@ -10,3 +10,4 @@ tar -zcvf dist/assets.tar.gz ./seed/ui/public
 cp target/release/radicle-keyutil dist
 cp target/release/radicle-seed-node dist
 cp infra/systemd/seed.service dist
+cp infra/scripts/setup.sh dist

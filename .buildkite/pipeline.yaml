@@ -36,7 +36,7 @@ steps:
       STEP_DOCKER_FILE: .docker/seed/Dockerfile
       STEP_DOCKER_IMAGE: gcr.io/opensourcecoin/radicle-seed-node
 
-  - label: "Bins"
+  - label: "Dist"
     commands:
       - ".ci/bins"
       - "infra/scripts/dist.sh"
