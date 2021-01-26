@@ -15,5 +15,7 @@ curl -sfLS ARTIFACT_URL/seed.service -o /etc/systemd/system/seed.service
 curl -sfLS ARTIFACT_URL/assets.tar.gz -o $ROOT/assets.tar.gz
 tar -zxvf $ROOT/assets.tar.gz
 
+apt-get install git
+
 systemctl enable seed
 systemctl start seed
