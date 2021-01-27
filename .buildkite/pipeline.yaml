@@ -34,4 +34,4 @@ steps:
     env:
       <<: *build-docker
       STEP_DOCKER_FILE: .docker/seed/Dockerfile
-      STEP_DOCKER_IMAGE: gcr.io/opensourcecoin/radicle-seed-node
+      STEP_DOCKER_IMAGE: gcr.io/opensourcecoin/radicle-seed-node:$BUILDKITE_TAG
