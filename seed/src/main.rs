@@ -19,7 +19,7 @@ use std::{net, path::PathBuf};
 
 use tracing_subscriber::FmtSubscriber;
 
-use librad::{git::Urn, peer::PeerId};
+use librad::{git::Urn, net::Network, peer::PeerId};
 use radicle_seed::{Mode, Node, NodeConfig, Signer};
 use radicle_seed_node as seed;
 
@@ -109,6 +109,7 @@ async fn main() {
         Ok(signer) => signer,
         Err(err) => panic!("invalid key was supplied to stdin: {}", err),
     };
+    let network = Network::default();
 
     let config = NodeConfig {
         listen_addr: opts
@@ -120,6 +121,7 @@ async fn main() {
             Some(Track::Urns(Urns { urns })) => Mode::TrackUrns(urns.into_iter().collect()),
             None => Mode::TrackEverything,
         },
+        network,
     };
     let node = Node::new(config, signer).unwrap();
     let handle = node.handle();
