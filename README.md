@@ -23,8 +23,3 @@ docker pull gcr.io/opensourcecoin/radicle-seed-node
 
 Unless otherwise noted, all source code in this repository is licensed under the
 [GPLv3](https://www.gnu.org/licenses/gpl-3.0.txt).
-
-## Deployment
-
-For member of the organisation that wish to deploy a seed node to our Google
-Cloud please see the [Deployment document](./docs/deployment.md).
