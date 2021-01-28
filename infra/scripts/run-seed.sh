@@ -3,10 +3,6 @@ set -eou pipefail
 
 export RUST_BACKTRACE=full
 
-ROOT=/state
-KEY_FILE=$ROOT/seed.key
-ASSETS=$ROOT/assets
-
 if [ ! -d $ROOT ]; then
     echo "The root directory `${ROOT}` does not exist"
     exit 1
@@ -28,9 +24,9 @@ echo "Starting seed node"
 
 /usr/bin/radicle-seed-node \
 	--assets-path $ASSETS \
-	--http-listen 0.0.0.0:80 \
-	--peer-listen 0.0.0.0:12345 \
-	--public-addr "seedling.radicle.xyz:12345" \
+	--http-listen 0.0.0.0:$HTTP_PORT \
+	--peer-listen 0.0.0.0:$PEER_PORT \
+	--public-addr $PUBLIC_ADDR \
 	--log info \
 	--root $ROOT_DIR \
 	--name "Seedling 🌱" \
