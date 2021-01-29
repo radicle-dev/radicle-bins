@@ -39,6 +39,7 @@ steps:
   - label: "Dist"
     commands:
       - ".ci/bins"
+      - ".ci/ui"
       - "infra/scripts/dist.sh"
     agents: *build-agent
     env: *build-docker
