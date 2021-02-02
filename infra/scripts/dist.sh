@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 set -eou pipefail
 
 if [ -d dist ]; then
