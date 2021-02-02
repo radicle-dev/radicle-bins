@@ -18,6 +18,17 @@ RUN set -eux; \
     apt-get autoremove; \
     rm -rf /var/lib/apt/lists/*
 
+# install npm
+RUN curl -sfLS https://deb.nodesource.com/setup_14.x | bash -
+RUN apt-get -y update
+RUN apt-get -y --no-install-recommends install build-essential nodejs
+
+# install yarn
+RUN curl -sfLS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get -y update
+RUN apt-get -y --no-install-recommends install yarn
+
 # Rust toolchain
 # Make sure this is in sync with rust-toolchain!
 ENV RUST_VERSION=nightly-2020-11-10 \
