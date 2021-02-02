@@ -3,6 +3,20 @@ set -eou pipefail
 
 source "$(dirname ${BASH_SOURCE[0]})/.env"
 
+export CACHE_FOLDER="/cache"
+export HOME="$CACHE_FOLDER"
+
+echo "CACHE_FOLDER=$CACHE_FOLDER"
+echo "HOME=$HOME"
+
+export NPM_CONFIG_CACHE="$CACHE_FOLDER/npm"
+export YARN_CACHE_FOLDER="$CACHE_FOLDER/yarn"
+export YARN_TEMPDIR="$CACHE_FOLDER/yarn-tmp"
+
+mkdir -p "$NPM_CONFIG_CACHE"
+mkdir -p "$YARN_CACHE_FOLDER"
+mkdir -p "$YARN_TEMPDIR"
+
 cd seed/ui
 yarn
 yarn build
