@@ -1,12 +1,12 @@
 [package]
 name = "radicle-seed-node"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["The Radicle Team <dev@radicle.xyz>"]
 edition = "2018"
 license = "GPL-3.0-or-later"
 
 [dependencies]
-argh = "0.1.3"
+argh = "0.1"
 chrono = "0.4"
 futures = "0.3"
 tokio = { version = "0.2", features = ["sync"], default-features = false }

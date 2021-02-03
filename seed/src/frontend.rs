@@ -30,7 +30,7 @@ use tokio::sync::Mutex;
 use warp::Filter as _;
 
 use avatar::Avatar;
-use librad::{peer::PeerId, uri, uri::RadUrn};
+use librad::{git::Urn, peer::PeerId};
 use radicle_avatar as avatar;
 use radicle_seed as seed;
 
@@ -71,7 +71,7 @@ struct State {
     description: Option<String>,
     public_addr: Option<String>,
     peer_id: PeerId,
-    projects: HashMap<RadUrn, Project>,
+    projects: HashMap<Urn, Project>,
     peers: HashMap<PeerId, Peer>,
     subs: Vec<tokio::sync::mpsc::UnboundedSender<Event>>,
 }
@@ -94,7 +94,7 @@ impl State {
 
     fn project_tracked(&mut self, mut proj: seed::Project) {
         // We don't want any path in this URN, just the project id.
-        proj.urn = RadUrn::new(proj.urn.id, proj.urn.proto, uri::Path::default());
+        proj.urn = proj.urn.with_path(None);
 
         let tracked = time::SystemTime::now();
 
@@ -108,7 +108,7 @@ impl State {
         }
     }
 
-    fn peer_connected(&mut self, peer_id: PeerId, urn: Option<RadUrn>, name: Option<String>) {
+    fn peer_connected(&mut self, peer_id: PeerId, urn: Option<Urn>, name: Option<String>) {
         match self.peers.entry(peer_id) {
             Entry::Vacant(entry) => {
                 let user = urn.map(|u| User::from(u).with_name(name));
@@ -213,13 +213,13 @@ impl PeerState {
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct User {
-    urn: RadUrn,
+    urn: Urn,
     avatar: Avatar,
     name: Option<String>,
 }
 
-impl From<RadUrn> for User {
-    fn from(urn: RadUrn) -> Self {
+impl From<Urn> for User {
+    fn from(urn: Urn) -> Self {
         let avatar = Avatar::from(&urn.to_string(), avatar::Usage::Identity);
 
         Self {
@@ -240,7 +240,7 @@ impl User {
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Project {
-    pub urn: RadUrn,
+    pub urn: Urn,
     pub name: String,
     pub description: Option<String>,
     pub maintainers: Vec<User>,
