@@ -322,14 +322,27 @@ pub async fn run<A: Into<net::SocketAddr>>(
         })
         .and_then(peers_handler);
 
+    let info = warp::path("info")
+        .map({
+            let state = state.clone();
+            move || state.clone()
+        })
+        .and_then(info_handler);
+
     let app = warp::path("events")
         .and(warp::get())
         .map(move || state.clone())
         .and_then(events_handler);
 
-    warp::serve(app.or(public).or(projects).or(peers))
+    warp::serve(app.or(public).or(projects).or(peers).or(info))
         .run(addr)
         .await;
+}
+
+async fn info_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, warp::Rejection> {
+    let state = state.lock().await;
+
+    Ok(warp::reply::json(&state.info()))
 }
 
 async fn peers_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, warp::Rejection> {
