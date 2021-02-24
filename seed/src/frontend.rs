@@ -289,6 +289,6 @@ async fn events_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, wa
     };
 
     Ok(warp::sse::reply(warp::sse::keep_alive().stream(
-        UnboundedReceiverStream::new(receiver).map(|e| Ok::<_, Infallible>(warp::sse::json(e))),
+        UnboundedReceiverStream::new(receiver).map(|e| warp::sse::Event::default().json_data(e)),
     )))
 }
