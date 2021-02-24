@@ -1,6 +1,6 @@
-<script>
+<script lang="javascript">
   import Fuse from "fuse.js";
-  import { seed, projects, online, seen } from "./state.js";
+  import { seed, projects, online, poll, seen } from "./state.js";
 
   import Header from "./Components/Header.svelte";
   import Input from "./Components/Input.svelte";
@@ -30,6 +30,8 @@
       filteredProjects = allProjects;
     }
   }
+
+  poll();
 </script>
 
 <style>

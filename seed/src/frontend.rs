@@ -49,11 +49,6 @@ pub struct Info {
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase", tag = "type")]
 pub enum Event {
-    PeerConnected(Peer),
-    #[serde(rename_all = "camelCase")]
-    PeerDisconnected {
-        peer_id: PeerId,
-    },
     ProjectTracked(Project),
     #[serde(rename_all = "camelCase")]
     Snapshot {
@@ -239,9 +234,7 @@ pub async fn run<A: Into<net::SocketAddr>>(
         .and_then(projects_handler);
 
     let peers = warp::path("peers")
-        .map({
-            move || handle.clone()
-        })
+        .map(move || handle.clone())
         .and_then(peers_handler);
 
     let app = warp::path("events")
@@ -254,7 +247,9 @@ pub async fn run<A: Into<net::SocketAddr>>(
         .await;
 }
 
-async fn peers_handler(handle: Arc<Mutex<seed::NodeHandle>>) -> Result<impl warp::Reply, warp::Rejection> {
+async fn peers_handler(
+    handle: Arc<Mutex<seed::NodeHandle>>,
+) -> Result<impl warp::Reply, warp::Rejection> {
     let mut handle = handle.lock().await;
     let peers = handle.get_peers().await.expect("failed to get peer list");
 
