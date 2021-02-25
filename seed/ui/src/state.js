@@ -27,6 +27,7 @@ export const online = derived(peerStore, peers => {
     return 0;
   });
 });
+
 export const seen = derived(peerStore, peers => {
   return peers
     .filter(peer => peer.state.type === "disconnected")
@@ -37,6 +38,14 @@ export const seen = derived(peerStore, peers => {
     .sort((a, b) => b.state.since - a.state.since);
 });
 
+export const poll = () => {
+  setInterval(() => {
+    fetch("/peers")
+      .then(resp => resp.json())
+      .then(peerStore.set);
+  }, 1000);
+}
+
 const eventSource = new EventSource("/events");
 
 eventSource.onmessage = e => {
@@ -44,9 +53,6 @@ eventSource.onmessage = e => {
 
   switch (data.type) {
     case "peerConnected": {
-      fetch("/peers")
-        .then(resp => resp.json())
-        .then(peerStore.set);
 
       break;
     }
