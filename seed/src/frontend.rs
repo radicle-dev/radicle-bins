@@ -30,7 +30,7 @@ use tokio_stream::wrappers::UnboundedReceiverStream;
 use warp::Filter as _;
 
 use avatar::Avatar;
-use librad::{git::Urn, peer::PeerId};
+use librad::{git::Urn, net::protocol::event::downstream, peer::PeerId};
 use radicle_avatar as avatar;
 use radicle_seed as seed;
 
@@ -43,6 +43,22 @@ pub struct Info {
     description: Option<String>,
     peers: usize,
     projects: usize,
+}
+
+#[derive(Clone, Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MembershipInfo {
+    active: Vec<PeerId>,
+    passive: Vec<PeerId>,
+}
+
+impl From<downstream::MembershipInfo> for MembershipInfo {
+    fn from(i: downstream::MembershipInfo) -> Self {
+        Self {
+            active: i.active,
+            passive: i.passive,
+        }
+    }
 }
 
 #[derive(Debug, Serialize, Clone)]
@@ -212,6 +228,14 @@ pub async fn run<A: Into<net::SocketAddr>>(
     tokio::task::spawn(fanout(state.clone(), events));
 
     let handle = Arc::new(Mutex::new(handle));
+
+    let membership = {
+        let handle = handle.clone();
+        warp::path("membership")
+            .map(move || handle.clone())
+            .and_then(membership_handler)
+    };
+
     let projects = warp::path("projects")
         .map({
             let state = state.clone();
@@ -228,9 +252,21 @@ pub async fn run<A: Into<net::SocketAddr>>(
         .map(move || state.clone())
         .and_then(events_handler);
 
-    warp::serve(app.or(public).or(projects).or(peers))
+    warp::serve(app.or(public).or(membership).or(projects).or(peers))
         .run(addr)
         .await;
+}
+
+async fn membership_handler(
+    handle: Arc<Mutex<seed::NodeHandle>>,
+) -> Result<impl warp::Reply, warp::Rejection> {
+    let mut handle = handle.lock().await;
+    let info = handle
+        .get_membership()
+        .await
+        .expect("failed to get membership");
+
+    Ok(warp::reply::json(&MembershipInfo::from(info)))
 }
 
 async fn peers_handler(
