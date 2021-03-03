@@ -122,6 +122,7 @@ async fn main() {
             None => Mode::TrackEverything,
         },
         network,
+        ..NodeConfig::default()
     };
     let node = Node::new(config, signer).unwrap();
     let handle = node.handle();

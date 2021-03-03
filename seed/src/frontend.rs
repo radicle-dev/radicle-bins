@@ -17,7 +17,6 @@
 
 use std::{
     collections::{hash_map::Entry, HashMap},
-    convert::Infallible,
     net,
     path::PathBuf,
     sync::Arc,
@@ -125,12 +124,6 @@ pub enum PeerState {
     Disconnected { since: time::SystemTime },
 }
 
-impl PeerState {
-    fn new() -> Self {
-        Self::Connected
-    }
-}
-
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct User {
@@ -148,13 +141,6 @@ impl From<Urn> for User {
             urn,
             name: None,
         }
-    }
-}
-
-impl User {
-    fn with_name(mut self, name: Option<String>) -> Self {
-        self.name = name;
-        self
     }
 }
 
