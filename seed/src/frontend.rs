@@ -247,14 +247,27 @@ pub async fn run<A: Into<net::SocketAddr>>(
         .map(move || handle.clone())
         .and_then(peers_handler);
 
+    let info = warp::path("info")
+        .map({
+            let state = state.clone();
+            move || state.clone()
+        })
+        .and_then(info_handler);
+
     let app = warp::path("events")
         .and(warp::get())
         .map(move || state.clone())
         .and_then(events_handler);
 
-    warp::serve(app.or(public).or(membership).or(projects).or(peers))
-        .run(addr)
-        .await;
+    warp::serve(
+        app.or(public)
+            .or(membership)
+            .or(projects)
+            .or(peers)
+            .or(info),
+    )
+    .run(addr)
+    .await;
 }
 
 async fn membership_handler(
@@ -267,6 +280,12 @@ async fn membership_handler(
         .expect("failed to get membership");
 
     Ok(warp::reply::json(&MembershipInfo::from(info)))
+}
+
+async fn info_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, warp::Rejection> {
+    let state = state.lock().await;
+
+    Ok(warp::reply::json(&state.info()))
 }
 
 async fn peers_handler(
