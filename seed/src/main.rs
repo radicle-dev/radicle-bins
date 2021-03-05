@@ -15,7 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use std::{net, path::PathBuf};
+use std::{
+    net::{self, SocketAddr, ToSocketAddrs},
+    path::PathBuf,
+    str::FromStr,
+};
 
 use tracing_subscriber::FmtSubscriber;
 
@@ -89,12 +93,39 @@ pub struct Options {
     /// public address of this seed node, eg. 'seedling.radicle.xyz:12345'
     #[argh(option)]
     pub public_addr: Option<String>,
+
+    /// list of bootstrap peers, eg.
+    /// 'f00...@seed1.example.com:12345,bad...@seed2.example.com:12345'
+    #[argh(option)]
+    pub bootstrap: Option<String>,
 }
 
 impl Options {
     pub fn from_env() -> Self {
         argh::from_env()
     }
+}
+
+fn parse_peer_address(address: &str) -> SocketAddr {
+    address
+        .to_socket_addrs()
+        .map(|mut a| a.next())
+        .expect("peer address could not be parsed")
+        .expect("peer address could not be resolved")
+}
+
+fn parse_peer_list(option: String) -> Vec<(PeerId, SocketAddr)> {
+    option
+        .split(',')
+        .map(|entry| entry.splitn(2, '@').collect())
+        .into_iter()
+        .map(|parts: Vec<&str>| {
+            (
+                PeerId::from_str(parts[0]).expect("peer id could not be parsed"),
+                parse_peer_address(parts[1]),
+            )
+        })
+        .collect()
 }
 
 #[tokio::main]
@@ -122,6 +153,7 @@ async fn main() {
             None => Mode::TrackEverything,
         },
         network,
+        bootstrap: opts.bootstrap.map_or_else(Vec::new, parse_peer_list),
         ..NodeConfig::default()
     };
     let node = Node::new(config, signer).unwrap();
