@@ -933,7 +933,7 @@ dependencies = [
 [[package]]
 name = "librad"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=lets-fetz-for-setz#4e5b816069386cfea3187ca44ab1f55368a29af6"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=master#7ae1dd3363093a0e211ced999f3316c563dbe35b"
 dependencies = [
  "async-stream",
  "async-trait",
@@ -1489,7 +1489,7 @@ dependencies = [
 [[package]]
 name = "radicle-git-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=lets-fetz-for-setz#4e5b816069386cfea3187ca44ab1f55368a29af6"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=master#7ae1dd3363093a0e211ced999f3316c563dbe35b"
 dependencies = [
  "git2",
  "minicbor",
@@ -1533,7 +1533,7 @@ dependencies = [
 [[package]]
 name = "radicle-macros"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=lets-fetz-for-setz#4e5b816069386cfea3187ca44ab1f55368a29af6"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=master#7ae1dd3363093a0e211ced999f3316c563dbe35b"
 dependencies = [
  "quote",
  "radicle-git-ext",
@@ -1543,7 +1543,7 @@ dependencies = [
 [[package]]
 name = "radicle-seed"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=lets-fetz-for-setz#4e5b816069386cfea3187ca44ab1f55368a29af6"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=master#7ae1dd3363093a0e211ced999f3316c563dbe35b"
 dependencies = [
  "async-trait",
  "futures",
@@ -1576,7 +1576,7 @@ dependencies = [
 [[package]]
 name = "radicle-std-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=lets-fetz-for-setz#4e5b816069386cfea3187ca44ab1f55368a29af6"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=master#7ae1dd3363093a0e211ced999f3316c563dbe35b"
 
 [[package]]
 name = "rand"
