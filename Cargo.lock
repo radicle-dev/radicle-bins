@@ -97,9 +97,9 @@ dependencies = [
 
 [[package]]
 name = "async-trait"
-version = "0.1.42"
+version = "0.1.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8d3a45e77e34375a7923b1e8febb049bb011f064714a8e17a1a616fef01da13d"
+checksum = "d3340571769500ddef1e94b45055fabed6b08a881269b7570c830b8f32ef84ef"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -933,7 +933,7 @@ dependencies = [
 [[package]]
 name = "librad"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#7ae1dd3363093a0e211ced999f3316c563dbe35b"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=expose-pool-size#b3607fd00a89cdf776e4f1d57f166ac8874271dd"
 dependencies = [
  "async-stream",
  "async-trait",
@@ -1489,7 +1489,7 @@ dependencies = [
 [[package]]
 name = "radicle-git-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#7ae1dd3363093a0e211ced999f3316c563dbe35b"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=expose-pool-size#b3607fd00a89cdf776e4f1d57f166ac8874271dd"
 dependencies = [
  "git2",
  "minicbor",
@@ -1533,7 +1533,7 @@ dependencies = [
 [[package]]
 name = "radicle-macros"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#7ae1dd3363093a0e211ced999f3316c563dbe35b"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=expose-pool-size#b3607fd00a89cdf776e4f1d57f166ac8874271dd"
 dependencies = [
  "quote",
  "radicle-git-ext",
@@ -1543,7 +1543,7 @@ dependencies = [
 [[package]]
 name = "radicle-seed"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#7ae1dd3363093a0e211ced999f3316c563dbe35b"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=expose-pool-size#b3607fd00a89cdf776e4f1d57f166ac8874271dd"
 dependencies = [
  "async-trait",
  "futures",
@@ -1562,6 +1562,7 @@ dependencies = [
  "chrono",
  "futures",
  "librad",
+ "num_cpus",
  "radicle-avatar",
  "radicle-seed",
  "serde",
@@ -1576,7 +1577,7 @@ dependencies = [
 [[package]]
 name = "radicle-std-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#7ae1dd3363093a0e211ced999f3316c563dbe35b"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=expose-pool-size#b3607fd00a89cdf776e4f1d57f166ac8874271dd"
 
 [[package]]
 name = "rand"
@@ -2094,9 +2095,9 @@ checksum = "1e81da0851ada1f3e9d4312c704aa4f8806f0f9d69faaf8df2f3464b4a9437c2"
 
 [[package]]
 name = "syn"
-version = "1.0.60"
+version = "1.0.61"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c700597eca8a5a762beb35753ef6b94df201c81cca676604f547495a0d7f0081"
+checksum = "ed22b90a0e734a23a7610f4283ac9e5acfb96cbb30dfefa540d66f866f1c09c5"
 dependencies = [
  "proc-macro2",
  "quote",

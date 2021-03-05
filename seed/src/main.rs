@@ -23,7 +23,7 @@ use std::{
 
 use tracing_subscriber::FmtSubscriber;
 
-use librad::{git::Urn, net::Network, peer::PeerId};
+use librad::{git::Urn, net::Network, peer::PeerId, net::peer};
 use radicle_seed::{Mode, Node, NodeConfig, Signer};
 use radicle_seed_node as seed;
 
@@ -98,6 +98,14 @@ pub struct Options {
     /// 'f00...@seed1.example.com:12345,bad...@seed2.example.com:12345'
     #[argh(option)]
     pub bootstrap: Option<String>,
+
+    /// number of [`librad::git::storage::Storage`] instancess to pool for consumers.
+    #[argh(option, default = "num_cpus::get_physical()")]
+    pub user_size: usize,
+
+    /// number of [`librad::git::storage::Storage`] instancess to pool for the protocol.
+    #[argh(option, default = "num_cpus::get_physical()")]
+    pub protocol_size: usize,
 }
 
 impl Options {
@@ -141,6 +149,10 @@ async fn main() {
         Err(err) => panic!("invalid key was supplied to stdin: {}", err),
     };
     let network = Network::default();
+    let storage_pools = peer::PoolSizes {
+        user: opts.user_size,
+        protocol: opts.protocol_size,
+    };
 
     let config = NodeConfig {
         listen_addr: opts
@@ -154,6 +166,7 @@ async fn main() {
         },
         network,
         bootstrap: opts.bootstrap.map_or_else(Vec::new, parse_peer_list),
+        storage_pools,
         ..NodeConfig::default()
     };
     let node = Node::new(config, signer).unwrap();
