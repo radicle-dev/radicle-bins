@@ -23,7 +23,11 @@ use std::{
 
 use tracing_subscriber::FmtSubscriber;
 
-use librad::{git::Urn, net::Network, peer::PeerId, net::peer};
+use librad::{
+    git::Urn,
+    net::{peer, protocol::membership, Network},
+    peer::PeerId,
+};
 use radicle_seed::{Mode, Node, NodeConfig, Signer};
 use radicle_seed_node as seed;
 
@@ -99,13 +103,23 @@ pub struct Options {
     #[argh(option)]
     pub bootstrap: Option<String>,
 
-    /// number of [`librad::git::storage::Storage`] instancess to pool for consumers.
+    /// number of [`librad::git::storage::Storage`] instancess to pool for
+    /// consumers.
     #[argh(option, default = "num_cpus::get_physical()")]
     pub user_size: usize,
 
-    /// number of [`librad::git::storage::Storage`] instancess to pool for the protocol.
+    /// number of [`librad::git::storage::Storage`] instancess to pool for the
+    /// protocol.
     #[argh(option, default = "num_cpus::get_physical()")]
     pub protocol_size: usize,
+
+    /// max number of active members to set in [`membership::Params`].
+    #[argh(option, default = "membership::Params::default().max_active")]
+    pub membership_max_active: usize,
+
+    /// max number of passive members to set in [`membership::Params`].
+    #[argh(option, default = "membership::Params::default().max_passive")]
+    pub membership_max_passive: usize,
 }
 
 impl Options {
@@ -166,6 +180,11 @@ async fn main() {
         },
         network,
         bootstrap: opts.bootstrap.map_or_else(Vec::new, parse_peer_list),
+        membership: membership::Params {
+            max_active: opts.membership_max_active,
+            max_passive: opts.membership_max_passive,
+            ..membership::Params::default()
+        },
         storage_pools,
         ..NodeConfig::default()
     };
