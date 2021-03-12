@@ -24,9 +24,15 @@ use std::{
 use tracing_subscriber::FmtSubscriber;
 
 use librad::{
-    git::Urn,
-    net::{peer, protocol::membership, Network},
+    git::{replication, Urn},
+    net::{
+        peer,
+        protocol::{self, membership},
+        Network,
+    },
+    paths,
     peer::PeerId,
+    profile,
 };
 use radicle_seed::{Mode, Node, NodeConfig, Signer};
 use radicle_seed_node as seed;
@@ -162,35 +168,48 @@ async fn main() {
         Ok(signer) => signer,
         Err(err) => panic!("invalid key was supplied to stdin: {}", err),
     };
-    let network = Network::default();
+    let paths = if let Some(root) = &opts.root {
+        paths::Paths::from_root(root).expect("failed to configure paths")
+    } else {
+        profile::Profile::load()
+            .expect("failed to load profile")
+            .paths()
+            .to_owned()
+    };
+
     let storage_pools = peer::PoolSizes {
         user: opts.user_size,
         protocol: opts.protocol_size,
     };
+    let membership = membership::Params {
+        max_active: opts.membership_max_active,
+        max_passive: opts.membership_max_passive,
+        ..membership::Params::default()
+    };
+    let listen_addr = opts.peer_listen.unwrap_or(([0, 0, 0, 0], 0).into());
 
     let config = NodeConfig {
-        listen_addr: opts
-            .peer_listen
-            .unwrap_or(NodeConfig::default().listen_addr),
-        root: opts.root,
         mode: match opts.track {
             Some(Track::Peers(Peers { peers })) => Mode::TrackPeers(peers.into_iter().collect()),
             Some(Track::Urns(Urns { urns })) => Mode::TrackUrns(urns.into_iter().collect()),
             None => Mode::TrackEverything,
         },
-        network,
         bootstrap: opts.bootstrap.map_or_else(Vec::new, parse_peer_list),
-        membership: membership::Params {
-            max_active: opts.membership_max_active,
-            max_passive: opts.membership_max_passive,
-            ..membership::Params::default()
+    };
+    let peer_config = peer::Config {
+        signer: signer.clone(),
+        protocol: protocol::Config {
+            paths,
+            listen_addr,
+            membership,
+            network: Network::default(),
+            replication: replication::Config::default(),
         },
         storage_pools,
-        ..NodeConfig::default()
     };
-    let node = Node::new(config, signer).unwrap();
+    let node = Node::new().unwrap();
     let handle = node.handle();
-    let peer_id = node.peer_id();
+    let peer_id = PeerId::from(signer);
     let (tx, rx) = futures::channel::mpsc::channel(1);
 
     tokio::spawn(seed::frontend::run(
@@ -204,5 +223,5 @@ async fn main() {
         rx,
     ));
 
-    node.run(tx).await.unwrap();
+    node.run(config, peer_config, tx).await.unwrap();
 }
