@@ -6,7 +6,7 @@ steps:
       production: "true"
       platform: "linux"
     env: &build-docker
-      DOCKER_IMAGE: "gcr.io/opensourcecoin/radicle-bins-build@sha256:570908898b28ecee3464b85fb41b270857ae44607d452217289aae131a95eb41"
+      DOCKER_IMAGE: "gcr.io/opensourcecoin/radicle-bins-build@sha256:a7bcc14741e290f4a35b42de055ba62f4908870f145570acc88fe265410ca0c2"
       DOCKER_FILE: .docker/build/Dockerfile
 
   - label: "Clippy Yeah Yeah Clippy Shlippy Yeah"
@@ -35,3 +35,13 @@ steps:
       <<: *build-docker
       STEP_DOCKER_FILE: .docker/seed/Dockerfile
       STEP_DOCKER_IMAGE: gcr.io/opensourcecoin/radicle-seed-node
+
+  - label: "Dist"
+    commands:
+      - ".ci/bins"
+      - ".ci/ui"
+      - "infra/scripts/dist.sh"
+    agents: *build-agent
+    env: *build-docker
+    artifact_paths:
+      - "dist/*"

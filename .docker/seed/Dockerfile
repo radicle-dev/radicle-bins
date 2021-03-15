@@ -7,6 +7,7 @@ RUN set -eux; \
         ; \
     apt-get autoremove; \
     rm -rf /var/lib/apt/lists/*
+
 WORKDIR /
 ADD radicle-seed-node .
 ENTRYPOINT ["./radicle-seed-node"]
