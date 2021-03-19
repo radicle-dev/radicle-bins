@@ -24,11 +24,11 @@ members = ["keyutil", "seed"]
 # development".
 [patch.crates-io.librad]
 git = "https://github.com/radicle-dev/radicle-link"
-branch = "expose-pool-size"
+branch = "master"
 
 [patch.crates-io.radicle-seed]
 git = "https://github.com/radicle-dev/radicle-link"
-branch = "expose-pool-size"
+branch = "master"
 
 [patch.crates-io.radicle-avatar]
 git = "https://github.com/radicle-dev/radicle-avatar"
