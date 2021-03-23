@@ -186,7 +186,7 @@ async fn main() {
         max_passive: opts.membership_max_passive,
         ..membership::Params::default()
     };
-    let listen_addr = opts.peer_listen.unwrap_or(([0, 0, 0, 0], 0).into());
+    let listen_addr = opts.peer_listen.unwrap_or_else(|| ([0, 0, 0, 0], 0).into());
 
     let config = NodeConfig {
         mode: match opts.track {
