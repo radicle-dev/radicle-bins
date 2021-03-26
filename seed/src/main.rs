@@ -15,11 +15,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use std::{net, path::PathBuf};
+use std::{
+    net::{self, SocketAddr, ToSocketAddrs},
+    path::PathBuf,
+    str::FromStr,
+};
 
 use tracing_subscriber::FmtSubscriber;
 
-use librad::{git::Urn, net::Network, peer::PeerId};
+use librad::{
+    git::{replication, Urn},
+    net::{
+        peer,
+        protocol::{self, membership},
+        Network,
+    },
+    paths,
+    peer::PeerId,
+    profile,
+};
 use radicle_seed::{Mode, Node, NodeConfig, Signer};
 use radicle_seed_node as seed;
 
@@ -89,12 +103,57 @@ pub struct Options {
     /// public address of this seed node, eg. 'seedling.radicle.xyz:12345'
     #[argh(option)]
     pub public_addr: Option<String>,
+
+    /// list of bootstrap peers, eg.
+    /// 'f00...@seed1.example.com:12345,bad...@seed2.example.com:12345'
+    #[argh(option)]
+    pub bootstrap: Option<String>,
+
+    /// number of [`librad::git::storage::Storage`] instancess to pool for
+    /// consumers.
+    #[argh(option, default = "num_cpus::get_physical()")]
+    pub user_size: usize,
+
+    /// number of [`librad::git::storage::Storage`] instancess to pool for the
+    /// protocol.
+    #[argh(option, default = "num_cpus::get_physical()")]
+    pub protocol_size: usize,
+
+    /// max number of active members to set in [`membership::Params`].
+    #[argh(option, default = "membership::Params::default().max_active")]
+    pub membership_max_active: usize,
+
+    /// max number of passive members to set in [`membership::Params`].
+    #[argh(option, default = "membership::Params::default().max_passive")]
+    pub membership_max_passive: usize,
 }
 
 impl Options {
     pub fn from_env() -> Self {
         argh::from_env()
     }
+}
+
+fn parse_peer_address(address: &str) -> SocketAddr {
+    address
+        .to_socket_addrs()
+        .map(|mut a| a.next())
+        .expect("peer address could not be parsed")
+        .expect("peer address could not be resolved")
+}
+
+fn parse_peer_list(option: String) -> Vec<(PeerId, SocketAddr)> {
+    option
+        .split(',')
+        .map(|entry| entry.splitn(2, '@').collect())
+        .into_iter()
+        .map(|parts: Vec<&str>| {
+            (
+                PeerId::from_str(parts[0]).expect("peer id could not be parsed"),
+                parse_peer_address(parts[1]),
+            )
+        })
+        .collect()
 }
 
 #[tokio::main]
@@ -109,23 +168,48 @@ async fn main() {
         Ok(signer) => signer,
         Err(err) => panic!("invalid key was supplied to stdin: {}", err),
     };
-    let network = Network::default();
+    let paths = if let Some(root) = &opts.root {
+        paths::Paths::from_root(root).expect("failed to configure paths")
+    } else {
+        profile::Profile::load()
+            .expect("failed to load profile")
+            .paths()
+            .to_owned()
+    };
+
+    let storage_pools = peer::PoolSizes {
+        user: opts.user_size,
+        protocol: opts.protocol_size,
+    };
+    let membership = membership::Params {
+        max_active: opts.membership_max_active,
+        max_passive: opts.membership_max_passive,
+        ..membership::Params::default()
+    };
+    let listen_addr = opts.peer_listen.unwrap_or_else(|| ([0, 0, 0, 0], 0).into());
 
     let config = NodeConfig {
-        listen_addr: opts
-            .peer_listen
-            .unwrap_or(NodeConfig::default().listen_addr),
-        root: opts.root,
         mode: match opts.track {
             Some(Track::Peers(Peers { peers })) => Mode::TrackPeers(peers.into_iter().collect()),
             Some(Track::Urns(Urns { urns })) => Mode::TrackUrns(urns.into_iter().collect()),
             None => Mode::TrackEverything,
         },
-        network,
+        bootstrap: opts.bootstrap.map_or_else(Vec::new, parse_peer_list),
     };
-    let node = Node::new(config, signer).unwrap();
+    let peer_config = peer::Config {
+        signer: signer.clone(),
+        protocol: protocol::Config {
+            paths,
+            listen_addr,
+            membership,
+            network: Network::default(),
+            replication: replication::Config::default(),
+        },
+        storage_pools,
+    };
+    let node = Node::new().unwrap();
     let handle = node.handle();
-    let peer_id = node.peer_id();
+    let peer_id = PeerId::from(signer);
     let (tx, rx) = futures::channel::mpsc::channel(1);
 
     tokio::spawn(seed::frontend::run(
@@ -139,5 +223,5 @@ async fn main() {
         rx,
     ));
 
-    node.run(tx).await.unwrap();
+    node.run(config, peer_config, tx).await.unwrap();
 }
