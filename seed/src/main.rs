@@ -21,6 +21,7 @@ use std::{
     str::FromStr,
 };
 
+use nonempty::NonEmpty;
 use tracing_subscriber::FmtSubscriber;
 
 use librad::{
@@ -74,6 +75,11 @@ pub struct Options {
     /// listen on the following address for peer connections
     #[argh(option)]
     pub peer_listen: Option<net::SocketAddr>,
+
+    /// advertised address for peer connections (eg.
+    /// 1.2.3.4:12345,2.3.4.5:12345)
+    #[argh(option)]
+    pub advertised_address: Option<String>,
 
     /// listen on the following address for HTTP connections (default:
     /// 127.0.0.1:8888)
@@ -156,6 +162,19 @@ fn parse_peer_list(option: String) -> Vec<(PeerId, SocketAddr)> {
         .collect()
 }
 
+fn parse_address_list(option: String) -> Vec<SocketAddr> {
+    option
+        .split(',')
+        .map(|entry| {
+            entry
+                .to_socket_addrs()
+                .expect("advertised address could not be parsed")
+                .next()
+                .unwrap()
+        })
+        .collect()
+}
+
 #[tokio::main]
 async fn main() {
     let opts = Options::from_env();
@@ -201,6 +220,9 @@ async fn main() {
         protocol: protocol::Config {
             paths,
             listen_addr,
+            advertised_addrs: opts
+                .advertised_address
+                .map(|x| NonEmpty::from_vec(parse_address_list(x)).unwrap()),
             membership,
             network: Network::default(),
             replication: replication::Config::default(),
