@@ -177,9 +177,14 @@ async fn main() {
             .to_owned()
     };
 
-    let storage_pools = peer::PoolSizes {
-        user: opts.user_size,
-        protocol: opts.protocol_size,
+    let storage = peer::config::Storage {
+        user: peer::config::UserStorage {
+            pool_size: opts.user_size,
+        },
+        protocol: peer::config::ProtocolStorage {
+            pool_size: opts.protocol_size,
+            fetch_slot_wait_timeout: Default::default(),
+        },
     };
     let membership = membership::Params {
         max_active: opts.membership_max_active,
@@ -199,13 +204,15 @@ async fn main() {
     let peer_config = peer::Config {
         signer: signer.clone(),
         protocol: protocol::Config {
+            advertised_addrs: None,
+            fetch: Default::default(),
             paths,
             listen_addr,
             membership,
             network: Network::default(),
             replication: replication::Config::default(),
         },
-        storage_pools,
+        storage,
     };
     let node = Node::new().unwrap();
     let handle = node.handle();
