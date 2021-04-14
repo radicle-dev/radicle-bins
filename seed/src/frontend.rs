@@ -127,7 +127,7 @@ pub struct Peer {
 
 impl Peer {
     fn is_connected(&self) -> bool {
-        matches!(self.state, PeerState::Connected {..})
+        matches!(self.state, PeerState::Connected { .. })
     }
 }
 
