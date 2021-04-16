@@ -4,6 +4,11 @@
   import Emoji from "./Emoji.svelte";
 
   export let peer = null;
+
+  const truncate = str => {
+    const [head, tail] = str.split(/(.{8}).*(.{8})/).filter(Boolean);
+    return `${head}…${tail}`;
+  };
 </script>
 
 <style>
@@ -65,7 +70,7 @@
     </div>
     <Copyable showIcon={true} styleContent={false} copyContent={peer.peerId}>
       <p class="typo-text-small-mono peer-id typo-overflow-ellipsis">
-        {peer.peerId}
+        {truncate(peer.peerId)}
       </p>
     </Copyable>
   </div>
