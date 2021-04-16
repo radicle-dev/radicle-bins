@@ -1,4 +1,6 @@
 <script>
+  import * as helpers from "../helpers";
+
   import Icon from "./Icon";
   import Avatar from "./Avatar.svelte";
   import Copyable from "./Copyable.svelte";
@@ -40,15 +42,24 @@
     align-items: center;
     margin-right: 2rem;
   }
+
+  .radicle-id {
+    display: flex;
+  }
 </style>
 
 <div class="container">
   <a
     class="name typo-text-bold"
     href={`radicle://link/v0/${project.urn}`}>{project.name}</a>
-  <Copyable showIcon={true} styleContent={false} copyContent={project.urn}>
-    <p class="typo-text-small-mono urn">{project.urn}</p>
-  </Copyable>
+  <div class="radicle-id">
+    <Icon.At style="margin-right: 0.25rem;" />
+    <Copyable showIcon={true} styleContent={false} copyContent={project.urn}>
+      <p class="typo-text-small-mono urn">
+        {helpers.truncate(project.urn.replace('rad:git:', ''))}
+      </p>
+    </Copyable>
+  </div>
   <p class="typo-text desc">{project.description}</p>
   <div class="bottom">
     <div class="stats">
