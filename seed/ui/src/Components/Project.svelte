@@ -43,7 +43,9 @@
 </style>
 
 <div class="container">
-  <p class="name typo-text-bold">{project.name}</p>
+  <a
+    class="name typo-text-bold"
+    href={`radicle://link/v0/${project.urn}`}>{project.name}</a>
   <Copyable showIcon={true} styleContent={false} copyContent={project.urn}>
     <p class="typo-text-small-mono urn">{project.urn}</p>
   </Copyable>
