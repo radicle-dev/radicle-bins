@@ -7,7 +7,8 @@
     "start": "sirv public",
     "prettier": "prettier \"**/*.@(js|ts|json|svelte|css|html)\" --ignore-path .gitignore",
     "prettier:check": "yarn prettier --check",
-    "prettier:write": "yarn prettier --write"
+    "prettier:write": "yarn prettier --write",
+    "postinstall": "scripts/install-twemoji-assets.sh"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^14.0.0",
@@ -29,8 +30,7 @@
   },
   "dependencies": {
     "fuse.js": "^6.4.3",
-    "twemoji": "^12.1.6",
-    "twemoji-svg-assets": "git+https://github.com/radicle-dev/twemoji-svg-assets.git#v12.1.6"
+    "twemoji": "^13.0.2"
   },
   "husky": {
     "hooks": {

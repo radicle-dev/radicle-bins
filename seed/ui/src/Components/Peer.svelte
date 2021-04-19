@@ -1,7 +1,9 @@
 <script>
+  import * as helpers from "../helpers";
+
   import Avatar from "./Avatar.svelte";
+  import Icon from "./Icon";
   import Copyable from "./Copyable.svelte";
-  import Emoji from "./Emoji.svelte";
 
   export let peer = null;
 </script>
@@ -51,7 +53,7 @@
           <Avatar avatar={peer.user.avatar} />
           <p class="typo-text-bold">{peer.user.name}</p>
         {:else}
-          <Emoji emoji="🖥" style="padding: .25rem; margin-right: 0.5rem" />
+          <Icon.Computer style="margin-right: 0.5rem" />
           <p class="typo-text-bold typo-overflow-ellipsis">{peer.peerId}</p>
         {/if}
         {#if peer.state.type === 'connected'}
@@ -65,7 +67,7 @@
     </div>
     <Copyable showIcon={true} styleContent={false} copyContent={peer.peerId}>
       <p class="typo-text-small-mono peer-id typo-overflow-ellipsis">
-        {peer.peerId}
+        {helpers.truncate(peer.peerId)}
       </p>
     </Copyable>
   </div>
