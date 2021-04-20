@@ -11,7 +11,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
   }
 
   input {

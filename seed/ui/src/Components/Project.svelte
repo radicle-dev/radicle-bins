@@ -2,7 +2,6 @@
   import * as helpers from "../helpers";
 
   import Icon from "./Icon";
-  import Avatar from "./Avatar.svelte";
   import Copyable from "./Copyable.svelte";
 
   export let project = null;
@@ -79,8 +78,5 @@
         </p>
       {/if}
     </div>
-    {#each project.maintainers as maintainer}
-      <Avatar avatar={maintainer.avatar} title={maintainer.name} />
-    {/each}
   </div>
 </div>
