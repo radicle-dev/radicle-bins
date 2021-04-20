@@ -1,5 +1,7 @@
 <script>
+  import * as helpers from "../helpers";
   import Copyable from "./Copyable.svelte";
+
   export let seed = null;
   export let projects = null;
   export let online = null;
@@ -7,6 +9,10 @@
   $: seedId = seed.publicAddr
     ? `${seed.peerId}@${seed.publicAddr}`
     : seed.peerId;
+
+  $: truncatedSeedId = seed.publicAddr
+    ? `${helpers.truncate(seed.peerId)}@${seed.publicAddr}`
+    : helpers.truncate(seed.peerId);
 </script>
 
 <style>
@@ -43,7 +49,7 @@
   <h1>{seed.name}</h1>
   <p class="address">
     <Copyable showIcon styleContent={false} copyContent={seedId}>
-      <p class="typo-text-small-mono seed-id">{seedId}</p>
+      <p class="typo-text-small-mono seed-id">{truncatedSeedId}</p>
     </Copyable>
   </p>
   {#if seed.description}
