@@ -18,7 +18,6 @@
 
   .name {
     display: flex;
-    margin-bottom: 0.5rem;
     justify-content: space-between;
   }
 
@@ -46,12 +45,16 @@
   .radicle-id {
     display: flex;
   }
+
+  h3 {
+    margin-bottom: 0.5rem;
+  }
 </style>
 
 <div class="container">
-  <a
-    class="name typo-text-bold"
-    href={`radicle://link/v0/${project.urn}`}>{project.name}</a>
+  <h3>
+    <a class="name" href={`radicle://link/v0/${project.urn}`}>{project.name}</a>
+  </h3>
   <div class="radicle-id">
     <Icon.At style="margin-right: 0.25rem;" />
     <Copyable showIcon={true} styleContent={false} copyContent={project.urn}>

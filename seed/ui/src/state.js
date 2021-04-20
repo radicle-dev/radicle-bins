@@ -44,7 +44,7 @@ export const poll = () => {
       .then(resp => resp.json())
       .then(peerStore.set);
   }, 1000);
-}
+};
 
 const eventSource = new EventSource("/events");
 
@@ -53,7 +53,6 @@ eventSource.onmessage = e => {
 
   switch (data.type) {
     case "peerConnected": {
-
       break;
     }
 
@@ -111,7 +110,7 @@ const filterOnline = peer => {
 // FIXTURES
 const data = {
   seed: {
-    name: "seedling",
+    name: "Seedling",
     publicAddr: "seedling.radicle.xyz:12345",
     peerId: "hynewpywqj6x4mxgj7sojhue3erucyexiyhobxx4du9w66hxhbfqbw",
     description:

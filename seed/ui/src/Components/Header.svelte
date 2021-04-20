@@ -16,7 +16,7 @@
     color: var(--color-foreground-level-6);
   }
 
-  .meta h2 {
+  .meta h1 {
     color: var(--color-foreground);
     padding-bottom: 0.5rem;
   }
@@ -40,7 +40,7 @@
 </style>
 
 <div class="meta">
-  <h2>{seed.name}</h2>
+  <h1>{seed.name}</h1>
   <p class="address">
     <Copyable showIcon styleContent={false} copyContent={seedId}>
       <p class="typo-text-small-mono seed-id">{seedId}</p>
@@ -53,10 +53,10 @@
   {/if}
 </div>
 <div class="stat">
-  <h2>{online ? online.length : 0}</h2>
-  <h5>connected<br />peers</h5>
+  <h1>{online ? online.length : 0}</h1>
+  <h5>peers</h5>
 </div>
 <div class="stat">
-  <h2>{projects ? projects.length : 0}</h2>
-  <h5>seeded<br />projects</h5>
+  <h1>{projects ? projects.length : 0}</h1>
+  <h5>projects</h5>
 </div>

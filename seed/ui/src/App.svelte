@@ -59,12 +59,11 @@
 
   header {
     display: flex;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    height: 2.5rem;
+    margin-bottom: 0.5rem;
+    flex-direction: column;
   }
 
-  header h3 {
+  header h2 {
     margin-right: 1rem;
   }
 </style>
@@ -75,7 +74,7 @@
   {/if}
   <main>
     <header>
-      <h3>Projects</h3>
+      <h2>Projects</h2>
       <Input
         style="width: 100%;"
         disabled={$projects.length === 0}
@@ -98,7 +97,7 @@
   </main>
   <aside>
     <header>
-      <h3>Peers</h3>
+      <h2>Peers</h2>
     </header>
     {#if $online.length > 0 || $seen.length > 0}
       <PeerList online={$online} seen={$seen} />
