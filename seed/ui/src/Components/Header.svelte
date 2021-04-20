@@ -41,7 +41,7 @@
   }
 
   .seed-id {
-    font-size: 70%;
+    color: var(--color-foreground-level-5);
   }
 </style>
 
