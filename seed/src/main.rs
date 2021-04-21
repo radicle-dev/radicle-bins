@@ -72,6 +72,12 @@ pub struct Options {
     #[argh(subcommand)]
     pub track: Option<Track>,
 
+    /// join this radicle link network by name.
+    ///
+    /// Leave empty to join the mainnet.
+    #[argh(option, default = "Network::Main")]
+    pub network: Network,
+
     /// listen on the following address for peer connections
     #[argh(option)]
     pub peer_listen: Option<net::SocketAddr>,
@@ -230,7 +236,7 @@ async fn main() {
                 .advertised_address
                 .map(|x| NonEmpty::from_vec(parse_address_list(x)).unwrap()),
             membership,
-            network: Network::default(),
+            network: opts.network,
             replication: replication::Config::default(),
         },
         storage,
