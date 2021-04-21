@@ -15,6 +15,11 @@
     border-radius: 0.5rem;
   }
 
+  .project-tile:hover {
+    display: block;
+    background: var(--color-foreground-level-1);
+  }
+
   .name {
     justify-content: space-between;
   }
@@ -49,13 +54,9 @@
   }
 </style>
 
-<a class="name" href={`radicle://link/v0/${project.urn}`}>
+<a class="project-tile" href={`radicle://link/v0/${project.urn}`}>
   <div class="container">
-    <h2>
-      <a
-        class="name"
-        href={`radicle://link/v0/${project.urn}`}>{project.name}</a>
-    </h2>
+    <h2>{project.name}</h2>
     <div class="radicle-id">
       <Icon.At style="margin-right: 0.25rem;" />
       <Copyable showIcon={false} styleContent={false} copyContent={project.urn}>
