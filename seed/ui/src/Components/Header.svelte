@@ -52,6 +52,7 @@
 </style>
 
 <header>
+  <!-- INSERT LOGO HERE -->
   <div class="meta">
     <h1>{seed.name}</h1>
     <p class="address">
