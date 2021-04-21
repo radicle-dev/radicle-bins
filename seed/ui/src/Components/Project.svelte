@@ -50,33 +50,38 @@
   }
 </style>
 
-<div class="container">
-  <h3>
-    <a class="name" href={`radicle://link/v0/${project.urn}`}>{project.name}</a>
-  </h3>
-  <div class="radicle-id">
-    <Icon.At style="margin-right: 0.25rem;" />
-    <Copyable showIcon={true} styleContent={false} copyContent={project.urn}>
-      <p class="typo-text-small-mono urn">
-        {helpers.truncate(project.urn.replace('rad:git:', ''))}
-      </p>
-    </Copyable>
-  </div>
-  <p class="typo-text desc">{project.description}</p>
-  <div class="bottom">
-    <div class="stats">
-      {#if project.stats}
-        <p class="typo-text typo-mono-bold stat">
-          <Icon.Commit style="margin-right: 0.8rem;" />{project.stats.commits}
+<a class="name" href={`radicle://link/v0/${project.urn}`}>
+  <div class="container">
+    <h1>
+      <a
+        class="name"
+        href={`radicle://link/v0/${project.urn}`}>{project.name}</a>
+    </h1>
+    <div class="radicle-id">
+      <Icon.At style="margin-right: 0.25rem;" />
+      <Copyable showIcon={false} styleContent={false} copyContent={project.urn}>
+        <p class="typo-text-small-mono urn">
+          {helpers.truncate(project.urn.replace('rad:git:', ''))}
         </p>
-        <p class="typo-text typo-mono-bold stat">
-          <Icon.Branch style="margin-right: 0.8rem;" />{project.stats.branches}
-        </p>
-        <p class="typo-text typo-mono-bold stat">
-          <Icon.User
-            style="margin-right: 0.8rem;" />{project.stats.contributors}
-        </p>
-      {/if}
+      </Copyable>
+    </div>
+    <p class="typo-text desc">{project.description}</p>
+    <div class="bottom">
+      <div class="stats">
+        {#if project.stats}
+          <p class="typo-text typo-mono-bold stat">
+            <Icon.Commit style="margin-right: 0.8rem;" />{project.stats.commits}
+          </p>
+          <p class="typo-text typo-mono-bold stat">
+            <Icon.Branch
+              style="margin-right: 0.8rem;" />{project.stats.branches}
+          </p>
+          <p class="typo-text typo-mono-bold stat">
+            <Icon.User
+              style="margin-right: 0.8rem;" />{project.stats.contributors}
+          </p>
+        {/if}
+      </div>
     </div>
   </div>
-</div>
+</a>

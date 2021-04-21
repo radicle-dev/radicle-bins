@@ -16,6 +16,12 @@
 </script>
 
 <style>
+  header {
+    border-bottom: 1px solid var(--color-foreground-level-2);
+    grid-column: 1/-1;
+    padding-bottom: 3rem;
+  }
+
   .meta {
     grid-column-start: 1;
     grid-column-end: 5;
@@ -45,24 +51,18 @@
   }
 </style>
 
-<div class="meta">
-  <h1>{seed.name}</h1>
-  <p class="address">
-    <Copyable showIcon styleContent={false} copyContent={seedId}>
-      <p class="typo-text-small-mono seed-id">{truncatedSeedId}</p>
-    </Copyable>
-  </p>
-  {#if seed.description}
-    <p class="desc">
-      {@html seed.description}
+<header>
+  <div class="meta">
+    <h1>{seed.name}</h1>
+    <p class="address">
+      <Copyable showIcon styleContent={false} copyContent={seedId}>
+        <p class="typo-text-small-mono seed-id">{truncatedSeedId}</p>
+      </Copyable>
     </p>
-  {/if}
-</div>
-<div class="stat">
-  <h1>{online ? online.length : 0}</h1>
-  <h5>peers</h5>
-</div>
-<div class="stat">
-  <h1>{projects ? projects.length : 0}</h1>
-  <h5>projects</h5>
-</div>
+    {#if seed.description}
+      <p class="desc">
+        {@html seed.description}
+      </p>
+    {/if}
+  </div>
+</header>

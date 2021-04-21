@@ -66,6 +66,17 @@
   header h2 {
     margin-right: 1rem;
   }
+
+  .number {
+    background: var(--color-foreground-level-2);
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    margin-left: 0.25rem;
+  }
+
+  h4 {
+    color: var(--color-foreground-level-6);
+  }
 </style>
 
 <div class="container">
@@ -74,7 +85,10 @@
   {/if}
   <main>
     <header>
-      <h2>Projects</h2>
+      <h4>
+        Projects
+        <span class="number"><!-- {online ? online.length : 0} -->1297</span>
+      </h4>
       <Input
         style="width: 100%;"
         disabled={$projects.length === 0}
@@ -97,7 +111,11 @@
   </main>
   <aside>
     <header>
-      <h2>Peers</h2>
+      <h4>
+        Peers
+        <span class="number"><!-- {projects ? projects.length : 0} -->
+          21</span>
+      </h4>
     </header>
     {#if $online.length > 0 || $seen.length > 0}
       <PeerList online={$online} seen={$seen} />
