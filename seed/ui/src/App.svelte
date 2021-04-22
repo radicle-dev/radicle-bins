@@ -35,11 +35,15 @@
 </script>
 
 <style>
-  .container {
+  container {
     margin: 0 auto;
-    padding: 4rem 4rem;
+    padding: 2rem 4rem;
     max-width: 90rem;
     display: flex;
+  }
+
+  main {
+    width: 100%;
   }
 
   aside {
@@ -73,7 +77,7 @@
 {#if $seed}
   <Header seed={$seed} projects={$projects} online={$online} />
 {/if}
-<div class="container">
+<container>
   <main>
     <header>
       <h4>
@@ -114,4 +118,4 @@
       <p style="color: var(--color-foreground-level-5);">No peers</p>
     {/if}
   </aside>
-</div>
+</container>
