@@ -22,7 +22,7 @@ use std::{
 };
 
 use nonempty::NonEmpty;
-use tracing_subscriber::FmtSubscriber;
+use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 use librad::{
     git::{replication, Urn},
@@ -184,7 +184,9 @@ fn parse_address_list(option: String) -> Vec<SocketAddr> {
 #[tokio::main]
 async fn main() {
     let opts = Options::from_env();
-    let subscriber = FmtSubscriber::builder().with_max_level(opts.log).finish();
+    let subscriber = FmtSubscriber::builder()
+        .with_env_filter(EnvFilter::from_default_env().add_directive(opts.log.into()))
+        .finish();
 
     tracing::subscriber::set_global_default(subscriber)
         .expect("setting tracing subscriber should succeed");
