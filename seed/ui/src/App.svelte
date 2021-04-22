@@ -61,6 +61,7 @@
     display: flex;
     margin-bottom: 1rem;
     flex-direction: column;
+    cursor: default;
   }
 
   header h2 {

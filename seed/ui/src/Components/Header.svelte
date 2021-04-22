@@ -20,6 +20,7 @@
     border-bottom: 1px solid var(--color-foreground-level-2);
     grid-column: 1/-1;
     padding-bottom: 3rem;
+    cursor: default;
   }
 
   .meta {

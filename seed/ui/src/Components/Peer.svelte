@@ -11,6 +11,7 @@
 <style>
   .container {
     margin-bottom: 1.5rem;
+    cursor: default;
   }
   .status {
     display: flex;

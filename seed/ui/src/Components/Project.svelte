@@ -13,11 +13,8 @@
     margin-bottom: 1.5rem;
     border: 1px solid var(--color-foreground-level-3);
     border-radius: 0.5rem;
-  }
-
-  .project-tile:hover {
-    display: block;
-    background: var(--color-foreground-level-1);
+    position: relative;
+    cursor: default;
   }
 
   .name {
@@ -52,36 +49,55 @@
   h2 {
     margin-bottom: 0.75rem;
   }
+
+  a.upstream-button {
+    visibility: hidden;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-weight: 600;
+    display: flex;
+  }
+
+  .container:hover a.upstream-button {
+    visibility: visible;
+  }
+
+  a.upstream-button:hover {
+    background: var(--color-foreground-level-1);
+  }
 </style>
 
-<a class="project-tile" href={`radicle://link/v0/${project.urn}`}>
-  <div class="container">
-    <h2>{project.name}</h2>
-    <div class="radicle-id">
-      <Icon.At style="margin-right: 0.25rem;" />
-      <Copyable showIcon={false} styleContent={false} copyContent={project.urn}>
-        <p class="typo-text-small-mono urn">
-          {helpers.truncate(project.urn.replace('rad:git:', ''))}
+<div class="container">
+  <h2>{project.name}</h2>
+  <div class="radicle-id">
+    <Icon.At style="margin-right: 0.25rem;" />
+    <Copyable showIcon={true} styleContent={false} copyContent={project.urn}>
+      <p class="typo-text-small-mono urn">
+        {helpers.truncate(project.urn.replace('rad:git:', ''))}
+      </p>
+    </Copyable>
+  </div>
+  <p class="typo-text desc">{project.description}</p>
+  <div class="bottom">
+    <div class="stats">
+      {#if project.stats}
+        <p class="typo-text typo-mono-bold stat">
+          <Icon.Commit style="margin-right: 0.8rem;" />{project.stats.commits}
         </p>
-      </Copyable>
-    </div>
-    <p class="typo-text desc">{project.description}</p>
-    <div class="bottom">
-      <div class="stats">
-        {#if project.stats}
-          <p class="typo-text typo-mono-bold stat">
-            <Icon.Commit style="margin-right: 0.8rem;" />{project.stats.commits}
-          </p>
-          <p class="typo-text typo-mono-bold stat">
-            <Icon.Branch
-              style="margin-right: 0.8rem;" />{project.stats.branches}
-          </p>
-          <p class="typo-text typo-mono-bold stat">
-            <Icon.User
-              style="margin-right: 0.8rem;" />{project.stats.contributors}
-          </p>
-        {/if}
-      </div>
+        <p class="typo-text typo-mono-bold stat">
+          <Icon.Branch style="margin-right: 0.8rem;" />{project.stats.branches}
+        </p>
+        <p class="typo-text typo-mono-bold stat">
+          <Icon.User
+            style="margin-right: 0.8rem;" />{project.stats.contributors}
+        </p>
+      {/if}
     </div>
   </div>
-</a>
+  <a class="upstream-button" href={`radicle://link/v0/${project.urn}`}>
+    <Icon.ArrowBoxUpRight style="margin-right: 0.8rem;" />View in Upstream
+  </a>
+</div>

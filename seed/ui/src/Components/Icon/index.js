@@ -1,3 +1,4 @@
+import ArrowBoxUpRight from "./ArrowBoxUpRight.svelte";
 import At from "./At.svelte";
 import Branch from "./Branch.svelte";
 import CheckSmall from "./CheckSmall.svelte";
@@ -8,6 +9,7 @@ import IconWrapper from "./IconWrapper.svelte";
 import User from "./User.svelte";
 
 export default {
+  ArrowBoxUpRight,
   At,
   Branch,
   CheckSmall,
