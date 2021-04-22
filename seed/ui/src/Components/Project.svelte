@@ -50,7 +50,7 @@
     margin-bottom: 0.75rem;
   }
 
-  a.upstream-button {
+  a.button {
     visibility: hidden;
     padding: 0.5rem 0.75rem;
     border-radius: 0.25rem;
@@ -61,11 +61,11 @@
     display: flex;
   }
 
-  .container:hover a.upstream-button {
+  .container:hover a.button {
     visibility: visible;
   }
 
-  a.upstream-button:hover {
+  a.button:hover {
     background: var(--color-foreground-level-1);
   }
 </style>
@@ -97,7 +97,7 @@
       {/if}
     </div>
   </div>
-  <a class="upstream-button" href={`radicle://link/v0/${project.urn}`}>
+  <a class="button" href={`radicle://link/v0/${project.urn}`}>
     <Icon.ArrowBoxUpRight style="margin-right: 0.8rem;" />View in Upstream
   </a>
 </div>

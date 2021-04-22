@@ -35,26 +35,16 @@
 </script>
 
 <style>
-  main {
-    grid-area: main;
+  .container {
+    margin: 0 auto;
+    padding: 4rem 4rem;
+    max-width: 90rem;
+    display: flex;
   }
 
   aside {
-    grid-area: sidebar;
-  }
-
-  .container {
-    display: grid;
-    grid-template-columns: repeat(6, 8.75rem);
-    column-gap: 1.5rem;
-    row-gap: 2.5rem;
-    grid-template-rows: auto;
-    grid-template-areas:
-      "header header header header header header"
-      "main main main main sidebar sidebar";
-    margin: 0 auto;
-    max-width: 62rem;
-    padding: 4rem 1rem;
+    max-width: 20rem;
+    padding-left: 3rem;
   }
 
   header {
@@ -80,10 +70,10 @@
   }
 </style>
 
+{#if $seed}
+  <Header seed={$seed} projects={$projects} online={$online} />
+{/if}
 <div class="container">
-  {#if $seed}
-    <Header seed={$seed} projects={$projects} online={$online} />
-  {/if}
   <main>
     <header>
       <h4>
@@ -110,12 +100,12 @@
       </p>
     {/if}
   </main>
+
   <aside>
     <header>
       <h4>
         Peers
-        <span class="number"><!-- {projects ? projects.length : 0} -->
-          21</span>
+        <span class="number"><!-- {projects ? projects.length : 0} -->21</span>
       </h4>
     </header>
     {#if $online.length > 0 || $seen.length > 0}
