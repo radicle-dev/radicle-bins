@@ -17,10 +17,6 @@
     cursor: default;
   }
 
-  .name {
-    justify-content: space-between;
-  }
-
   .urn {
     color: var(--color-foreground-level-5);
   }

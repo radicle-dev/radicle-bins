@@ -58,10 +58,6 @@
     cursor: default;
   }
 
-  header h2 {
-    margin-right: 1rem;
-  }
-
   .number {
     background: var(--color-foreground-level-2);
     padding: 0.25rem 0.5rem;
@@ -82,7 +78,7 @@
     <header>
       <h4>
         Projects
-        <span class="number"><!-- {online ? online.length : 0} -->1297</span>
+        <span class="number">{$projects ? $projects.length : 0}</span>
       </h4>
       <Input
         style="width: 100%;"
@@ -109,7 +105,8 @@
     <header>
       <h4>
         Peers
-        <span class="number"><!-- {projects ? projects.length : 0} -->21</span>
+        <span
+          class="number">{$online || $seen ? $online.length + $seen.length : 0}</span>
       </h4>
     </header>
     {#if $online.length > 0 || $seen.length > 0}
