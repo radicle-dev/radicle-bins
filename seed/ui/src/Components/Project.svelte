@@ -77,9 +77,9 @@
     </Copyable>
   </div>
   <p class="typo-text desc">{project.description}</p>
-  <div class="bottom">
-    <div class="stats">
-      {#if project.stats}
+  {#if project.stats}
+    <div class="bottom">
+      <div class="stats">
         <p class="typo-text typo-mono-bold stat">
           <Icon.Commit style="margin-right: 0.8rem;" />{project.stats.commits}
         </p>
@@ -90,9 +90,9 @@
           <Icon.User
             style="margin-right: 0.8rem;" />{project.stats.contributors}
         </p>
-      {/if}
+      </div>
     </div>
-  </div>
+  {/if}
   <a class="button" href={`radicle://link/v0/${project.urn}`}>
     <Icon.ArrowBoxUpRight style="margin-right: 0.8rem;" />View in Upstream
   </a>
