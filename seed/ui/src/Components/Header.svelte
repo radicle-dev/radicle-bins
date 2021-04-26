@@ -28,7 +28,6 @@
     margin: 0 auto;
     padding: 4rem;
     align-items: center;
-    justify-content: space-between;
   }
 
   .logo {
@@ -36,12 +35,14 @@
     min-width: 7.5rem;
     margin-right: 2rem;
     border-radius: 3.75rem;
+    align-self: flex-start;
   }
 
   .meta {
     color: var(--color-foreground-level-6);
     padding: 0 2rem 0 0;
     align-self: flex-start;
+    width: 100%;
   }
 
   .meta h1 {
@@ -72,7 +73,9 @@
 
 <header>
   <container>
-    <img src={seed.logoUrl} alt="the logo" class="logo" />
+    {#if seed.logoUrl}
+      <img src={seed.logoUrl} alt="the logo" class="logo" />
+    {/if}
     <div class="meta">
       <h1>{seed.name}</h1>
       <p class="address">
@@ -86,8 +89,11 @@
         </p>
       {/if}
     </div>
-    <a class="button right" href={seed.maintainerUrl}>
-      <Icon.ArrowBoxUpRight style="margin-right: 0.8rem;" />{seed.maintainerUrl}
-    </a>
+    {#if seed.homepage}
+      <a class="button right" href={seed.homepage}>
+        <Icon.ArrowBoxUpRight style="margin-right: 0.8rem;" />
+        {seed.homepage}
+      </a>
+    {/if}
   </container>
 </header>

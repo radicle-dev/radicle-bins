@@ -115,10 +115,8 @@ const data = {
     peerId: "hynewpywqj6x4mxgj7sojhue3erucyexiyhobxx4du9w66hxhbfqbw",
     description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora quod inventore cumque doloribus sapiente maiores! Sed cumque iste, nisi amet, officiis illo eum veniam ducimus rem minus voluptates, quaerat vero.",
-    maintainerUrl: "radicle.xyz",
+    homepage: "radicle.xyz",
     logoUrl: "https://avatars.githubusercontent.com/u/48290027?s=240&v=4",
-    peers: 12,
-    projects: 1000,
   },
   projects: [
     {
@@ -140,6 +138,7 @@ const data = {
       description: "an amazing p2p app",
       urn:
         "rad:git:hwd1yre8ugp55p37domyqoi9m44ptwqrixioxgdic9kaduo8es5xhzhbaty",
+      featured: true,
       stats: {
         commits: 12,
         branches: 32,
@@ -166,6 +165,7 @@ const data = {
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas deleniti repudiandae sint adipisci eveniet, inventore ad atque cum. Incidunt, excepturi! Doloribus vitae laboriosam enim, ipsa ullam est vel voluptatibus quidem.",
       urn:
         "rad:git:hwd1yre8ugp55p37domyqoi9m44ptwqrixioxgdic9kaduo8es5xhzhbaty",
+      featured: false,
     },
   ],
   peers: [

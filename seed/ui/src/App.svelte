@@ -7,7 +7,7 @@
   import PeerList from "./Components/PeerList.svelte";
   import Project from "./Components/Project.svelte";
 
-  document.title = `${$seed.name  } - ${  $seed.publicAddr}`;
+  document.title = `${$seed.name} - ${$seed.publicAddr}`;
 
   const options = {
     includeScore: true,
@@ -18,18 +18,46 @@
 
   let projectFilter = "";
   let allProjects = [];
+  let featuredProjects = [];
   let filteredProjects = allProjects;
+  let activeTab = "feat";
 
   $: {
     allProjects = $projects.map(project => {
       return { item: project };
     });
 
-    if (projectFilter.length > 0) {
-      const fuse = new Fuse($projects, options);
-      filteredProjects = fuse.search(projectFilter);
+    featuredProjects = $projects
+      .filter(project => {
+        if (project.featured) {
+          return project;
+        }
+      })
+      .map(project => {
+        return { item: project };
+      });
+
+    if (activeTab === "feat") {
+      if (projectFilter.length > 0) {
+        const fuse = new Fuse(
+          $projects.filter(project => {
+            if (project.featured) {
+              return project;
+            }
+          }),
+          options
+        );
+        filteredProjects = fuse.search(projectFilter);
+      } else {
+        filteredProjects = featuredProjects;
+      }
     } else {
-      filteredProjects = allProjects;
+      if (projectFilter.length > 0) {
+        const fuse = new Fuse($projects, options);
+        filteredProjects = fuse.search(projectFilter);
+      } else {
+        filteredProjects = allProjects;
+      }
     }
   }
 
@@ -60,15 +88,29 @@
     cursor: default;
   }
 
+  .tabs {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .tabs button {
+    cursor: pointer;
+  }
+
+  h4 {
+    color: var(--color-foreground-level-6);
+    margin-bottom: 0.5rem;
+  }
+
+  .active h4 {
+    color: var(--color-primary);
+  }
+
   .number {
     background: var(--color-foreground-level-2);
     padding: 0.25rem 0.5rem;
     border-radius: 1rem;
     margin-left: 0.25rem;
-  }
-
-  h4 {
-    color: var(--color-foreground-level-6);
   }
 </style>
 
@@ -78,10 +120,27 @@
 <container>
   <main>
     <header>
-      <h4>
-        Projects
-        <span class="number">{$projects ? $projects.length : 0}</span>
-      </h4>
+      <div class="tabs">
+        {#if featuredProjects.length > 0}
+          <button
+            class:active={activeTab === 'feat'}
+            on:click={() => (activeTab = 'feat')}>
+            <h4>
+              Featured projects
+              <span
+                class="number">{featuredProjects ? featuredProjects.length : 0}</span>
+            </h4>
+          </button>
+        {/if}
+        <button
+          class:active={featuredProjects.length > 0 && activeTab === 'all'}
+          on:click={() => (activeTab = 'all')}>
+          <h4>
+            {featuredProjects.length > 0 ? 'All projects' : 'Projects'}
+            <span class="number">{allProjects ? allProjects.length : 0}</span>
+          </h4>
+        </button>
+      </div>
       <Input
         style="width: 100%;"
         disabled={$projects.length === 0}
