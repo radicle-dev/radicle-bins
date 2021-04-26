@@ -112,6 +112,10 @@ pub struct Options {
     #[argh(option)]
     pub description: Option<String>,
 
+    /// homepage of this seed, displayed to users as a URL
+    #[argh(option)]
+    pub homepage: Option<String>,
+
     /// public address of this seed node, eg. 'seedling.radicle.xyz:12345'
     #[argh(option)]
     pub public_addr: Option<String>,
@@ -249,6 +253,7 @@ async fn main() {
     tokio::spawn(seed::frontend::run(
         opts.name,
         opts.description,
+        opts.homepage,
         opts.http_listen,
         opts.public_addr,
         opts.assets_path,

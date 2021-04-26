@@ -41,6 +41,7 @@ pub struct Info {
     peer_id: PeerId,
     public_addr: Option<String>,
     description: Option<String>,
+    homepage: Option<String>,
     peers: usize,
     projects: usize,
 }
@@ -77,6 +78,7 @@ pub enum Event {
 struct State {
     name: Option<String>,
     description: Option<String>,
+    homepage: Option<String>,
     public_addr: Option<String>,
     peer_id: PeerId,
     projects: HashMap<Urn, Project>,
@@ -91,6 +93,7 @@ impl State {
             public_addr: self.public_addr.clone(),
             peer_id: self.peer_id,
             description: self.description.clone(),
+            homepage: self.homepage.clone(),
             projects: self.projects.len(),
             peers: self.peers.values().filter(|p| p.is_connected()).count(),
         }
@@ -203,6 +206,7 @@ async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event
 pub async fn run<A: Into<net::SocketAddr>>(
     name: Option<String>,
     description: Option<String>,
+    homepage: Option<String>,
     addr: A,
     public_addr: Option<String>,
     assets_path: PathBuf,
@@ -215,6 +219,7 @@ pub async fn run<A: Into<net::SocketAddr>>(
     let state = Arc::new(Mutex::new(State {
         name,
         description,
+        homepage,
         peer_id,
         public_addr,
         projects: projects

@@ -7,7 +7,7 @@
   import PeerList from "./Components/PeerList.svelte";
   import Project from "./Components/Project.svelte";
 
-  document.title = `${$seed.name} - ${$seed.publicAddr}`;
+  /* document.title = `${$seed.name} - ${$seed.publicAddr}`; */
 
   const options = {
     includeScore: true,
