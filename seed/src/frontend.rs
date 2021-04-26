@@ -16,7 +16,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use std::{
-    collections::{hash_map::Entry, HashMap},
+    collections::{hash_map::Entry, HashMap, HashSet},
     net,
     path::PathBuf,
     sync::Arc,
@@ -82,6 +82,7 @@ struct State {
     public_addr: Option<String>,
     peer_id: PeerId,
     projects: HashMap<Urn, Project>,
+    featured_projects: HashSet<Urn>,
     peers: HashMap<PeerId, Peer>,
     subs: Vec<tokio::sync::mpsc::UnboundedSender<Event>>,
 }
@@ -111,7 +112,8 @@ impl State {
 
         match self.projects.entry(proj.urn.clone()) {
             Entry::Vacant(v) => {
-                let proj = Project::from((proj, Some(tracked)));
+                let featured = self.featured_projects.contains(&proj.urn);
+                let proj = Project::from((proj, Some(tracked), featured));
                 v.insert(proj.clone());
                 self.broadcast(Event::ProjectTracked(proj));
             },
@@ -171,16 +173,18 @@ pub struct Project {
     pub description: Option<String>,
     pub maintainers: Vec<User>,
     pub tracked: Option<SystemTime>,
+    pub featured: bool,
 }
 
-impl From<(seed::Project, Option<SystemTime>)> for Project {
-    fn from((other, tracked): (seed::Project, Option<SystemTime>)) -> Self {
+impl From<(seed::Project, Option<SystemTime>, bool)> for Project {
+    fn from((other, tracked, featured): (seed::Project, Option<SystemTime>, bool)) -> Self {
         Self {
             urn: other.urn,
             name: other.name,
             description: other.description,
             maintainers: other.maintainers.into_iter().map(User::from).collect(),
             tracked,
+            featured,
         }
     }
 }
@@ -210,6 +214,7 @@ pub async fn run<A: Into<net::SocketAddr>>(
     addr: A,
     public_addr: Option<String>,
     assets_path: PathBuf,
+    featured_projects: HashSet<Urn>,
     peer_id: PeerId,
     mut handle: seed::NodeHandle,
     events: chan::Receiver<seed::Event>,
@@ -224,8 +229,14 @@ pub async fn run<A: Into<net::SocketAddr>>(
         public_addr,
         projects: projects
             .into_iter()
-            .map(|p| (p.urn.clone(), Project::from((p, None))))
+            .map(|p| {
+                let urn = p.urn.clone();
+                let p = Project::from((p, None, featured_projects.contains(&urn)));
+
+                (urn, p)
+            })
             .collect(),
+        featured_projects,
         peers: HashMap::new(),
         subs: Vec::new(),
     }));

@@ -16,6 +16,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use std::{
+    collections::HashSet,
     net::{self, SocketAddr, ToSocketAddrs},
     path::PathBuf,
     str::FromStr,
@@ -125,6 +126,11 @@ pub struct Options {
     #[argh(option)]
     pub bootstrap: Option<String>,
 
+    /// list of featured projects, eg.
+    /// 'rad:git:abcd1,rad:git:defg2,...'
+    #[argh(option)]
+    pub features_projects: Option<String>,
+
     /// number of [`librad::git::storage::Storage`] instancess to pool for
     /// consumers.
     #[argh(option, default = "num_cpus::get_physical()")]
@@ -182,6 +188,13 @@ fn parse_address_list(option: String) -> Vec<SocketAddr> {
                 .next()
                 .unwrap()
         })
+        .collect()
+}
+
+fn parse_urn_list(option: String) -> HashSet<Urn> {
+    option
+        .split(',')
+        .map(|entry| Urn::from_str(entry).unwrap())
         .collect()
 }
 
@@ -249,6 +262,9 @@ async fn main() {
     let handle = node.handle();
     let peer_id = PeerId::from(signer);
     let (tx, rx) = futures::channel::mpsc::channel(1);
+    let featured_projs = opts
+        .features_projects
+        .map_or_else(HashSet::new, parse_urn_list);
 
     tokio::spawn(seed::frontend::run(
         opts.name,
@@ -257,6 +273,7 @@ async fn main() {
         opts.http_listen,
         opts.public_addr,
         opts.assets_path,
+        featured_projs,
         peer_id,
         handle,
         rx,
