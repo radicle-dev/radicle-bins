@@ -42,6 +42,7 @@ pub struct Info {
     public_addr: Option<String>,
     description: Option<String>,
     homepage: Option<String>,
+    logoUrl: Option<String>,
     peers: usize,
     projects: usize,
 }
@@ -79,6 +80,7 @@ struct State {
     name: Option<String>,
     description: Option<String>,
     homepage: Option<String>,
+    logoUrl: Option<String>,
     public_addr: Option<String>,
     peer_id: PeerId,
     projects: HashMap<Urn, Project>,
@@ -95,6 +97,7 @@ impl State {
             peer_id: self.peer_id,
             description: self.description.clone(),
             homepage: self.homepage.clone(),
+            logoUrl: self.homepage.clone(),
             projects: self.projects.len(),
             peers: self.peers.values().filter(|p| p.is_connected()).count(),
         }
@@ -211,6 +214,7 @@ pub async fn run<A: Into<net::SocketAddr>>(
     name: Option<String>,
     description: Option<String>,
     homepage: Option<String>,
+    logoUrl: Option<String>,
     addr: A,
     public_addr: Option<String>,
     assets_path: PathBuf,
@@ -225,6 +229,7 @@ pub async fn run<A: Into<net::SocketAddr>>(
         name,
         description,
         homepage,
+        logoUrl,
         peer_id,
         public_addr,
         projects: projects
