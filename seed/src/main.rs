@@ -276,6 +276,7 @@ async fn main() {
         opts.homepage,
         opts.http_listen,
         opts.public_addr,
+        opts.logo_url,
         opts.assets_path,
         featured_projs,
         peer_id,
