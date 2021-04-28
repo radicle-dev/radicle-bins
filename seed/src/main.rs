@@ -119,7 +119,7 @@ pub struct Options {
 
     /// logo url of this seed, displayed to users as an image
     #[argh(option)]
-    pub logoUrl: Option<String>,
+    pub logo_url: Option<String>,
 
     /// public address of this seed node, eg. 'seedling.radicle.xyz:12345'
     #[argh(option)]
