@@ -3,6 +3,8 @@
 
   import Icon from "./Icon";
   import Copyable from "./Copyable.svelte";
+  import Avatar from "./Avatar.svelte";
+  import Badge from "./Badge.svelte";
 
   export let project = null;
 </script>
@@ -25,17 +27,10 @@
     margin: 1rem 0 0rem;
   }
 
-  .bottom {
+  .maintainer {
     display: flex;
     margin-top: 1.5rem;
-    justify-content: space-between;
-  }
-
-  .stats,
-  .stat {
-    display: flex;
     align-items: center;
-    margin-right: 2rem;
   }
 
   .radicle-id {
@@ -77,22 +72,15 @@
     </Copyable>
   </div>
   <p class="typo-text desc">{project.description}</p>
-  {#if project.stats}
-    <div class="bottom">
-      <div class="stats">
-        <p class="typo-text typo-mono-bold stat">
-          <Icon.Commit style="margin-right: 0.8rem;" />{project.stats.commits}
-        </p>
-        <p class="typo-text typo-mono-bold stat">
-          <Icon.Branch style="margin-right: 0.8rem;" />{project.stats.branches}
-        </p>
-        <p class="typo-text typo-mono-bold stat">
-          <Icon.User
-            style="margin-right: 0.8rem;" />{project.stats.contributors}
-        </p>
-      </div>
-    </div>
-  {/if}
+  <div class="maintainer">
+    {#each project.maintainers as maintainer}
+      <Avatar avatar={maintainer.avatar} />
+      {#if maintainer.name}
+        <p class="typo-text-bold">{maintainer.name}</p>
+        <Badge caption="maintainer" style="margin-left: .5rem;" />
+      {/if}
+    {/each}
+  </div>
   <a class="button" href={`radicle://link/v0/${project.urn}`}>
     <Icon.ArrowBoxUpRight style="margin-right: 0.8rem;" />View in Upstream
   </a>
