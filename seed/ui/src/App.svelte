@@ -20,7 +20,7 @@
   let allProjects = [];
   let featuredProjects = [];
   let filteredProjects = allProjects;
-  let activeTab = "feat";
+  let activeTab = "all";
 
   $: {
     allProjects = $projects.map(project => {
