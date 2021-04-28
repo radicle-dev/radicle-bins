@@ -1040,7 +1040,7 @@ dependencies = [
 [[package]]
 name = "librad"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#900b6cf6cf1ff822a423bb47cecb9eb80738bff4"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/disable-rere#67120584d465fe0a03804c78f6bb0ac16be06f2d"
 dependencies = [
  "async-stream",
  "async-trait",
@@ -1603,7 +1603,7 @@ dependencies = [
 [[package]]
 name = "radicle-data"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#900b6cf6cf1ff822a423bb47cecb9eb80738bff4"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/disable-rere#67120584d465fe0a03804c78f6bb0ac16be06f2d"
 dependencies = [
  "minicbor",
  "nonempty",
@@ -1614,7 +1614,7 @@ dependencies = [
 [[package]]
 name = "radicle-git-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#900b6cf6cf1ff822a423bb47cecb9eb80738bff4"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/disable-rere#67120584d465fe0a03804c78f6bb0ac16be06f2d"
 dependencies = [
  "git2",
  "minicbor",
@@ -1658,7 +1658,7 @@ dependencies = [
 [[package]]
 name = "radicle-macros"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#900b6cf6cf1ff822a423bb47cecb9eb80738bff4"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/disable-rere#67120584d465fe0a03804c78f6bb0ac16be06f2d"
 dependencies = [
  "quote",
  "radicle-git-ext",
@@ -1668,7 +1668,7 @@ dependencies = [
 [[package]]
 name = "radicle-seed"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#900b6cf6cf1ff822a423bb47cecb9eb80738bff4"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/disable-rere#67120584d465fe0a03804c78f6bb0ac16be06f2d"
 dependencies = [
  "async-trait",
  "futures",
@@ -1703,7 +1703,7 @@ dependencies = [
 [[package]]
 name = "radicle-std-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#900b6cf6cf1ff822a423bb47cecb9eb80738bff4"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/disable-rere#67120584d465fe0a03804c78f6bb0ac16be06f2d"
 
 [[package]]
 name = "rand"
@@ -2220,9 +2220,9 @@ checksum = "1e81da0851ada1f3e9d4312c704aa4f8806f0f9d69faaf8df2f3464b4a9437c2"
 
 [[package]]
 name = "syn"
-version = "1.0.70"
+version = "1.0.71"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9505f307c872bab8eb46f77ae357c8eba1fdacead58ee5a850116b1d7f82883"
+checksum = "ad184cc9470f9117b2ac6817bfe297307418819ba40552f9b3846f05c33d5373"
 dependencies = [
  "proc-macro2",
  "quote",
