@@ -1,20 +1,16 @@
-[![Build status](https://badge.buildkite.com/6e86c41a8281d8f6f5a5537d3f499437c31a807d620157a863.svg?branch=master)](https://buildkite.com/monadic/radicle-bins)
+[![Build status][bs]][bi]
 
 # Radicle Bins
 
-Collection of various executables for the [Radicle](https://radicle.xyz) stack.
+Collection of various executables for the [Radicle][ra] stack:
 
-## Radicle Upstream Compatability
+  - [seed node][sn]
+  - [keyutil][ke]
 
-As we are working on this infrastructure there will be some compatability issues
-when it comes to `radicle-bins` and `radicle-upstream` which both rely on `radicle-link`.
+## CI
 
-If you are on Upstream `< v0.2.0` then use the following commit [`f1462b9`](https://github.com/radicle-dev/radicle-bins/commit/f1462b92a06ef65ec4b65201e9801473a41b4ee3).
-
-## Build
-
-See the [Dockerfile used for CI](./.docker/build/Dockerfile) for any system /
-toolchain dependencies. If you have those, `cargo build` should get you going.
+See the [Dockerfile used for CI][ci] for any system / toolchain dependencies.
+If you have those, `cargo build` should get you going.
 
 ### Docker Images
 
@@ -26,15 +22,18 @@ pre-built image like so:
 docker pull gcr.io/opensourcecoin/radicle-seed-node
 ```
 
-### UI Work
-
-To run the UI with dummy data:
-
-1. `cd radicle-bins/seed/ui`
-2. `yarn && yarn build && yarn run dev`
-3. Open http://localhost:5000 in your browser.
-
 ## License
 
-Unless otherwise noted, all source code in this repository is licensed under the
-[GPLv3](https://www.gnu.org/licenses/gpl-3.0.txt).
+Unless otherwise noted, all source code in this repository is licensed under
+the [GPLv3][gp].
+
+
+
+[bi]: https://buildkite.com/monadic/radicle-bins
+[bs]: https://badge.buildkite.com/6e86c41a8281d8f6f5a5537d3f499437c31a807d620157a863.svg?branch=master
+[ci]: ./.docker/build/Dockerfile
+[gp]: https://www.gnu.org/licenses/gpl-3.0.txt
+[ha]: https://github.com/radicle-dev/radicle-bins/commit/f1462b92a06ef65ec4b65201e9801473a41b4ee3
+[ke]: ./keyutil/README.md
+[ra]: https://radicle.xyz
+[sn]: ./seed/README.md

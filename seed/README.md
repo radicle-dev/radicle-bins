@@ -2,7 +2,27 @@
 
 *Seed node daemon.*
 
-## Build and run from source
+
+## Radicle Upstream Compatability
+
+As we are working on this infrastructure there will be some compatability
+issues when it comes to `radicle-bins` and `radicle-upstream` which both rely
+on `radicle-link`.
+
+⚠️ If you are on Upstream `< v0.2` then use the following commit
+[`f1462b9`][ha]. ⚠️
+
+
+## Working on the UI
+
+To run the UI with dummy data:
+
+1. `cd radicle-bins/seed/ui`
+2. `yarn && yarn dev`
+3. Open http://localhost:5000 in your browser.
+
+
+## Build and run from the seed node from source
 
 Build the UI:
 
@@ -21,6 +41,7 @@ Start the node:
       < ~/.radicle-seed/secret.key
 
 To see the seed dashboard, point your browser to http://127.0.0.1:8888.
+
 
 ## Usage
 
