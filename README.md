@@ -1,6 +1,6 @@
-[![Build status][bs]][bi]
-
 # Radicle Bins
+
+[![Build status][bs]][bi]
 
 Collection of various executables for the [Radicle][ra] stack:
 
