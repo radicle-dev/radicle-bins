@@ -109,7 +109,7 @@
 </style>
 
 {#if $seed}
-  <Header seed={$seed} projects={$projects} online={$online} />
+  <Header seed={$seed} />
 {/if}
 <container>
   <main>

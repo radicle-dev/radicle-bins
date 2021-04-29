@@ -2,9 +2,8 @@
   import * as helpers from "../helpers";
   import Copyable from "./Copyable.svelte";
   import Icon from "./Icon";
+
   export let seed = null;
-  export const projects = null;
-  export const online = null;
 
   $: seedId = seed.publicAddr
     ? `${seed.peerId}@${seed.publicAddr}`
