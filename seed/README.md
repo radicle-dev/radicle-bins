@@ -9,7 +9,7 @@ As we are working on this infrastructure there will be some compatability
 issues when it comes to `radicle-bins` and `radicle-upstream` which both rely
 on `radicle-link`.
 
-⚠️ If you are on Upstream `< v0.2` then use the following commit
+⚠️ If you are on Upstream `v0.1.x` then use the following commit
 [`f1462b9`][ha]. ⚠️
 
 
