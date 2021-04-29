@@ -100,3 +100,7 @@ To see the seed dashboard, point your browser to http://127.0.0.1:8888.
                             < ~/.radicle-seed/secret.key
 
         Nov 11 18:08:13.660  INFO radicle_seed: Initializing tracker to track everything..
+
+
+
+[ha]: https://github.com/radicle-dev/radicle-bins/commit/f1462b92a06ef65ec4b65201e9801473a41b4ee3
