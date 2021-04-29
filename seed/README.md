@@ -45,33 +45,87 @@ To see the seed dashboard, point your browser to http://127.0.0.1:8888.
 
 ## Usage
 
-    radicle-seed-node [--peer-listen <peer-listen>] [--http-listen <http-listen>]
-                      [--log <log>] [--root <root>] [--name <name>]
-                      [--description <description>] [--public-addr <public-addr>]
+    radicle-seed-node [--network <network>]
+                      [--peer-listen <peer-listen>]
+                      [--advertised-address <advertised-address>]
+                      [--http-listen <http-listen>]
+                      [--log <log>]
+                      [--root <root>]
+                      [--assets-path <assets-path>]
+                      [--name <name>]
+                      [--description <description>]
+                      [--homepage <homepage>]
+                      [--logo-url <logo-url>]
+                      [--public-addr <public-addr>]
+                      [--bootstrap <bootstrap>]
+                      [--features-projects <features-projects>]
+                      [--user-size <user-size>]
+                      [--protocol-size <protocol-size>]
+                      [--membership-max-active <membership-max-active>]
+                      [--membership-max-passive <membership-max-passive>]
                       [<command>] [<args>]
+
 
     To run the seed node, a secret key in the format produced by
     `radicle-keyutil` **must always** be provided in STDIN.
 
     Options:
+
+      --network         join this radicle link network by name
+                        leave empty to join the mainnet
+
       --peer-listen     listen on the following address for peer connections
-      --http-listen     listen on the following address for HTTP connections
-                        (default: 127.0.0.1:8888)
-      --log             log level (default: info)
+
+      --advertised-address
+                        advertised address for peer connections,
+                        eg. 1.2.3.4:12345,2.3.4.5:12345
+
+      --http-listen     listen on the following address for HTTP connections,
+                        default: 127.0.0.1:8888
+
+      --log             log level, default: info
       --root            radicle root path, for key and git storage
       --assets-path     path to UI assets directory
       --name            name of this seed, displayed to users
       --description     description of this seed, displayed to users as HTML
-      --public-addr     public address of this seed node, eg.
-                        'seedling.radicle.xyz:12345'
+      --homepage        homepage of this seed, displayed to users as a URL
+      --logo-url        logo url of this seed, displayed to users as an image
+
+      --public-addr     public address of this seed node,
+                        eg. 'seedling.radicle.xyz:12345'
+
+      --bootstrap       list of bootstrap peers,
+                        eg. 'f00...@seed1.example.com:12345,bad...@seed2.example.com:12345'
+
+      --features-projects
+                        list of featured projects,
+                        eg. 'rad:git:abcd1,rad:git:defg2,...'
+
+      --user-size       number of [`librad::git::storage::Storage`] instancess
+                        to pool for consumers
+
+      --protocol-size   number of [`librad::git::storage::Storage`] instancess
+                        to pool for the protocol
+
+      --membership-max-active
+                        max number of active members to set in
+                        [`membership::Params`]
+
+      --membership-max-passive
+                        max number of passive members to set in
+                        [`membership::Params`]
+
       --help            display usage information
 
     Commands:
+
       track-urns        A set of URNs to track
       track-peers       A set of peers to track
 
+
     Examples:
-    Start a seed node that tracks and replicates specific peers
+
+      Start a seed node that tracks and replicates specific peers
 
         $ radicle-seed-node --root ~/.radicle-seed track-peers \
                             --peer hyymwdkgymeupidbgwfb16wp5fg1ojz3ias8c8ijtdeecjo6yxtw3g \
@@ -81,7 +135,7 @@ To see the seed dashboard, point your browser to http://127.0.0.1:8888.
 
         INFO radicle_seed: Initializing tracker with 3 peers..
 
-    Start a seed node that tracks and replicates specific URNs
+      Start a seed node that tracks and replicates specific URNs
 
         $ radicle-seed-node --root ~/.radicle-seed track-urns \
                             --urn rad:git:hwd1yrebfxd5fu79qh4zejg4kf1xohfg54iqyssf7guds6cp6hkug4iqsmc \
@@ -90,8 +144,8 @@ To see the seed dashboard, point your browser to http://127.0.0.1:8888.
 
         Nov 11 18:03:25.650  INFO radicle_seed: Initializing tracker with 2 URNs..
 
-    Start a seed node that tracks and replicates any peer that connects. All
-    URNs that any peer gossips will be replicated.
+      Start a seed node that tracks and replicates any peer that connects. All
+      URNs that any peer gossips will be replicated.
 
         $ radicle-seed-node --root ~/.radicle-seed \
                             --public-addr "superseed.monadic.xyz:4444" \
