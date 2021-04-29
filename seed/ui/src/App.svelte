@@ -30,11 +30,7 @@
     });
 
     featuredProjects = $projects
-      .filter(project => {
-        if (project.featured) {
-          return project;
-        }
-      })
+      .filter(project => project.featured)
       .map(project => {
         return { item: project };
       });
@@ -42,11 +38,7 @@
     if (activeTab === "feat") {
       if (projectFilter.length > 0) {
         const fuse = new Fuse(
-          $projects.filter(project => {
-            if (project.featured) {
-              return project;
-            }
-          }),
+          $projects.filter(project => project.featured),
           options
         );
         filteredProjects = fuse.search(projectFilter);
