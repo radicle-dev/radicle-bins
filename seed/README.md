@@ -156,5 +156,24 @@ To see the seed dashboard, point your browser to http://127.0.0.1:8888.
         Nov 11 18:08:13.660  INFO radicle_seed: Initializing tracker to track everything..
 
 
+## Systemd integration
+
+To run the seed daemon via systemd, you can use the provided templates in
+[systemd](./systemd). To set it up adjust the settings in the templates and
+copy them to their respective locations:
+
+    cp systemd/radicle-seed.example /etc/default/radicle-seed
+    cp systemd/radicle-seed.service.example /etc/systemd/system/radicle-seed.service
+
+To start or stop the service run:
+
+    systemctl start radicle-seed
+    systemctl stop radicle-seed
+
+And to start the seed node on system start do:
+
+    systemctl enable radicle-seed
+
+
 
 [ha]: https://github.com/radicle-dev/radicle-bins/commit/f1462b92a06ef65ec4b65201e9801473a41b4ee3

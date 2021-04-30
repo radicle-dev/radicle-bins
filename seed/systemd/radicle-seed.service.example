@@ -1,0 +1,30 @@
+# /etc/systemd/system/radicle-seed.service
+[Unit]
+Description=Radicle seed service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+# Allow binding non-root users to port 80
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+Type=simple
+EnvironmentFile=-/etc/default/radicle-seed
+ExecStart=/home/seed/radicle-bins/target/release/radicle-seed-node --assets-path $SEED_ASSETS --http-listen $SEED_HTTP_LISTEN --peer-listen $SEED_PEER_LISTEN --public-addr $SEED_PUBLIC_ADDRESS --user-size $SEED_USER_SIZE --protocol-size $SEED_PROTOCOL_SIZE --membership-max-active $SEED_MEMBERSHIP_MAX_ACTIVE --membership-max-passive $SEED_MEMBERSHIP_MAX_PASSIVE --log $SEED_LOG --root $SEED_ROOT --name "${SEED_NAME}" --description "${SEED_DESCRIPTION}"
+StandardInput=file:/home/seed/radicle-bins/seed.key
+StandardOutput=journal
+StandardError=journal
+PrivateTmp=yes
+NoNewPrivileges=true
+
+Restart=always
+RestartSec=5
+
+User=seed
+
+# ulimit -c unlimited
+LimitCORE=infinity
+# ulimit -n 1000000
+LimitNOFILE=1000000
+
+[Install]
+WantedBy=multi-user.target
