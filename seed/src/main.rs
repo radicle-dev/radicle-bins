@@ -133,7 +133,7 @@ pub struct Options {
     /// list of featured projects, eg.
     /// 'rad:git:abcd1,rad:git:defg2,...'
     #[argh(option)]
-    pub features_projects: Option<String>,
+    pub featured_projects: Option<String>,
 
     /// number of [`librad::git::storage::Storage`] instancess to pool for
     /// consumers.
@@ -269,7 +269,7 @@ async fn main() {
     let peer_id = PeerId::from(signer);
     let (tx, rx) = futures::channel::mpsc::channel(1);
     let featured_projs = opts
-        .features_projects
+        .featured_projects
         .map_or_else(HashSet::new, parse_urn_list);
 
     tokio::spawn(seed::frontend::run(

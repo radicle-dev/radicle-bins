@@ -58,7 +58,7 @@ To see the seed dashboard, point your browser to http://127.0.0.1:8888.
                       [--logo-url <logo-url>]
                       [--public-addr <public-addr>]
                       [--bootstrap <bootstrap>]
-                      [--features-projects <features-projects>]
+                      [--featured-projects <featured-projects>]
                       [--user-size <user-size>]
                       [--protocol-size <protocol-size>]
                       [--membership-max-active <membership-max-active>]
@@ -97,7 +97,7 @@ To see the seed dashboard, point your browser to http://127.0.0.1:8888.
       --bootstrap       list of bootstrap peers,
                         eg. 'f00...@seed1.example.com:12345,bad...@seed2.example.com:12345'
 
-      --features-projects
+      --featured-projects
                         list of featured projects,
                         eg. 'rad:git:abcd1,rad:git:defg2,...'
 
