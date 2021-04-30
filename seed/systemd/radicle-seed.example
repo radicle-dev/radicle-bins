@@ -14,5 +14,6 @@ SEED_DESCRIPTION="<p class='typo-text-small' style='margin-bottom: 1rem;'>This i
 RUST_BACKTRACE=full
 RUST_LOG=info
 
+# Enable these for introspection of libgit2 logging
 #GIT_TRACE2=1
 #GIT_TRACE_PACKET=1
