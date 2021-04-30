@@ -72,6 +72,7 @@
 
   aside {
     max-width: 20rem;
+    min-width: 20rem;
     padding-left: 3rem;
   }
 
