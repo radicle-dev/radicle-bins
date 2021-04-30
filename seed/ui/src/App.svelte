@@ -68,6 +68,7 @@
 
   main {
     width: 100%;
+    min-width: 35rem;
   }
 
   aside {
