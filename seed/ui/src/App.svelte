@@ -21,7 +21,7 @@
   let activeTab = "all";
 
   $: if ($seed) {
-    document.title = `${$seed.name} - ${$seed.publicAddr || $seed.peerId}`;
+    document.title = `${$seed.name}`;
   }
 
   $: {
