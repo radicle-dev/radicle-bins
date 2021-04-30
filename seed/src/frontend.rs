@@ -97,7 +97,7 @@ impl State {
             peer_id: self.peer_id,
             description: self.description.clone(),
             homepage: self.homepage.clone(),
-            logo_url: self.homepage.clone(),
+            logo_url: self.logo_url.clone(),
             projects: self.projects.len(),
             peers: self.peers.values().filter(|p| p.is_connected()).count(),
         }

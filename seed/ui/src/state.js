@@ -116,7 +116,7 @@ const data = {
     description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora quod inventore cumque doloribus sapiente maiores! Sed cumque iste, nisi amet, officiis illo eum veniam ducimus rem minus voluptates, quaerat vero.",
     homepage: "https://radicle.xyz",
-    logoUrl: "https://avatars.githubusercontent.com/u/48290027?s=240&v=4",
+    logoUrl: "https://avatars.githubusercontent.com/u/48290027",
   },
   projects: [
     {
