@@ -1,0 +1,18 @@
+# /etc/default/radicle-seed
+SEED_ASSETS=/home/seed/radicle-bins/seed/ui/public
+SEED_HTTP_LISTEN=0.0.0.0:80
+SEED_PEER_LISTEN=0.0.0.0:12345
+SEED_PUBLIC_ADDRESS=sprout.radicle.xyz:12345
+SEED_USER_SIZE=64
+SEED_PROTOCOL_SIZE=64
+SEED_MEMBERSHIP_MAX_ACTIVE=256
+SEED_MEMBERSHIP_MAX_PASSIVE=1024
+SEED_LOG=info
+SEED_ROOT=/state
+SEED_NAME="Sprout 🌱"
+SEED_DESCRIPTION="<p class='typo-text-small' style='margin-bottom: 1rem;'>This is the dashboard for Radicle's seed node. It maintains a real-time view of activity on the Radicle network. You can use it to discover new projects and people to add to your social graph. To find a project or peer, copy it's Radicle ID, and paste it into the search bar of your Upstream app.</p><p class='typo-text-small' style='margin-bottom: 1rem'>To add this seed node to your Upstream app, follow the steps in the <a class='typo-link' href='https://docs.radicle.xyz/docs/getting-started'>Getting Started</a> guide. To start your own seed node, follow the instructions <a class='typo-link' href='https://docs.radicle.xyz/docs/using-radicle/running-a-seed-node'>here</a>.</p>"
+RUST_BACKTRACE=full
+RUST_LOG=info
+
+#GIT_TRACE2=1
+#GIT_TRACE_PACKET=1

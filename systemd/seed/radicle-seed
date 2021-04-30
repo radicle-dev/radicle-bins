@@ -1,7 +1,0 @@
-HTTP_LISTEN=0.0.0.0:8080
-PEER_LISTEN=0.0.0.0:12345
-PUBLIC_ADDRESS=superseed.monadic.xyz:4444
-NAME=Seedling
-RADICLE_ROOT=/mnt/.radicle-seed/
-BOOTSTRAP=
-ASSETS=/usr/share/radicle-seed/seed/ui/public
