@@ -76,6 +76,7 @@ eventSource.onmessage = e => {
                 maintainers: p.maintainers,
                 description: p.description,
                 tracked: p.tracked,
+                featured: p.featured,
               };
             })
           )
@@ -94,6 +95,7 @@ eventSource.onmessage = e => {
             maintainers: p.maintainers,
             description: p.description,
             tracked: p.tracked,
+            featured: p.featured,
           };
         })
       );
