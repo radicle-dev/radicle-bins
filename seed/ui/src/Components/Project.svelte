@@ -63,7 +63,9 @@
 <div class="container">
   <div class="title">
     <h2>{project.name}</h2>
-    <Avatar avatar={project.maintainers[0].avatar} />
+    {#each project.maintainers as maintainer}
+      <Avatar avatar={maintainer.avatar} title={maintainer.name} />
+    {/each}
   </div>
   <div class="radicle-id">
     <Icon.At style="margin-right: 0.25rem;" />
