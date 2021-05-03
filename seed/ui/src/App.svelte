@@ -14,77 +14,119 @@
     ignoreLocation: true,
   };
 
-  let projectFilter = "";
-  let allProjects = [];
-  let filteredProjects = allProjects;
+  let searchQuery = "";
+  let searchResults = [];
+
+  $: allProjects = $projects;
+  $: featuredProjects = allProjects.filter(project => project.featured);
+  $: activeTab = featuredProjects.length > 0 ? "featured" : "all";
 
   $: {
-    allProjects = $projects.map(project => {
-      return { item: project };
-    });
+    const searchCollection =
+      activeTab === "all" ? allProjects : featuredProjects;
+    const fuse = new Fuse(searchCollection, options);
 
-    if (projectFilter.length > 0) {
-      const fuse = new Fuse($projects, options);
-      filteredProjects = fuse.search(projectFilter);
+    if (searchQuery.length > 0) {
+      searchResults = fuse.search(searchQuery).map(result => result.item);
     } else {
-      filteredProjects = allProjects;
+      searchResults = searchCollection;
     }
+  }
+
+  $: if ($seed) {
+    document.title = `${$seed.name}`;
   }
 
   poll();
 </script>
 
 <style>
+  container {
+    margin: 0 auto;
+    padding: 2rem 4rem;
+    max-width: 90rem;
+    display: flex;
+  }
+
   main {
-    grid-area: main;
+    width: 100%;
+    min-width: 35rem;
   }
 
   aside {
-    grid-area: sidebar;
-  }
-
-  .container {
-    display: grid;
-    grid-template-columns: repeat(6, 8.75rem);
-    column-gap: 1.5rem;
-    row-gap: 2.5rem;
-    grid-template-rows: auto;
-    grid-template-areas:
-      "header header header header header header"
-      "main main main main sidebar sidebar";
-    margin: 0 auto;
-    max-width: 62rem;
-    padding: 4rem 1rem;
+    max-width: 20rem;
+    min-width: 20rem;
+    padding-left: 3rem;
   }
 
   header {
     display: flex;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    height: 2.5rem;
+    margin-bottom: 1rem;
+    flex-direction: column;
+    cursor: default;
   }
 
-  header h3 {
-    margin-right: 1rem;
+  .tabs {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .tabs button {
+    cursor: pointer;
+  }
+
+  h4 {
+    color: var(--color-foreground-level-6);
+    margin-bottom: 0.5rem;
+  }
+
+  .active h4 {
+    color: var(--color-primary);
+  }
+
+  .number {
+    background: var(--color-foreground-level-2);
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    margin-left: 0.25rem;
   }
 </style>
 
-<div class="container">
-  {#if $seed}
-    <Header seed={$seed} projects={$projects} online={$online} />
-  {/if}
+{#if $seed}
+  <Header seed={$seed} />
+{/if}
+<container>
   <main>
     <header>
-      <h3>Projects</h3>
+      <div class="tabs">
+        {#if featuredProjects.length > 0}
+          <button
+            class:active={activeTab === 'featured'}
+            on:click={() => (activeTab = 'featured')}>
+            <h4>
+              Featured projects
+              <span class="number">{featuredProjects.length}</span>
+            </h4>
+          </button>
+        {/if}
+        <button
+          class:active={activeTab === 'all'}
+          on:click={() => (activeTab = 'all')}>
+          <h4>
+            {featuredProjects.length > 0 ? 'All projects' : 'Projects'}
+            <span class="number">{allProjects.length}</span>
+          </h4>
+        </button>
+      </div>
       <Input
         style="width: 100%;"
-        disabled={$projects.length === 0}
-        bind:value={projectFilter}
+        disabled={allProjects.length === 0}
+        bind:value={searchQuery}
         placeholder="Type to filter…" />
     </header>
-    {#if $projects.length > 0}
-      {#each filteredProjects as project}
-        <Project project={project.item} />
+    {#if allProjects.length > 0}
+      {#each searchResults as result}
+        <Project project={result} />
       {:else}
         <p style="color: var(--color-foreground-level-5);">
           None of the replicated projects match this query
@@ -96,9 +138,14 @@
       </p>
     {/if}
   </main>
+
   <aside>
     <header>
-      <h3>Peers</h3>
+      <h4>
+        Peers
+        <span
+          class="number">{$online || $seen ? $online.length + $seen.length : 0}</span>
+      </h4>
     </header>
     {#if $online.length > 0 || $seen.length > 0}
       <PeerList online={$online} seen={$seen} />
@@ -106,4 +153,4 @@
       <p style="color: var(--color-foreground-level-5);">No peers</p>
     {/if}
   </aside>
-</div>
+</container>

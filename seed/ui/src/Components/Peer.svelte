@@ -11,6 +11,7 @@
 <style>
   .container {
     margin-bottom: 1.5rem;
+    cursor: default;
   }
   .status {
     display: flex;
@@ -60,7 +61,12 @@
           <p class="status-indicator">online</p>
         {:else}
           <p class="time typo-text-small">
-            {peer.state.since.toLocaleString()}
+            {peer.state.since.toLocaleDateString('default', {
+              month: 'long',
+              day: '2-digit',
+              hour: 'numeric',
+              minute: 'numeric',
+            })}
           </p>
         {/if}
       </div>

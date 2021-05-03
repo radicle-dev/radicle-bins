@@ -2,8 +2,8 @@
   import * as helpers from "../helpers";
 
   import Icon from "./Icon";
-  import Avatar from "./Avatar.svelte";
   import Copyable from "./Copyable.svelte";
+  import Avatar from "./Avatar.svelte";
 
   export let project = null;
 </script>
@@ -14,12 +14,8 @@
     margin-bottom: 1.5rem;
     border: 1px solid var(--color-foreground-level-3);
     border-radius: 0.5rem;
-  }
-
-  .name {
-    display: flex;
-    margin-bottom: 0.5rem;
-    justify-content: space-between;
+    position: relative;
+    cursor: default;
   }
 
   .urn {
@@ -30,28 +26,47 @@
     margin: 1rem 0 0rem;
   }
 
-  .bottom {
-    display: flex;
-    margin-top: 1.5rem;
-    justify-content: space-between;
-  }
-
-  .stats,
-  .stat {
+  .title {
     display: flex;
     align-items: center;
-    margin-right: 2rem;
+    margin-bottom: 0.75rem;
   }
 
   .radicle-id {
     display: flex;
   }
+
+  h2 {
+    margin-right: 0.75rem;
+  }
+
+  a.button {
+    visibility: hidden;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-weight: 600;
+    display: flex;
+  }
+
+  .container:hover a.button {
+    visibility: visible;
+  }
+
+  a.button:hover {
+    background: var(--color-foreground-level-1);
+  }
 </style>
 
 <div class="container">
-  <a
-    class="name typo-text-bold"
-    href={`radicle://link/v0/${project.urn}`}>{project.name}</a>
+  <div class="title">
+    <h2>{project.name}</h2>
+    {#each project.maintainers as maintainer}
+      <Avatar avatar={maintainer.avatar} title={maintainer.name} />
+    {/each}
+  </div>
   <div class="radicle-id">
     <Icon.At style="margin-right: 0.25rem;" />
     <Copyable showIcon={true} styleContent={false} copyContent={project.urn}>
@@ -61,23 +76,7 @@
     </Copyable>
   </div>
   <p class="typo-text desc">{project.description}</p>
-  <div class="bottom">
-    <div class="stats">
-      {#if project.stats}
-        <p class="typo-text typo-mono-bold stat">
-          <Icon.Commit style="margin-right: 0.8rem;" />{project.stats.commits}
-        </p>
-        <p class="typo-text typo-mono-bold stat">
-          <Icon.Branch style="margin-right: 0.8rem;" />{project.stats.branches}
-        </p>
-        <p class="typo-text typo-mono-bold stat">
-          <Icon.User
-            style="margin-right: 0.8rem;" />{project.stats.contributors}
-        </p>
-      {/if}
-    </div>
-    {#each project.maintainers as maintainer}
-      <Avatar avatar={maintainer.avatar} title={maintainer.name} />
-    {/each}
-  </div>
+  <a class="button" href={`radicle://link/v0/${project.urn}`}>
+    <Icon.ArrowBoxUpRight style="margin-right: 0.8rem;" />View in Upstream
+  </a>
 </div>

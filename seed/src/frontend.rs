@@ -16,7 +16,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use std::{
-    collections::{hash_map::Entry, HashMap},
+    collections::{hash_map::Entry, HashMap, HashSet},
     net,
     path::PathBuf,
     sync::Arc,
@@ -41,6 +41,8 @@ pub struct Info {
     peer_id: PeerId,
     public_addr: Option<String>,
     description: Option<String>,
+    homepage: Option<String>,
+    logo_url: Option<String>,
     peers: usize,
     projects: usize,
 }
@@ -77,9 +79,12 @@ pub enum Event {
 struct State {
     name: Option<String>,
     description: Option<String>,
+    homepage: Option<String>,
+    logo_url: Option<String>,
     public_addr: Option<String>,
     peer_id: PeerId,
     projects: HashMap<Urn, Project>,
+    featured_projects: HashSet<Urn>,
     peers: HashMap<PeerId, Peer>,
     subs: Vec<tokio::sync::mpsc::UnboundedSender<Event>>,
 }
@@ -91,6 +96,8 @@ impl State {
             public_addr: self.public_addr.clone(),
             peer_id: self.peer_id,
             description: self.description.clone(),
+            homepage: self.homepage.clone(),
+            logo_url: self.logo_url.clone(),
             projects: self.projects.len(),
             peers: self.peers.values().filter(|p| p.is_connected()).count(),
         }
@@ -108,7 +115,8 @@ impl State {
 
         match self.projects.entry(proj.urn.clone()) {
             Entry::Vacant(v) => {
-                let proj = Project::from((proj, Some(tracked)));
+                let featured = self.featured_projects.contains(&proj.urn);
+                let proj = Project::from((proj, Some(tracked), featured));
                 v.insert(proj.clone());
                 self.broadcast(Event::ProjectTracked(proj));
             },
@@ -168,16 +176,18 @@ pub struct Project {
     pub description: Option<String>,
     pub maintainers: Vec<User>,
     pub tracked: Option<SystemTime>,
+    pub featured: bool,
 }
 
-impl From<(seed::Project, Option<SystemTime>)> for Project {
-    fn from((other, tracked): (seed::Project, Option<SystemTime>)) -> Self {
+impl From<(seed::Project, Option<SystemTime>, bool)> for Project {
+    fn from((other, tracked, featured): (seed::Project, Option<SystemTime>, bool)) -> Self {
         Self {
             urn: other.urn,
             name: other.name,
             description: other.description,
             maintainers: other.maintainers.into_iter().map(User::from).collect(),
             tracked,
+            featured,
         }
     }
 }
@@ -203,9 +213,12 @@ async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event
 pub async fn run<A: Into<net::SocketAddr>>(
     name: Option<String>,
     description: Option<String>,
+    homepage: Option<String>,
+    logo_url: Option<String>,
     addr: A,
     public_addr: Option<String>,
     assets_path: PathBuf,
+    featured_projects: HashSet<Urn>,
     peer_id: PeerId,
     mut handle: seed::NodeHandle,
     events: chan::Receiver<seed::Event>,
@@ -215,12 +228,20 @@ pub async fn run<A: Into<net::SocketAddr>>(
     let state = Arc::new(Mutex::new(State {
         name,
         description,
+        homepage,
+        logo_url,
         peer_id,
         public_addr,
         projects: projects
             .into_iter()
-            .map(|p| (p.urn.clone(), Project::from((p, None))))
+            .map(|p| {
+                let urn = p.urn.clone();
+                let p = Project::from((p, None, featured_projects.contains(&urn)));
+
+                (urn, p)
+            })
             .collect(),
+        featured_projects,
         peers: HashMap::new(),
         subs: Vec::new(),
     }));

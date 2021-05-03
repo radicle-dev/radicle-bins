@@ -44,7 +44,7 @@ export const poll = () => {
       .then(resp => resp.json())
       .then(peerStore.set);
   }, 1000);
-}
+};
 
 const eventSource = new EventSource("/events");
 
@@ -53,7 +53,6 @@ eventSource.onmessage = e => {
 
   switch (data.type) {
     case "peerConnected": {
-
       break;
     }
 
@@ -77,6 +76,7 @@ eventSource.onmessage = e => {
                 maintainers: p.maintainers,
                 description: p.description,
                 tracked: p.tracked,
+                featured: p.featured,
               };
             })
           )
@@ -95,6 +95,7 @@ eventSource.onmessage = e => {
             maintainers: p.maintainers,
             description: p.description,
             tracked: p.tracked,
+            featured: p.featured,
           };
         })
       );
@@ -111,13 +112,13 @@ const filterOnline = peer => {
 // FIXTURES
 const data = {
   seed: {
-    name: "seedling",
+    name: "Seedling",
     publicAddr: "seedling.radicle.xyz:12345",
     peerId: "hynewpywqj6x4mxgj7sojhue3erucyexiyhobxx4du9w66hxhbfqbw",
     description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora quod inventore cumque doloribus sapiente maiores! Sed cumque iste, nisi amet, officiis illo eum veniam ducimus rem minus voluptates, quaerat vero.",
-    peers: 12,
-    projects: 1000,
+    homepage: "https://radicle.xyz",
+    logoUrl: "https://avatars.githubusercontent.com/u/48290027",
   },
   projects: [
     {
@@ -139,6 +140,7 @@ const data = {
       description: "an amazing p2p app",
       urn:
         "rad:git:hwd1yre8ugp55p37domyqoi9m44ptwqrixioxgdic9kaduo8es5xhzhbaty",
+      featured: true,
       stats: {
         commits: 12,
         branches: 32,
@@ -165,6 +167,7 @@ const data = {
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas deleniti repudiandae sint adipisci eveniet, inventore ad atque cum. Incidunt, excepturi! Doloribus vitae laboriosam enim, ipsa ullam est vel voluptatibus quidem.",
       urn:
         "rad:git:hwd1yre8ugp55p37domyqoi9m44ptwqrixioxgdic9kaduo8es5xhzhbaty",
+      featured: false,
     },
   ],
   peers: [
