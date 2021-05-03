@@ -14,44 +14,22 @@
     ignoreLocation: true,
   };
 
-  let projectFilter = "";
-  let allProjects = [];
-  let featuredProjects = [];
-  let filteredProjects = allProjects;
-  let activeTab = "all";
+  let searchQuery = "";
+  let searchResults = [];
 
-  $: if ($seed) {
-    document.title = `${$seed.name}`;
-  }
+  $: allProjects = $projects;
+  $: featuredProjects = allProjects.filter(project => project.featured);
+  $: activeTab = featuredProjects.length > 0 ? "featured" : "all";
 
   $: {
-    allProjects = $projects.map(project => {
-      return { item: project };
-    });
+    const searchCollection =
+      activeTab === "all" ? allProjects : featuredProjects;
+    const fuse = new Fuse(searchCollection, options);
 
-    featuredProjects = $projects
-      .filter(project => project.featured)
-      .map(project => {
-        return { item: project };
-      });
-
-    if (activeTab === "feat") {
-      if (projectFilter.length > 0) {
-        const fuse = new Fuse(
-          $projects.filter(project => project.featured),
-          options
-        );
-        filteredProjects = fuse.search(projectFilter);
-      } else {
-        filteredProjects = featuredProjects;
-      }
+    if (searchQuery.length > 0) {
+      searchResults = fuse.search(searchQuery).map(result => result.item);
     } else {
-      if (projectFilter.length > 0) {
-        const fuse = new Fuse($projects, options);
-        filteredProjects = fuse.search(projectFilter);
-      } else {
-        filteredProjects = allProjects;
-      }
+      searchResults = searchCollection;
     }
   }
 
@@ -119,33 +97,32 @@
       <div class="tabs">
         {#if featuredProjects.length > 0}
           <button
-            class:active={activeTab === 'feat'}
-            on:click={() => (activeTab = 'feat')}>
+            class:active={activeTab === 'featured'}
+            on:click={() => (activeTab = 'featured')}>
             <h4>
               Featured projects
-              <span
-                class="number">{featuredProjects ? featuredProjects.length : 0}</span>
+              <span class="number">{featuredProjects.length}</span>
             </h4>
           </button>
         {/if}
         <button
-          class:active={featuredProjects.length > 0 && activeTab === 'all'}
+          class:active={activeTab === 'all'}
           on:click={() => (activeTab = 'all')}>
           <h4>
             {featuredProjects.length > 0 ? 'All projects' : 'Projects'}
-            <span class="number">{allProjects ? allProjects.length : 0}</span>
+            <span class="number">{allProjects.length}</span>
           </h4>
         </button>
       </div>
       <Input
         style="width: 100%;"
-        disabled={$projects.length === 0}
-        bind:value={projectFilter}
+        disabled={allProjects.length === 0}
+        bind:value={searchQuery}
         placeholder="Type to filter…" />
     </header>
-    {#if $projects.length > 0}
-      {#each filteredProjects as project}
-        <Project project={project.item} />
+    {#if allProjects.length > 0}
+      {#each searchResults as result}
+        <Project project={result} />
       {:else}
         <p style="color: var(--color-foreground-level-5);">
           None of the replicated projects match this query
