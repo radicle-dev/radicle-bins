@@ -33,6 +33,10 @@
     }
   }
 
+  $: if ($seed) {
+    document.title = `${$seed.name}`;
+  }
+
   poll();
 </script>
 
