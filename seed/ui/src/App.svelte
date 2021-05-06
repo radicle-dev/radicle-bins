@@ -90,6 +90,18 @@
     border-radius: 1rem;
     margin-left: 0.25rem;
   }
+
+  @media screen and (max-width: 63rem) {
+    container {
+      flex-direction: column;
+      padding: 2rem;
+    }
+
+    aside {
+      padding-left: 0;
+      width: 100%;
+    }
+  }
 </style>
 
 {#if $seed}

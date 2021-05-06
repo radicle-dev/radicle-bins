@@ -89,7 +89,6 @@
     cursor: pointer;
     display: inline-flex;
     white-space: nowrap;
-    width: 100%;
   }
 
   .basic {
