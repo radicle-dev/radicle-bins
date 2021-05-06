@@ -101,6 +101,10 @@
       padding-left: 0;
       width: 100%;
     }
+
+    .tabs {
+      gap: 1rem;
+    }
   }
 </style>
 
