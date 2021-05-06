@@ -37,6 +37,17 @@
     align-self: flex-start;
   }
 
+  @media screen and (max-width: 63rem) {
+    container {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .logo {
+      align-self: center;
+    }
+  }
+
   .meta {
     color: var(--color-foreground-level-6);
     padding: 0 2rem 0 0;

@@ -50,12 +50,12 @@
 
   main {
     width: 100%;
-    min-width: 35rem;
+    /* min-width: 35rem; */
   }
 
   aside {
     max-width: 20rem;
-    min-width: 20rem;
+    /* min-width: 20rem; */
     padding-left: 3rem;
   }
 
