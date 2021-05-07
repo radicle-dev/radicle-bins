@@ -43,7 +43,7 @@
 </script>
 
 <style>
-  container {
+  .container {
     margin: 0 auto;
     padding: 0 4rem 2rem;
     max-width: 90rem;
@@ -68,7 +68,7 @@
     cursor: default;
   }
 
-  tabscontainer {
+  .tabs-container {
     display: flex;
     padding: 1rem 0 0 4rem;
   }
@@ -111,7 +111,7 @@
   }
 
   @media screen and (max-width: 63rem) {
-    container {
+    .container {
       flex-direction: column;
       padding: 0 2rem 2rem 2rem;
       overflow: hidden;
@@ -121,7 +121,7 @@
       visibility: hidden;
     }
 
-    tabscontainer {
+    .tabs-container {
       padding-left: 2rem;
       overflow-x: scroll;
       -webkit-overflow-scrolling: touch;
@@ -148,7 +148,7 @@
 {#if $seed}
   <Header seed={$seed} />
 {/if}
-<tabscontainer>
+<div class="tabs-container">
   <div class="tabs">
     {#if featuredProjects.length > 0}
       <button
@@ -175,8 +175,8 @@
       <h4>Peers <span class="number">{peerCount}</span></h4>
     </button>
   </div>
-</tabscontainer>
-<container>
+</div>
+<div class="container">
   <main>
     <header>
       {#if activeTab !== 'peers'}
@@ -220,4 +220,4 @@
       <p style="color: var(--color-foreground-level-5);">No peers</p>
     {/if}
   </aside>
-</container>
+</div>
