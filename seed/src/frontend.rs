@@ -209,6 +209,13 @@ async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event
     }
 }
 
+#[derive(Debug)]
+struct ServiceUnavailable {
+    message: String,
+}
+
+impl warp::reject::Reject for ServiceUnavailable {}
+
 #[allow(clippy::too_many_arguments)]
 pub async fn run<A: Into<net::SocketAddr>>(
     name: Option<String>,
@@ -285,7 +292,18 @@ pub async fn run<A: Into<net::SocketAddr>>(
             .or(membership)
             .or(projects)
             .or(peers)
-            .or(info),
+            .or(info)
+            .recover(|err: warp::Rejection| async {
+                if let Some(err) = err.find::<ServiceUnavailable>() {
+                    let json = warp::reply::json(&err.message);
+                    Ok(warp::reply::with_status(
+                        json,
+                        warp::hyper::StatusCode::SERVICE_UNAVAILABLE,
+                    ))
+                } else {
+                    Err(err)
+                }
+            }),
     )
     .run(addr)
     .await;
@@ -295,10 +313,11 @@ async fn membership_handler(
     handle: Arc<Mutex<seed::NodeHandle>>,
 ) -> Result<impl warp::Reply, warp::Rejection> {
     let mut handle = handle.lock().await;
-    let info = handle
-        .get_membership()
-        .await
-        .expect("failed to get membership");
+    let info = handle.get_membership().await.map_err(|e| {
+        warp::reject::custom(ServiceUnavailable {
+            message: e.to_string(),
+        })
+    })?;
 
     Ok(warp::reply::json(&MembershipInfo::from(info)))
 }
@@ -313,10 +332,12 @@ async fn peers_handler(
     handle: Arc<Mutex<seed::NodeHandle>>,
 ) -> Result<impl warp::Reply, warp::Rejection> {
     let mut handle = handle.lock().await;
-    let peers = handle
-        .get_peers()
-        .await
-        .expect("failed to get peer list")
+    let peers = handle.get_peers().await.map_err(|e| {
+        warp::reject::custom(ServiceUnavailable {
+            message: e.to_string(),
+        })
+    })?;
+    let peers = peers
         .into_iter()
         .map(|peer_id| Peer {
             peer_id,
