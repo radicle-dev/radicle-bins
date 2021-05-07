@@ -58,6 +58,7 @@
     max-width: 20rem;
     padding-left: 3rem;
     visibility: visible;
+    margin-top: -1.9rem;
   }
 
   header {
