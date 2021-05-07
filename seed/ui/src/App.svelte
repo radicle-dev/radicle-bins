@@ -45,7 +45,7 @@
 <style>
   container {
     margin: 0 auto;
-    padding: 2rem 4rem;
+    padding: 0 4rem 2rem;
     max-width: 90rem;
     display: flex;
   }
@@ -67,6 +67,11 @@
     cursor: default;
   }
 
+  tabscontainer {
+    display: flex;
+    padding: 1rem 0 0 4rem;
+  }
+
   .tabs {
     display: flex;
     gap: 2rem;
@@ -74,6 +79,14 @@
 
   .tabs button {
     cursor: pointer;
+  }
+
+  .tabs button:focus-visible {
+    outline: none;
+  }
+
+  .tabs button:focus-visible h4 {
+    color: var(--color-foreground-level-4);
   }
 
   h4 {
@@ -99,17 +112,30 @@
   @media screen and (max-width: 63rem) {
     container {
       flex-direction: column;
-      padding: 2rem;
+      padding: 0 2rem 2rem 2rem;
+      overflow: hidden;
     }
 
     aside {
       visibility: hidden;
     }
 
+    tabscontainer {
+      padding-left: 2rem;
+      overflow-x: scroll;
+      -webkit-overflow-scrolling: touch;
+    }
+
     .tabs {
       display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
+      flex-direction: row;
+      gap: 1rem;
+      width: max-content;
+      padding: 0.25rem 1rem 0.5rem 0;
+    }
+
+    .tabs button {
+      width: max-content;
     }
 
     .mobile-peers {
@@ -121,35 +147,37 @@
 {#if $seed}
   <Header seed={$seed} />
 {/if}
+<tabscontainer>
+  <div class="tabs">
+    {#if featuredProjects.length > 0}
+      <button
+        class:active={activeTab === 'featured'}
+        on:click={() => (activeTab = 'featured')}>
+        <h4>
+          Featured projects
+          <span class="number">{featuredProjects.length}</span>
+        </h4>
+      </button>
+    {/if}
+    <button
+      class:active={activeTab === 'all'}
+      on:click={() => (activeTab = 'all')}>
+      <h4>
+        {featuredProjects.length > 0 ? 'All projects' : 'Projects'}
+        <span class="number">{allProjects.length}</span>
+      </h4>
+    </button>
+    <button
+      class="mobile-peers"
+      class:active={activeTab === 'peers'}
+      on:click={() => (activeTab = 'peers')}>
+      <h4>Peers <span class="number">{peerCount}</span></h4>
+    </button>
+  </div>
+</tabscontainer>
 <container>
   <main>
     <header>
-      <div class="tabs">
-        {#if featuredProjects.length > 0}
-          <button
-            class:active={activeTab === 'featured'}
-            on:click={() => (activeTab = 'featured')}>
-            <h4>
-              Featured projects
-              <span class="number">{featuredProjects.length}</span>
-            </h4>
-          </button>
-        {/if}
-        <button
-          class:active={activeTab === 'all'}
-          on:click={() => (activeTab = 'all')}>
-          <h4>
-            {featuredProjects.length > 0 ? 'All projects' : 'Projects'}
-            <span class="number">{allProjects.length}</span>
-          </h4>
-        </button>
-        <button
-          class="mobile-peers"
-          class:active={activeTab === 'peers'}
-          on:click={() => (activeTab = 'peers')}>
-          <h4>Peers <span class="number">{peerCount}</span></h4>
-        </button>
-      </div>
       {#if activeTab !== 'peers'}
         <Input
           style="width: 100%;"
