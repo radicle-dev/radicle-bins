@@ -119,6 +119,7 @@
 
     aside {
       visibility: hidden;
+      display: none;
     }
 
     .tabs-container {
