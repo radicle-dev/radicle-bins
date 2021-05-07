@@ -37,6 +37,8 @@
     document.title = `${$seed.name}`;
   }
 
+  $: peerCount = $online || $seen ? $online.length + $seen.length : 0;
+
   poll();
 </script>
 
@@ -50,13 +52,12 @@
 
   main {
     width: 100%;
-    /* min-width: 35rem; */
   }
 
   aside {
     max-width: 20rem;
-    /* min-width: 20rem; */
     padding-left: 3rem;
+    visibility: visible;
   }
 
   header {
@@ -91,6 +92,10 @@
     margin-left: 0.25rem;
   }
 
+  .mobile-peers {
+    visibility: hidden;
+  }
+
   @media screen and (max-width: 63rem) {
     container {
       flex-direction: column;
@@ -98,12 +103,17 @@
     }
 
     aside {
-      padding-left: 0;
-      width: 100%;
+      visibility: hidden;
     }
 
     .tabs {
-      gap: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .mobile-peers {
+      visibility: visible;
     }
   }
 </style>
@@ -133,14 +143,30 @@
             <span class="number">{allProjects.length}</span>
           </h4>
         </button>
+        <button
+          class="mobile-peers"
+          class:active={activeTab === 'peers'}
+          on:click={() => (activeTab = 'peers')}>
+          <h4>Peers <span class="number">{peerCount}</span></h4>
+        </button>
       </div>
-      <Input
-        style="width: 100%;"
-        disabled={allProjects.length === 0}
-        bind:value={searchQuery}
-        placeholder="Type to filter…" />
+      {#if activeTab !== 'peers'}
+        <Input
+          style="width: 100%;"
+          disabled={allProjects.length === 0}
+          bind:value={searchQuery}
+          placeholder="Type to filter…" />
+      {/if}
     </header>
-    {#if allProjects.length > 0}
+    {#if activeTab === 'peers'}
+      <div class="mobile-peers">
+        {#if $online.length > 0 || $seen.length > 0}
+          <PeerList online={$online} seen={$seen} />
+        {:else}
+          <p style="color: var(--color-foreground-level-5);">No peers</p>
+        {/if}
+      </div>
+    {:else if allProjects.length > 0}
       {#each searchResults as result}
         <Project project={result} />
       {:else}
@@ -157,11 +183,7 @@
 
   <aside>
     <header>
-      <h4>
-        Peers
-        <span
-          class="number">{$online || $seen ? $online.length + $seen.length : 0}</span>
-      </h4>
+      <h4>Peers <span class="number">{peerCount}</span></h4>
     </header>
     {#if $online.length > 0 || $seen.length > 0}
       <PeerList online={$online} seen={$seen} />
