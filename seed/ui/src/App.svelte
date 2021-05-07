@@ -37,26 +37,28 @@
     document.title = `${$seed.name}`;
   }
 
+  $: peerCount = $online || $seen ? $online.length + $seen.length : 0;
+
   poll();
 </script>
 
 <style>
-  container {
+  .container {
     margin: 0 auto;
-    padding: 2rem 4rem;
+    padding: 0 4rem 2rem;
     max-width: 90rem;
     display: flex;
   }
 
   main {
     width: 100%;
-    min-width: 35rem;
   }
 
   aside {
     max-width: 20rem;
-    min-width: 20rem;
     padding-left: 3rem;
+    visibility: visible;
+    margin-top: -1.9rem;
   }
 
   header {
@@ -66,6 +68,11 @@
     cursor: default;
   }
 
+  .tabs-container {
+    display: flex;
+    padding: 1rem 0 0 4rem;
+  }
+
   .tabs {
     display: flex;
     gap: 2rem;
@@ -73,6 +80,14 @@
 
   .tabs button {
     cursor: pointer;
+  }
+
+  .tabs button:focus-visible {
+    outline: none;
+  }
+
+  .tabs button:focus-visible h4 {
+    color: var(--color-foreground-level-4);
   }
 
   h4 {
@@ -90,41 +105,98 @@
     border-radius: 1rem;
     margin-left: 0.25rem;
   }
+
+  .mobile-peers {
+    visibility: hidden;
+  }
+
+  @media screen and (max-width: 63rem) {
+    .container {
+      flex-direction: column;
+      padding: 0 2rem 2rem 2rem;
+      overflow: hidden;
+    }
+
+    aside {
+      visibility: hidden;
+      display: none;
+    }
+
+    .tabs-container {
+      padding-left: 2rem;
+      overflow-x: scroll;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .tabs {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      width: max-content;
+      padding: 0.25rem 1rem 0.5rem 0;
+    }
+
+    .tabs button {
+      width: max-content;
+    }
+
+    .mobile-peers {
+      visibility: visible;
+    }
+  }
 </style>
 
 {#if $seed}
   <Header seed={$seed} />
 {/if}
-<container>
+<div class="tabs-container">
+  <div class="tabs">
+    {#if featuredProjects.length > 0}
+      <button
+        class:active={activeTab === 'featured'}
+        on:click={() => (activeTab = 'featured')}>
+        <h4>
+          Featured projects
+          <span class="number">{featuredProjects.length}</span>
+        </h4>
+      </button>
+    {/if}
+    <button
+      class:active={activeTab === 'all'}
+      on:click={() => (activeTab = 'all')}>
+      <h4>
+        {featuredProjects.length > 0 ? 'All projects' : 'Projects'}
+        <span class="number">{allProjects.length}</span>
+      </h4>
+    </button>
+    <button
+      class="mobile-peers"
+      class:active={activeTab === 'peers'}
+      on:click={() => (activeTab = 'peers')}>
+      <h4>Peers <span class="number">{peerCount}</span></h4>
+    </button>
+  </div>
+</div>
+<div class="container">
   <main>
     <header>
-      <div class="tabs">
-        {#if featuredProjects.length > 0}
-          <button
-            class:active={activeTab === 'featured'}
-            on:click={() => (activeTab = 'featured')}>
-            <h4>
-              Featured projects
-              <span class="number">{featuredProjects.length}</span>
-            </h4>
-          </button>
-        {/if}
-        <button
-          class:active={activeTab === 'all'}
-          on:click={() => (activeTab = 'all')}>
-          <h4>
-            {featuredProjects.length > 0 ? 'All projects' : 'Projects'}
-            <span class="number">{allProjects.length}</span>
-          </h4>
-        </button>
-      </div>
-      <Input
-        style="width: 100%;"
-        disabled={allProjects.length === 0}
-        bind:value={searchQuery}
-        placeholder="Type to filter…" />
+      {#if activeTab !== 'peers'}
+        <Input
+          style="width: 100%;"
+          disabled={allProjects.length === 0}
+          bind:value={searchQuery}
+          placeholder="Type to filter…" />
+      {/if}
     </header>
-    {#if allProjects.length > 0}
+    {#if activeTab === 'peers'}
+      <div class="mobile-peers">
+        {#if $online.length > 0 || $seen.length > 0}
+          <PeerList online={$online} seen={$seen} />
+        {:else}
+          <p style="color: var(--color-foreground-level-5);">No peers</p>
+        {/if}
+      </div>
+    {:else if allProjects.length > 0}
       {#each searchResults as result}
         <Project project={result} />
       {:else}
@@ -141,11 +213,7 @@
 
   <aside>
     <header>
-      <h4>
-        Peers
-        <span
-          class="number">{$online || $seen ? $online.length + $seen.length : 0}</span>
-      </h4>
+      <h4>Peers <span class="number">{peerCount}</span></h4>
     </header>
     {#if $online.length > 0 || $seen.length > 0}
       <PeerList online={$online} seen={$seen} />
@@ -153,4 +221,4 @@
       <p style="color: var(--color-foreground-level-5);">No peers</p>
     {/if}
   </aside>
-</container>
+</div>

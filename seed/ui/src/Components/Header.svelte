@@ -19,6 +19,7 @@
     border-bottom: 1px solid var(--color-foreground-level-2);
     cursor: default;
     background-color: var(--color-foreground-level-1);
+    overflow: hidden;
   }
 
   container {
@@ -67,6 +68,27 @@
 
   a.button:hover {
     background: var(--color-foreground-level-2);
+  }
+
+  @media screen and (max-width: 63rem) {
+    container {
+      flex-direction: column;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .logo {
+      align-self: center;
+      margin-right: 0;
+    }
+
+    .address * {
+      width: auto;
+    }
+
+    .meta {
+      padding: 2rem 0;
+    }
   }
 </style>
 
