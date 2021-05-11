@@ -204,7 +204,7 @@ fn parse_urn_list(option: String) -> HashSet<Urn> {
 }
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let opts = Options::from_env();
     let subscriber = FmtSubscriber::builder()
         .with_env_filter(EnvFilter::from_default_env().add_directive(opts.log.into()))
@@ -288,5 +288,7 @@ async fn main() {
         rx,
     ));
 
-    node.run(peer_config, tx).await.unwrap();
+    node.run(peer_config, tx).await?;
+
+    Ok(())
 }

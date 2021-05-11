@@ -26,7 +26,7 @@ use std::{
 use futures::StreamExt as _;
 use serde::Serialize;
 use tokio::sync::{mpsc, Mutex};
-use tokio_stream::wrappers::{ReceiverStream, UnboundedReceiverStream};
+use tokio_stream::wrappers::ReceiverStream;
 use warp::Filter as _;
 
 use avatar::Avatar;
@@ -86,7 +86,7 @@ struct State {
     projects: HashMap<Urn, Project>,
     featured_projects: HashSet<Urn>,
     peers: HashMap<PeerId, Peer>,
-    subs: Vec<tokio::sync::mpsc::UnboundedSender<Event>>,
+    subs: Vec<mpsc::Sender<Event>>,
 }
 
 impl State {
@@ -104,7 +104,15 @@ impl State {
     }
 
     fn broadcast(&mut self, event: Event) {
-        self.subs.retain(|sub| sub.send(event.clone()).is_ok());
+        self.subs.retain(|sub| match sub.try_send(event.clone()) {
+            Ok(_) => true,
+            Err(mpsc::error::TrySendError::Full(_)) => {
+                tracing::warn!("subscription is full");
+                true
+            },
+            // Remove if the other end is gone.
+            Err(mpsc::error::TrySendError::Closed(_)) => false,
+        });
     }
 
     fn project_tracked(&mut self, mut proj: seed::Project) {
@@ -366,23 +374,25 @@ async fn projects_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, 
 async fn events_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, warp::Rejection> {
     let receiver = {
         let mut state = state.lock().await;
-        let (tx, rx) = tokio::sync::mpsc::unbounded_channel();
+        // FIXME(xla): Somehow pass this down and have a knob for it.
+        // 640 is all you ever need.
+        let (tx, rx) = mpsc::channel(640);
         let projects = state.projects.values().cloned().collect();
         let peers = state.peers.values().cloned().collect();
         let info = state.info();
 
-        tx.send(Event::Snapshot {
+        tx.try_send(Event::Snapshot {
             projects,
             peers,
             info,
         })
-        .unwrap();
+        .expect("channel just created, should not be gone or full");
         state.subs.push(tx);
 
         rx
     };
 
     Ok(warp::sse::reply(warp::sse::keep_alive().stream(
-        UnboundedReceiverStream::new(receiver).map(|e| warp::sse::Event::default().json_data(e)),
+        ReceiverStream::new(receiver).map(|e| warp::sse::Event::default().json_data(e)),
     )))
 }
