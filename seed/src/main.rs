@@ -23,6 +23,7 @@ use std::{
 };
 
 use nonempty::NonEmpty;
+use tokio::sync::mpsc;
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 use librad::{
@@ -242,12 +243,13 @@ async fn main() {
     let listen_addr = opts.peer_listen.unwrap_or_else(|| ([0, 0, 0, 0], 0).into());
 
     let config = NodeConfig {
+        bootstrap: opts.bootstrap.map_or_else(Vec::new, parse_peer_list),
+        limits: Default::default(),
         mode: match opts.track {
             Some(Track::Peers(Peers { peers })) => Mode::TrackPeers(peers.into_iter().collect()),
             Some(Track::Urns(Urns { urns })) => Mode::TrackUrns(urns.into_iter().collect()),
             None => Mode::TrackEverything,
         },
-        bootstrap: opts.bootstrap.map_or_else(Vec::new, parse_peer_list),
     };
     let peer_config = peer::Config {
         signer: signer.clone(),
@@ -264,10 +266,10 @@ async fn main() {
         },
         storage,
     };
-    let node = Node::new().unwrap();
+    let node = Node::new(config).unwrap();
     let handle = node.handle();
     let peer_id = PeerId::from(signer);
-    let (tx, rx) = futures::channel::mpsc::channel(1);
+    let (tx, rx) = mpsc::channel(1);
     let featured_projs = opts
         .featured_projects
         .map_or_else(HashSet::new, parse_urn_list);
@@ -286,5 +288,5 @@ async fn main() {
         rx,
     ));
 
-    node.run(config, peer_config, tx).await.unwrap();
+    node.run(peer_config, tx).await.unwrap();
 }

@@ -1040,7 +1040,7 @@ dependencies = [
 [[package]]
 name = "librad"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/disable-rere#67120584d465fe0a03804c78f6bb0ac16be06f2d"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/seed-resilience#83c3d921d1331b5433b918dabe1ed7cb55230c2b"
 dependencies = [
  "async-stream",
  "async-trait",
@@ -1603,7 +1603,7 @@ dependencies = [
 [[package]]
 name = "radicle-data"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/disable-rere#67120584d465fe0a03804c78f6bb0ac16be06f2d"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/seed-resilience#83c3d921d1331b5433b918dabe1ed7cb55230c2b"
 dependencies = [
  "minicbor",
  "nonempty",
@@ -1614,7 +1614,7 @@ dependencies = [
 [[package]]
 name = "radicle-git-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/disable-rere#67120584d465fe0a03804c78f6bb0ac16be06f2d"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/seed-resilience#83c3d921d1331b5433b918dabe1ed7cb55230c2b"
 dependencies = [
  "git2",
  "minicbor",
@@ -1658,7 +1658,7 @@ dependencies = [
 [[package]]
 name = "radicle-macros"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/disable-rere#67120584d465fe0a03804c78f6bb0ac16be06f2d"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/seed-resilience#83c3d921d1331b5433b918dabe1ed7cb55230c2b"
 dependencies = [
  "quote",
  "radicle-git-ext",
@@ -1668,7 +1668,7 @@ dependencies = [
 [[package]]
 name = "radicle-seed"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/disable-rere#67120584d465fe0a03804c78f6bb0ac16be06f2d"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/seed-resilience#83c3d921d1331b5433b918dabe1ed7cb55230c2b"
 dependencies = [
  "async-trait",
  "futures",
@@ -1676,6 +1676,7 @@ dependencies = [
  "radicle-keystore",
  "thiserror",
  "tokio",
+ "tokio-stream",
  "tracing",
 ]
 
@@ -1703,7 +1704,7 @@ dependencies = [
 [[package]]
 name = "radicle-std-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/disable-rere#67120584d465fe0a03804c78f6bb0ac16be06f2d"
+source = "git+https://github.com/radicle-dev/radicle-link?branch=xla/seed-resilience#83c3d921d1331b5433b918dabe1ed7cb55230c2b"
 
 [[package]]
 name = "rand"

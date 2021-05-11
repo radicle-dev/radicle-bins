@@ -23,10 +23,10 @@ use std::{
     time::{self, SystemTime},
 };
 
-use futures::{channel::mpsc as chan, StreamExt as _};
+use futures::StreamExt as _;
 use serde::Serialize;
-use tokio::sync::Mutex;
-use tokio_stream::wrappers::UnboundedReceiverStream;
+use tokio::sync::{mpsc, Mutex};
+use tokio_stream::wrappers::{ReceiverStream, UnboundedReceiverStream};
 use warp::Filter as _;
 
 use avatar::Avatar;
@@ -192,7 +192,8 @@ impl From<(seed::Project, Option<SystemTime>, bool)> for Project {
     }
 }
 
-async fn fanout(state: Arc<Mutex<State>>, mut events: chan::Receiver<seed::Event>) {
+async fn fanout(state: Arc<Mutex<State>>, rx: mpsc::Receiver<seed::Event>) {
+    let mut events = ReceiverStream::new(rx);
     while let Some(e) = events.next().await {
         tracing::info!("{:?}", e);
 
@@ -228,7 +229,7 @@ pub async fn run<A: Into<net::SocketAddr>>(
     featured_projects: HashSet<Urn>,
     peer_id: PeerId,
     mut handle: seed::NodeHandle,
-    events: chan::Receiver<seed::Event>,
+    events: mpsc::Receiver<seed::Event>,
 ) {
     let public = warp::fs::dir(assets_path);
     let projects = handle.get_projects().await.unwrap();
