@@ -70,7 +70,9 @@
 
   .tabs-container {
     display: flex;
-    padding: 1rem 0 0 4rem;
+    padding: 1rem 4rem 0;
+    max-width: 90rem;
+    margin: 0 auto;
   }
 
   .tabs {
