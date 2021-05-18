@@ -274,7 +274,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .featured_projects
         .map_or_else(HashSet::new, parse_urn_list);
 
-    tokio::spawn(seed::frontend::run(
+    let frontend = tokio::spawn(seed::frontend::run(
         opts.name,
         opts.description,
         opts.homepage,
@@ -287,8 +287,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         handle,
         rx,
     ));
+    let node = tokio::spawn(node.run(peer_config, tx));
 
-    node.run(peer_config, tx).await?;
+    tokio::select! {
+        res = frontend => res?,
+        res = node => res??,
+    };
 
     Ok(())
 }
