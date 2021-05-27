@@ -274,11 +274,19 @@ pub async fn run<A: Into<net::SocketAddr>>(
     };
 
     let projects = warp::path("projects")
+        .and(warp::path::end())
         .map({
             let state = state.clone();
             move || state.clone()
         })
         .and_then(projects_handler);
+
+    let project = warp::path!("projects" / Urn)
+        .map({
+            let state = state.clone();
+            move |urn| (state.clone(), urn)
+        })
+        .and_then(|(state, urn)| project_handler(state, urn));
 
     let peers = warp::path("peers")
         .map(move || handle.clone())
@@ -299,6 +307,7 @@ pub async fn run<A: Into<net::SocketAddr>>(
     warp::serve(
         app.or(public)
             .or(membership)
+            .or(project)
             .or(projects)
             .or(peers)
             .or(info)
@@ -369,6 +378,17 @@ async fn projects_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, 
             .map(Project::from)
             .collect::<Vec<_>>(),
     ))
+}
+
+async fn project_handler(
+    state: Arc<Mutex<State>>,
+    urn: Urn,
+) -> Result<impl warp::Reply, warp::Rejection> {
+    let state = state.lock().await;
+    match state.projects.get(&urn) {
+        Some(proj) => Ok(warp::reply::json(proj)),
+        None => Err(warp::reject()),
+    }
 }
 
 async fn events_handler(state: Arc<Mutex<State>>) -> Result<impl warp::Reply, warp::Rejection> {
