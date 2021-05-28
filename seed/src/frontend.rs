@@ -266,6 +266,11 @@ pub async fn run<A: Into<net::SocketAddr>>(
 
     let handle = Arc::new(Mutex::new(handle));
 
+    let any_origin = warp::cors()
+        .allow_any_origin()
+        .allow_methods(vec!["GET", "OPTIONS"])
+        .build();
+
     let membership = {
         let handle = handle.clone();
         warp::path("membership")
@@ -286,7 +291,8 @@ pub async fn run<A: Into<net::SocketAddr>>(
             let state = state.clone();
             move |urn| (state.clone(), urn)
         })
-        .and_then(|(state, urn)| project_handler(state, urn));
+        .and_then(|(state, urn)| project_handler(state, urn))
+        .with(any_origin.clone());
 
     let peers = warp::path("peers")
         .map(move || handle.clone())
@@ -297,7 +303,8 @@ pub async fn run<A: Into<net::SocketAddr>>(
             let state = state.clone();
             move || state.clone()
         })
-        .and_then(info_handler);
+        .and_then(info_handler)
+        .with(any_origin);
 
     let app = warp::path("events")
         .and(warp::get())
