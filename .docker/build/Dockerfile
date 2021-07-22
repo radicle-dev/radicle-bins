@@ -20,16 +20,16 @@ RUN set -eux; \
 
 # Rust toolchain
 # Make sure this is in sync with rust-toolchain!
-ENV RUST_VERSION=nightly-2020-11-10 \
+ENV RUST_VERSION=nightly-2021-06-17 \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH \
     RUSTUP_HOME=/usr/local/rustup \
-    RUSTUP_VERSION=1.22.1 \
-    RUSTUP_SHA256=49c96f3f74be82f4752b8bffcf81961dea5e6e94ce1ccba94435f12e871c3bdb
+    RUSTUP_VERSION=1.24.1 \
+    RUSTUP_SHA512=d85a0499bf98163c42181d6720572bf2d0c1538a252b528b9812ea876a68d486e4720cc236640bda4c241d98aebbf3f83d42cf551522bf2f4837aa048c198714
 
 RUN set -eux; \
     curl -LOf "https://static.rust-lang.org/rustup/archive/${RUSTUP_VERSION}/x86_64-unknown-linux-gnu/rustup-init"; \
-    echo "${RUSTUP_SHA256} *rustup-init" | sha256sum -c -; \
+    echo "${RUSTUP_SHA512} *rustup-init" | sha512sum -c -; \
     chmod +x rustup-init; \
     ./rustup-init -y --no-modify-path --profile minimal --default-toolchain $RUST_VERSION; \
     rm rustup-init; \

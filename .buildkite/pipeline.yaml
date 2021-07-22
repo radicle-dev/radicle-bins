@@ -6,7 +6,7 @@ steps:
       production: "true"
       platform: "linux"
     env: &build-docker
-      DOCKER_IMAGE: "gcr.io/opensourcecoin/radicle-bins-build@sha256:570908898b28ecee3464b85fb41b270857ae44607d452217289aae131a95eb41"
+      DOCKER_IMAGE: "gcr.io/opensourcecoin/radicle-bins-build@sha256:e2eeaf902c16d88d029a95e0e7956a27ebf12b63dcdcdcaa81eb151670a14ded"
       DOCKER_FILE: .docker/build/Dockerfile
 
   - label: "Clippy Yeah Yeah Clippy Shlippy Yeah"
