@@ -53,7 +53,7 @@ fn main() -> std::io::Result<()> {
         fs::set_permissions(&file_path, permissions)?;
 
         let secret_key = SecretKey::new();
-        file.write_all(&secret_key.as_ref())?;
+        file.write_all(secret_key.as_ref())?;
         println!("Key file generated: {}", file_path.display());
     }
 

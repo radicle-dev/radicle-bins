@@ -263,6 +263,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             membership,
             network: opts.network,
             replication: replication::Config::default(),
+            rate_limits: protocol::Quota::default(),
         },
         storage,
     };
