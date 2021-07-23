@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Download the Twemoji SVGs and put them into public/twemoji
 
