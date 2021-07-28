@@ -52,7 +52,7 @@ use argh::FromArgs;
 )]
 pub struct TrackEverything {
     #[argh(positional)]
-    secret_key_file_path: Option<String>,
+    secret_key_file_path: String,
 }
 
 /// A set of peers to track
@@ -64,7 +64,7 @@ pub struct TrackPeers {
     peers: Vec<PeerId>,
 
     #[argh(positional)]
-    secret_key_file_path: Option<String>,
+    secret_key_file_path: String,
 }
 
 /// A set of URNs to track
@@ -76,7 +76,7 @@ pub struct TrackUrns {
     urns: Vec<Urn>,
 
     #[argh(positional)]
-    secret_key_file_path: Option<String>,
+    secret_key_file_path: String,
 }
 
 #[derive(FromArgs)]
@@ -247,14 +247,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }) => secret_key_file_path,
     };
 
-    let secret_key: Vec<u8> = if let Some(secret_key_file_path) = secret_key_file_path {
+    let secret_key: Vec<u8> = if secret_key_file_path == "-" {
         let mut secret_key: Vec<u8> = Default::default();
-        let mut file = File::open(secret_key_file_path)?;
-        file.read_to_end(&mut secret_key)?;
+        std::io::stdin().read_to_end(&mut secret_key)?;
         secret_key
     } else {
         let mut secret_key: Vec<u8> = Default::default();
-        std::io::stdin().read_to_end(&mut secret_key)?;
+        let mut file = File::open(secret_key_file_path)?;
+        file.read_to_end(&mut secret_key)?;
         secret_key
     };
 
