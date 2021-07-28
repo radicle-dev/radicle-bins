@@ -17,6 +17,8 @@
 
 use std::{
     collections::HashSet,
+    fs::File,
+    io::Read,
     net::{self, SocketAddr, ToSocketAddrs},
     path::PathBuf,
     str::FromStr,
@@ -42,29 +44,47 @@ use radicle_seed_node as seed;
 
 use argh::FromArgs;
 
+#[derive(FromArgs)]
+#[argh(
+    subcommand,
+    name = "track-everything",
+    description = "Track everything (default)"
+)]
+pub struct TrackEverything {
+    #[argh(positional)]
+    secret_key_file_path: Option<String>,
+}
+
 /// A set of peers to track
 #[derive(FromArgs)]
 #[argh(subcommand, name = "track-peers")]
-pub struct Peers {
+pub struct TrackPeers {
     /// track the specified peer only
     #[argh(option, long = "peer")]
     peers: Vec<PeerId>,
+
+    #[argh(positional)]
+    secret_key_file_path: Option<String>,
 }
 
 /// A set of URNs to track
 #[derive(FromArgs)]
 #[argh(subcommand, name = "track-urns")]
-pub struct Urns {
+pub struct TrackUrns {
     /// track the specified URN only
     #[argh(option, long = "urn")]
     urns: Vec<Urn>,
+
+    #[argh(positional)]
+    secret_key_file_path: Option<String>,
 }
 
 #[derive(FromArgs)]
 #[argh(subcommand)]
-pub enum Track {
-    Urns(Urns),
-    Peers(Peers),
+pub enum Subcommand {
+    TrackEverything(TrackEverything),
+    TrackUrns(TrackUrns),
+    TrackPeers(TrackPeers),
 }
 
 #[derive(FromArgs)]
@@ -72,7 +92,7 @@ pub enum Track {
 pub struct Options {
     /// track the specified peer only
     #[argh(subcommand)]
-    pub track: Option<Track>,
+    pub track: Subcommand,
 
     /// join this radicle link network by name.
     ///
@@ -213,7 +233,32 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing::subscriber::set_global_default(subscriber)
         .expect("setting tracing subscriber should succeed");
 
-    let signer = match Signer::new(std::io::stdin()) {
+    let secret_key_file_path = match opts.track {
+        Subcommand::TrackEverything(TrackEverything {
+            ref secret_key_file_path,
+        }) => secret_key_file_path,
+        Subcommand::TrackUrns(TrackUrns {
+            ref secret_key_file_path,
+            ..
+        }) => secret_key_file_path,
+        Subcommand::TrackPeers(TrackPeers {
+            ref secret_key_file_path,
+            ..
+        }) => secret_key_file_path,
+    };
+
+    let secret_key: Vec<u8> = if let Some(secret_key_file_path) = secret_key_file_path {
+        let mut secret_key: Vec<u8> = Default::default();
+        let mut file = File::open(secret_key_file_path)?;
+        file.read_to_end(&mut secret_key)?;
+        secret_key
+    } else {
+        let mut secret_key: Vec<u8> = Default::default();
+        std::io::stdin().read_to_end(&mut secret_key)?;
+        secret_key
+    };
+
+    let signer = match Signer::new(&secret_key[..]) {
         Ok(signer) => signer,
         Err(err) => panic!("invalid key was supplied to stdin: {}", err),
     };
@@ -246,9 +291,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         bootstrap: opts.bootstrap.map_or_else(Vec::new, parse_peer_list),
         limits: Default::default(),
         mode: match opts.track {
-            Some(Track::Peers(Peers { peers })) => Mode::TrackPeers(peers.into_iter().collect()),
-            Some(Track::Urns(Urns { urns })) => Mode::TrackUrns(urns.into_iter().collect()),
-            None => Mode::TrackEverything,
+            Subcommand::TrackPeers(TrackPeers { peers, .. }) => {
+                Mode::TrackPeers(peers.into_iter().collect())
+            },
+            Subcommand::TrackUrns(TrackUrns { urns, .. }) => {
+                Mode::TrackUrns(urns.into_iter().collect())
+            },
+            Subcommand::TrackEverything(_) => Mode::TrackEverything,
         },
     };
     let peer_config = peer::Config {
