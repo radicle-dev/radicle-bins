@@ -48,12 +48,9 @@ use argh::FromArgs;
 #[argh(
     subcommand,
     name = "track-everything",
-    description = "Track everything (default)"
+    description = "Track everything"
 )]
-pub struct TrackEverything {
-    #[argh(positional)]
-    secret_key_file_path: String,
-}
+pub struct TrackEverything {}
 
 /// A set of peers to track
 #[derive(FromArgs)]
@@ -62,9 +59,6 @@ pub struct TrackPeers {
     /// track the specified peer only
     #[argh(option, long = "peer")]
     peers: Vec<PeerId>,
-
-    #[argh(positional)]
-    secret_key_file_path: String,
 }
 
 /// A set of URNs to track
@@ -74,9 +68,6 @@ pub struct TrackUrns {
     /// track the specified URN only
     #[argh(option, long = "urn")]
     urns: Vec<Urn>,
-
-    #[argh(positional)]
-    secret_key_file_path: String,
 }
 
 #[derive(FromArgs)]
@@ -173,6 +164,13 @@ pub struct Options {
     /// max number of passive members to set in [`membership::Params`].
     #[argh(option, default = "membership::Params::default().max_passive")]
     pub membership_max_passive: usize,
+
+    #[argh(
+        option,
+        default = "String::from(\"-\")",
+        description = "path to the secret key file or - for stdin"
+    )]
+    pub secret_key: String,
 }
 
 impl Options {
@@ -233,27 +231,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing::subscriber::set_global_default(subscriber)
         .expect("setting tracing subscriber should succeed");
 
-    let secret_key_file_path = match opts.track {
-        Subcommand::TrackEverything(TrackEverything {
-            ref secret_key_file_path,
-        }) => secret_key_file_path,
-        Subcommand::TrackUrns(TrackUrns {
-            ref secret_key_file_path,
-            ..
-        }) => secret_key_file_path,
-        Subcommand::TrackPeers(TrackPeers {
-            ref secret_key_file_path,
-            ..
-        }) => secret_key_file_path,
-    };
-
-    let secret_key: Vec<u8> = if secret_key_file_path == "-" {
+    let secret_key: Vec<u8> = if opts.secret_key == "-" {
         let mut secret_key: Vec<u8> = Default::default();
         std::io::stdin().read_to_end(&mut secret_key)?;
         secret_key
     } else {
         let mut secret_key: Vec<u8> = Default::default();
-        let mut file = File::open(secret_key_file_path)?;
+        let mut file = File::open(opts.secret_key)?;
         file.read_to_end(&mut secret_key)?;
         secret_key
     };
