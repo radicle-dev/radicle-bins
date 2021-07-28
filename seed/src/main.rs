@@ -221,6 +221,17 @@ fn parse_urn_list(option: String) -> HashSet<Urn> {
         .collect()
 }
 
+fn get_secret_key(secret_key_file_path: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+    let mut secret_key: Vec<u8> = Default::default();
+    if secret_key_file_path == "-" {
+        std::io::stdin().read_to_end(&mut secret_key)?;
+    } else {
+        let mut file = File::open(secret_key_file_path)?;
+        file.read_to_end(&mut secret_key)?;
+    };
+    Ok(secret_key)
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let opts = Options::from_env();
@@ -231,16 +242,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing::subscriber::set_global_default(subscriber)
         .expect("setting tracing subscriber should succeed");
 
-    let secret_key: Vec<u8> = if opts.secret_key == "-" {
-        let mut secret_key: Vec<u8> = Default::default();
-        std::io::stdin().read_to_end(&mut secret_key)?;
-        secret_key
-    } else {
-        let mut secret_key: Vec<u8> = Default::default();
-        let mut file = File::open(opts.secret_key)?;
-        file.read_to_end(&mut secret_key)?;
-        secret_key
-    };
+    let secret_key = get_secret_key(&opts.secret_key)?;
 
     let signer = match Signer::new(&secret_key[..]) {
         Ok(signer) => signer,
