@@ -44,14 +44,6 @@ use radicle_seed_node as seed;
 
 use argh::FromArgs;
 
-#[derive(FromArgs)]
-#[argh(
-    subcommand,
-    name = "track-everything",
-    description = "Track everything"
-)]
-pub struct TrackEverything {}
-
 /// A set of peers to track
 #[derive(FromArgs)]
 #[argh(subcommand, name = "track-peers")]
@@ -73,7 +65,6 @@ pub struct TrackUrns {
 #[derive(FromArgs)]
 #[argh(subcommand)]
 pub enum Subcommand {
-    TrackEverything(TrackEverything),
     TrackUrns(TrackUrns),
     TrackPeers(TrackPeers),
 }
@@ -83,7 +74,7 @@ pub enum Subcommand {
 pub struct Options {
     /// track the specified peer only
     #[argh(subcommand)]
-    pub track: Subcommand,
+    pub track: Option<Subcommand>,
 
     /// join this radicle link network by name.
     ///
@@ -275,13 +266,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         bootstrap: opts.bootstrap.map_or_else(Vec::new, parse_peer_list),
         limits: Default::default(),
         mode: match opts.track {
-            Subcommand::TrackPeers(TrackPeers { peers, .. }) => {
+            Some(Subcommand::TrackPeers(TrackPeers { peers, .. })) => {
                 Mode::TrackPeers(peers.into_iter().collect())
             },
-            Subcommand::TrackUrns(TrackUrns { urns, .. }) => {
+            Some(Subcommand::TrackUrns(TrackUrns { urns, .. })) => {
                 Mode::TrackUrns(urns.into_iter().collect())
             },
-            Subcommand::TrackEverything(_) => Mode::TrackEverything,
+            None => Mode::TrackEverything,
         },
     };
     let peer_config = peer::Config {
