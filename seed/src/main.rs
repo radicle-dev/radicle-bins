@@ -17,6 +17,8 @@
 
 use std::{
     collections::HashSet,
+    fs::File,
+    io::Read,
     net::{self, SocketAddr, ToSocketAddrs},
     path::PathBuf,
     str::FromStr,
@@ -45,7 +47,7 @@ use argh::FromArgs;
 /// A set of peers to track
 #[derive(FromArgs)]
 #[argh(subcommand, name = "track-peers")]
-pub struct Peers {
+pub struct TrackPeers {
     /// track the specified peer only
     #[argh(option, long = "peer")]
     peers: Vec<PeerId>,
@@ -54,7 +56,7 @@ pub struct Peers {
 /// A set of URNs to track
 #[derive(FromArgs)]
 #[argh(subcommand, name = "track-urns")]
-pub struct Urns {
+pub struct TrackUrns {
     /// track the specified URN only
     #[argh(option, long = "urn")]
     urns: Vec<Urn>,
@@ -63,8 +65,8 @@ pub struct Urns {
 #[derive(FromArgs)]
 #[argh(subcommand)]
 pub enum Track {
-    Urns(Urns),
-    Peers(Peers),
+    TrackUrns(TrackUrns),
+    TrackPeers(TrackPeers),
 }
 
 #[derive(FromArgs)]
@@ -153,6 +155,10 @@ pub struct Options {
     /// max number of passive members to set in [`membership::Params`].
     #[argh(option, default = "membership::Params::default().max_passive")]
     pub membership_max_passive: usize,
+
+    /// path to the secret key file
+    #[argh(option)]
+    pub secret_key: Option<PathBuf>,
 }
 
 impl Options {
@@ -203,6 +209,19 @@ fn parse_urn_list(option: String) -> HashSet<Urn> {
         .collect()
 }
 
+fn get_secret_key(
+    secret_key_file_path: Option<PathBuf>,
+) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+    let mut secret_key: Vec<u8> = Default::default();
+    if let Some(secret_key_file_path) = secret_key_file_path {
+        let mut file = File::open(secret_key_file_path)?;
+        file.read_to_end(&mut secret_key)?;
+    } else {
+        std::io::stdin().read_to_end(&mut secret_key)?;
+    };
+    Ok(secret_key)
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let opts = Options::from_env();
@@ -213,7 +232,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing::subscriber::set_global_default(subscriber)
         .expect("setting tracing subscriber should succeed");
 
-    let signer = match Signer::new(std::io::stdin()) {
+    let secret_key = get_secret_key(opts.secret_key)?;
+
+    let signer = match Signer::new(&secret_key[..]) {
         Ok(signer) => signer,
         Err(err) => panic!("invalid key was supplied to stdin: {}", err),
     };
@@ -246,8 +267,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         bootstrap: opts.bootstrap.map_or_else(Vec::new, parse_peer_list),
         limits: Default::default(),
         mode: match opts.track {
-            Some(Track::Peers(Peers { peers })) => Mode::TrackPeers(peers.into_iter().collect()),
-            Some(Track::Urns(Urns { urns })) => Mode::TrackUrns(urns.into_iter().collect()),
+            Some(Track::TrackPeers(TrackPeers { peers, .. })) => {
+                Mode::TrackPeers(peers.into_iter().collect())
+            },
+            Some(Track::TrackUrns(TrackUrns { urns, .. })) => {
+                Mode::TrackUrns(urns.into_iter().collect())
+            },
             None => Mode::TrackEverything,
         },
     };
