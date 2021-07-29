@@ -64,7 +64,7 @@ pub struct TrackUrns {
 
 #[derive(FromArgs)]
 #[argh(subcommand)]
-pub enum Subcommand {
+pub enum Track {
     TrackUrns(TrackUrns),
     TrackPeers(TrackPeers),
 }
@@ -74,7 +74,7 @@ pub enum Subcommand {
 pub struct Options {
     /// track the specified peer only
     #[argh(subcommand)]
-    pub track: Option<Subcommand>,
+    pub track: Option<Track>,
 
     /// join this radicle link network by name.
     ///
@@ -156,7 +156,8 @@ pub struct Options {
     #[argh(option, default = "membership::Params::default().max_passive")]
     pub membership_max_passive: usize,
 
-    #[argh(option, description = "path to the secret key file")]
+    /// path to the secret key file
+    #[argh(option)]
     pub secret_key: Option<PathBuf>,
 }
 
@@ -266,10 +267,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         bootstrap: opts.bootstrap.map_or_else(Vec::new, parse_peer_list),
         limits: Default::default(),
         mode: match opts.track {
-            Some(Subcommand::TrackPeers(TrackPeers { peers, .. })) => {
+            Some(Track::TrackPeers(TrackPeers { peers, .. })) => {
                 Mode::TrackPeers(peers.into_iter().collect())
             },
-            Some(Subcommand::TrackUrns(TrackUrns { urns, .. })) => {
+            Some(Track::TrackUrns(TrackUrns { urns, .. })) => {
                 Mode::TrackUrns(urns.into_iter().collect())
             },
             None => Mode::TrackEverything,
