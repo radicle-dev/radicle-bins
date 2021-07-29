@@ -165,12 +165,8 @@ pub struct Options {
     #[argh(option, default = "membership::Params::default().max_passive")]
     pub membership_max_passive: usize,
 
-    #[argh(
-        option,
-        default = "String::from(\"-\")",
-        description = "path to the secret key file or - for stdin"
-    )]
-    pub secret_key: String,
+    #[argh(option, description = "path to the secret key file")]
+    pub secret_key: Option<PathBuf>,
 }
 
 impl Options {
@@ -221,13 +217,15 @@ fn parse_urn_list(option: String) -> HashSet<Urn> {
         .collect()
 }
 
-fn get_secret_key(secret_key_file_path: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+fn get_secret_key(
+    secret_key_file_path: Option<PathBuf>,
+) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     let mut secret_key: Vec<u8> = Default::default();
-    if secret_key_file_path == "-" {
-        std::io::stdin().read_to_end(&mut secret_key)?;
-    } else {
+    if let Some(secret_key_file_path) = secret_key_file_path {
         let mut file = File::open(secret_key_file_path)?;
         file.read_to_end(&mut secret_key)?;
+    } else {
+        std::io::stdin().read_to_end(&mut secret_key)?;
     };
     Ok(secret_key)
 }
@@ -242,7 +240,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing::subscriber::set_global_default(subscriber)
         .expect("setting tracing subscriber should succeed");
 
-    let secret_key = get_secret_key(&opts.secret_key)?;
+    let secret_key = get_secret_key(opts.secret_key)?;
 
     let signer = match Signer::new(&secret_key[..]) {
         Ok(signer) => signer,
