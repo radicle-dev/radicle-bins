@@ -26,7 +26,6 @@ use std::{
 
 use nonempty::NonEmpty;
 use tokio::sync::mpsc;
-use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 use librad::{
     git::{replication, Urn},
@@ -222,16 +221,31 @@ fn get_secret_key(
     Ok(secret_key)
 }
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let opts = Options::from_env();
+#[cfg(feature = "gcp")]
+fn init_logger(_opts: &Options) {
+    use tracing_stackdriver::Stackdriver;
+    use tracing_subscriber::{layer::SubscriberExt, Registry};
+    let stackdriver = Stackdriver::with_writer(std::io::stderr); // writes to std::io::Stderr
+    let subscriber = Registry::default().with(stackdriver);
+    tracing::subscriber::set_global_default(subscriber).expect("Could not set up global logger");
+}
+
+#[cfg(not(feature = "gcp"))]
+fn init_logger(opts: &Options) {
+    use tracing_subscriber::{EnvFilter, FmtSubscriber};
+
     let subscriber = FmtSubscriber::builder()
         .with_env_filter(EnvFilter::from_default_env().add_directive(opts.log.into()))
         .finish();
 
     tracing::subscriber::set_global_default(subscriber)
         .expect("setting tracing subscriber should succeed");
+}
 
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let opts = Options::from_env();
+    init_logger(&opts);
     let secret_key = get_secret_key(opts.secret_key)?;
 
     let signer = match Signer::new(&secret_key[..]) {
