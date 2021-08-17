@@ -158,6 +158,11 @@ pub struct Options {
     /// path to the secret key file
     #[argh(option)]
     pub secret_key: Option<PathBuf>,
+
+    /// whether to enable Google Cloud Platform logger output format
+    #[cfg(feature = "gcp")]
+    #[argh(switch)]
+    pub gcp: bool,
 }
 
 impl Options {
@@ -221,17 +226,7 @@ fn get_secret_key(
     Ok(secret_key)
 }
 
-#[cfg(feature = "gcp")]
-fn init_logger(_opts: &Options) {
-    use tracing_stackdriver::Stackdriver;
-    use tracing_subscriber::{layer::SubscriberExt, Registry};
-    let stackdriver = Stackdriver::with_writer(std::io::stderr); // writes to std::io::Stderr
-    let subscriber = Registry::default().with(stackdriver);
-    tracing::subscriber::set_global_default(subscriber).expect("Could not set up global logger");
-}
-
-#[cfg(not(feature = "gcp"))]
-fn init_logger(opts: &Options) {
+fn set_up_human_readable_logging(opts: &Options) {
     use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
     let subscriber = FmtSubscriber::builder()
@@ -240,6 +235,25 @@ fn init_logger(opts: &Options) {
 
     tracing::subscriber::set_global_default(subscriber)
         .expect("setting tracing subscriber should succeed");
+}
+
+#[cfg(not(feature = "gcp"))]
+fn init_logger(opts: &Options) {
+    set_up_human_readable_logging(opts)
+}
+
+#[cfg(feature = "gcp")]
+fn init_logger(opts: &Options) {
+    if opts.gcp {
+        use tracing_stackdriver::Stackdriver;
+        use tracing_subscriber::{layer::SubscriberExt, Registry};
+        let stackdriver = Stackdriver::with_writer(std::io::stderr); // writes to std::io::Stderr
+        let subscriber = Registry::default().with(stackdriver);
+        tracing::subscriber::set_global_default(subscriber)
+            .expect("Could not set up global logger");
+    } else {
+        set_up_human_readable_logging(opts);
+    }
 }
 
 #[tokio::main]
