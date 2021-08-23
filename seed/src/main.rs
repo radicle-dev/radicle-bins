@@ -68,6 +68,28 @@ pub enum Track {
     TrackPeers(TrackPeers),
 }
 
+pub enum LogFmt {
+    Plain,
+
+    #[cfg(feature = "gcp")]
+    Gcp,
+}
+
+impl FromStr for LogFmt {
+    type Err = &'static str;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "plain" => Ok(LogFmt::Plain),
+
+            #[cfg(feature = "gcp")]
+            "gcp" => Ok(LogFmt::Gcp),
+
+            _ => Err("Unrecognized log format"),
+        }
+    }
+}
+
 #[derive(FromArgs)]
 /// Radicle Seed.
 pub struct Options {
@@ -160,8 +182,8 @@ pub struct Options {
     pub secret_key: Option<PathBuf>,
 
     /// either "plain" or "gcp" (gcp available only when compiled-in)
-    #[argh(option, default = "String::from(\"plain\")")]
-    pub log_format: String,
+    #[argh(option, default = "LogFmt::Plain")]
+    pub log_format: LogFmt,
 }
 
 impl Options {
@@ -238,17 +260,14 @@ fn set_up_plain_log_format(opts: &Options) {
 
 #[cfg(not(feature = "gcp"))]
 fn init_logger(opts: &Options) {
-    if opts.log_format != "plain" {
-        panic!("Unrecognized log format: {}", opts.log_format);
-    }
     set_up_plain_log_format(opts)
 }
 
 #[cfg(feature = "gcp")]
 fn init_logger(opts: &Options) {
-    match opts.log_format.as_str() {
-        "plain" => set_up_plain_log_format(opts),
-        "gcp" => {
+    match opts.log_format {
+        LogFmt::Plain => set_up_plain_log_format(opts),
+        LogFmt::Gcp => {
             use tracing_stackdriver::Stackdriver;
             use tracing_subscriber::{layer::SubscriberExt, Registry};
             let stackdriver = Stackdriver::with_writer(std::io::stderr); // writes to std::io::Stderr
@@ -256,7 +275,6 @@ fn init_logger(opts: &Options) {
             tracing::subscriber::set_global_default(subscriber)
                 .expect("Could not set up global logger");
         },
-        _ => panic!("Unrecognized log format: {}", opts.log_format),
     }
 }
 
