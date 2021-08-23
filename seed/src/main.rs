@@ -159,10 +159,9 @@ pub struct Options {
     #[argh(option)]
     pub secret_key: Option<PathBuf>,
 
-    /// whether to enable Google Cloud Platform logger output format
-    #[cfg(feature = "gcp")]
-    #[argh(switch)]
-    pub gcp: bool,
+    /// either "plain" or "gcp" (gcp available only when compiled-in)
+    #[argh(option, default = "String::from(\"plain\")")]
+    pub log_format: String,
 }
 
 impl Options {
@@ -226,7 +225,7 @@ fn get_secret_key(
     Ok(secret_key)
 }
 
-fn set_up_human_readable_logging(opts: &Options) {
+fn set_up_plain_log_format(opts: &Options) {
     use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
     let subscriber = FmtSubscriber::builder()
@@ -239,20 +238,25 @@ fn set_up_human_readable_logging(opts: &Options) {
 
 #[cfg(not(feature = "gcp"))]
 fn init_logger(opts: &Options) {
-    set_up_human_readable_logging(opts)
+    if opts.log_format != "plain" {
+        panic!("Unrecognized log format: {}", opts.log_format);
+    }
+    set_up_plain_log_format(opts)
 }
 
 #[cfg(feature = "gcp")]
 fn init_logger(opts: &Options) {
-    if opts.gcp {
-        use tracing_stackdriver::Stackdriver;
-        use tracing_subscriber::{layer::SubscriberExt, Registry};
-        let stackdriver = Stackdriver::with_writer(std::io::stderr); // writes to std::io::Stderr
-        let subscriber = Registry::default().with(stackdriver);
-        tracing::subscriber::set_global_default(subscriber)
-            .expect("Could not set up global logger");
-    } else {
-        set_up_human_readable_logging(opts);
+    match opts.log_format.as_str() {
+        "plain" => set_up_plain_log_format(opts),
+        "gcp" => {
+            use tracing_stackdriver::Stackdriver;
+            use tracing_subscriber::{layer::SubscriberExt, Registry};
+            let stackdriver = Stackdriver::with_writer(std::io::stderr); // writes to std::io::Stderr
+            let subscriber = Registry::default().with(stackdriver);
+            tracing::subscriber::set_global_default(subscriber)
+                .expect("Could not set up global logger");
+        },
+        _ => panic!("Unrecognized log format: {}", opts.log_format),
     }
 }
 
