@@ -35,8 +35,8 @@ use librad::{
         Network,
     },
     paths,
-    peer::PeerId,
     profile,
+    PeerId,
 };
 use radicle_seed::{Limits, Mode, Node, NodeConfig, Signer};
 use radicle_seed_node as seed;
