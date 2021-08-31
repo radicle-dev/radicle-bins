@@ -38,7 +38,7 @@ use librad::{
     peer::PeerId,
     profile,
 };
-use radicle_seed::{Mode, Node, NodeConfig, Signer};
+use radicle_seed::{Limits, Mode, Node, NodeConfig, Signer};
 use radicle_seed_node as seed;
 
 use argh::FromArgs;
@@ -313,9 +313,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     let listen_addr = opts.peer_listen.unwrap_or_else(|| ([0, 0, 0, 0], 0).into());
 
+    let limits = Limits {
+        request_timeout: std::time::Duration::from_secs(u64::MAX),
+        ..Default::default()
+    };
+
     let config = NodeConfig {
         bootstrap: opts.bootstrap.map_or_else(Vec::new, parse_peer_list),
-        limits: Default::default(),
+        limits,
         mode: match opts.track {
             Some(Track::TrackPeers(TrackPeers { peers, .. })) => {
                 Mode::TrackPeers(peers.into_iter().collect())
