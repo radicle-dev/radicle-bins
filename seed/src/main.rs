@@ -270,7 +270,7 @@ fn init_logger(opts: &Options) {
         LogFmt::Gcp => {
             use tracing_stackdriver::Stackdriver;
             use tracing_subscriber::{layer::SubscriberExt, Registry};
-            let stackdriver = Stackdriver::with_writer(std::io::stderr); // writes to std::io::Stderr
+            let stackdriver = Stackdriver::default();
             let subscriber = Registry::default().with(stackdriver);
             tracing::subscriber::set_global_default(subscriber)
                 .expect("Could not set up global logger");
