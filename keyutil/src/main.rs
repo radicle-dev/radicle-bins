@@ -18,7 +18,7 @@
 use std::{fs, fs::File, io::prelude::*, os::unix::fs::PermissionsExt, path::PathBuf};
 
 use argh::FromArgs;
-use librad::keys::SecretKey;
+use librad::SecretKey;
 
 #[derive(FromArgs)]
 /// Utility for generating a private key file for Radicle Seed.

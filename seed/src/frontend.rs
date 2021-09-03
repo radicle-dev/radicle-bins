@@ -30,7 +30,7 @@ use tokio_stream::wrappers::ReceiverStream;
 use warp::Filter as _;
 
 use avatar::Avatar;
-use librad::{git::Urn, net::protocol::event::downstream, peer::PeerId};
+use librad::{git::Urn, net::protocol::event::downstream, PeerId};
 use radicle_avatar as avatar;
 use radicle_seed as seed;
 
