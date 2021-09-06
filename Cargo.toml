@@ -1,5 +1,5 @@
 [workspace]
-members = ["keyutil", "seed"]
+members = ["keyutil", "rad", "seed"]
 
 #
 # "Internal" source dependencies
@@ -26,6 +26,10 @@ members = ["keyutil", "seed"]
 git = "https://github.com/radicle-dev/radicle-link"
 branch = "master"
 
+[patch.crates-io.rad-exe]
+git = "https://github.com/radicle-dev/radicle-link"
+branch = "master"
+
 [patch.crates-io.radicle-seed]
 git = "https://github.com/radicle-dev/radicle-link"
 branch = "master"
@@ -41,6 +45,10 @@ rev = "ae027b9e7b125f56397bbb7d8652b3427deeede6"
 [patch.crates-io.libgit2-sys]
 git = "https://github.com/radicle-dev/git2-rs.git"
 rev = "ae027b9e7b125f56397bbb7d8652b3427deeede6"
+
+[patch.crates-io.thrussh-encoding]
+git = "https://github.com/FintanH/thrussh.git"
+branch = "generic-agent"
 
 [profile.release]
 debug = true
