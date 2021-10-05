@@ -14,6 +14,7 @@ RUN set -eux; \
         libssl-dev \
         make \
         pkg-config \
+        cmake \
         ; \
     apt-get autoremove; \
     rm -rf /var/lib/apt/lists/*
