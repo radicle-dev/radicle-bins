@@ -6,7 +6,7 @@ steps:
       production: "true"
       platform: "linux"
     env: &build-docker
-      DOCKER_IMAGE: "gcr.io/opensourcecoin/radicle-bins-build@sha256:e2eeaf902c16d88d029a95e0e7956a27ebf12b63dcdcdcaa81eb151670a14ded"
+      DOCKER_IMAGE: "gcr.io/opensourcecoin/radicle-bins-build@sha256:39d9605ce82cf18fdabbdc41947604885a868c31935982d459639405914b6cd9"
       DOCKER_FILE: .docker/build/Dockerfile
 
   - wait
