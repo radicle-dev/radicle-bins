@@ -1,5 +1,5 @@
 [workspace]
-members = ["keyutil", "rad", "seed"]
+members = ["keyutil", "seed"]
 
 #
 # "Internal" source dependencies
@@ -23,10 +23,6 @@ members = ["keyutil", "rad", "seed"]
 # When in doubt, chant the following aloud one hundred times: "trunk based
 # development".
 [patch.crates-io.librad]
-git = "https://github.com/radicle-dev/radicle-link"
-branch = "master"
-
-[patch.crates-io.rad-exe]
 git = "https://github.com/radicle-dev/radicle-link"
 branch = "master"
 
