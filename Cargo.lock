@@ -1162,7 +1162,7 @@ dependencies = [
 [[package]]
 name = "git-trailers"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
+source = "git+https://github.com/radicle-dev/radicle-link?rev=d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
 dependencies = [
  "nom 5.1.2",
  "thiserror",
@@ -1640,7 +1640,7 @@ dependencies = [
 [[package]]
 name = "librad"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
+source = "git+https://github.com/radicle-dev/radicle-link?rev=d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
 dependencies = [
  "async-stream",
  "async-trait",
@@ -1726,7 +1726,7 @@ dependencies = [
 [[package]]
 name = "link-canonical"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
+source = "git+https://github.com/radicle-dev/radicle-link?rev=d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
 dependencies = [
  "serde",
  "serde_bytes",
@@ -1738,7 +1738,7 @@ dependencies = [
 [[package]]
 name = "link-crypto"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
+source = "git+https://github.com/radicle-dev/radicle-link?rev=d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
 dependencies = [
  "async-trait",
  "dyn-clone",
@@ -1760,7 +1760,7 @@ dependencies = [
 [[package]]
 name = "link-git-protocol"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
+source = "git+https://github.com/radicle-dev/radicle-link?rev=d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
 dependencies = [
  "async-process",
  "async-trait",
@@ -1780,7 +1780,7 @@ dependencies = [
 [[package]]
 name = "link-identities"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
+source = "git+https://github.com/radicle-dev/radicle-link?rev=d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
 dependencies = [
  "either",
  "futures-lite",
@@ -2428,7 +2428,7 @@ dependencies = [
 [[package]]
 name = "radicle-data"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
+source = "git+https://github.com/radicle-dev/radicle-link?rev=d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
 dependencies = [
  "minicbor",
  "nonempty",
@@ -2440,7 +2440,7 @@ dependencies = [
 [[package]]
 name = "radicle-git-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
+source = "git+https://github.com/radicle-dev/radicle-link?rev=d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
 dependencies = [
  "git2",
  "minicbor",
@@ -2486,7 +2486,7 @@ dependencies = [
 [[package]]
 name = "radicle-macros"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
+source = "git+https://github.com/radicle-dev/radicle-link?rev=d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
 dependencies = [
  "quote",
  "radicle-git-ext",
@@ -2496,7 +2496,7 @@ dependencies = [
 [[package]]
 name = "radicle-seed"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
+source = "git+https://github.com/radicle-dev/radicle-link?rev=d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
 dependencies = [
  "async-trait",
  "crossbeam-utils",
@@ -2534,7 +2534,7 @@ dependencies = [
 [[package]]
 name = "radicle-std-ext"
 version = "0.1.0"
-source = "git+https://github.com/radicle-dev/radicle-link?branch=master#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
+source = "git+https://github.com/radicle-dev/radicle-link?rev=d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f#d58e9eed3c7a771c86e6ae8ed903e2c8d21af03f"
 
 [[package]]
 name = "rand"
